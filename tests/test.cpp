@@ -1,0 +1,1 @@
+//OPTIONAL: would be great to include some automated tests, that would run by command or on every launch
