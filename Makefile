@@ -5,20 +5,33 @@ CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 
 # Source files
-SRCS = main.cpp Client.cpp Server.cpp
+SRC_DIR = ./src
+SRCS = $(addprefix $(SRC_DIR)/,\
+	main.cpp Client.cpp Server.cpp)
 
-OBJS = $(SRCS:.cpp=.o)
+OBJ_DIR = ./obj
+OBJS = $(SRCS:./src/%.cpp=$(OBJ_DIR)/%.o)
+
+INC_DIR = ./inc
+INC = $(addprefix $(INC_DIR)/,\
+	Client.hpp Server.hpp)
+#INC_DIR (in case we want to use this later)
+
 
 # Executable name
 NAME = ircserv
 
-all: $(NAME)
+all: $(NAME) 
 
-$(NAME): $(OBJS)
+$(NAME): $(OBJS) $(INC)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
 
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp $(INC)
+	mkdir -p $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
 clean:
-	rm -rf $(OBJS)
+	rm -rf $(OBJ_DIR)
 
 fclean: clean
 	rm -f $(NAME)
