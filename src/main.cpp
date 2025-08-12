@@ -4,6 +4,7 @@
 #include <cstdlib>  // std::atol
 #include <cstring>  // std::strlen
 //#include <exception> //for exception 
+#include "../inc/Server.hpp"
 
 static bool isValidPort(char *port){
 	if (std::strlen(port) > 5) return false;
@@ -34,10 +35,15 @@ static bool checkArgs(int argc, char *argv[]){
 
 int main(int argc, char* argv[]){
 	if (!checkArgs(argc, argv)) return 1;
-	// try {
-
-	// } catch (const std::exception& e){
-
-	// }
+	try {
+		Server server(std::atoi(argv[1]), argv[2]);
+		server.start();
+	} catch (const std::exception& e){
+		std::cerr << "[Error] " << e.what() << std::endl;
+		return 1;
+	} catch (...) {
+		std::cerr << "[Error] Unknown exception" << std::endl;
+		return 1;
+	}
 	return 0;
 }
