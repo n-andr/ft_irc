@@ -21,7 +21,7 @@ Server::~Server() {
 }
 void Server::start(){
 	setupListeningSocket();
-	addListeningSocketToPoll();
+	addListeningSocketToPoll(_serverSocket);
 	std::cout << "[info] Listening on port " << _port << " ...\n";
 	eventLoop();
 }
@@ -77,10 +77,10 @@ void Server::setupListeningSocket() {
 	setNonBlocking(_serverSocket);
 }
 
-void Server::addListeningSocketToPoll() {
+void Server::addListeningSocketToPoll(int socket) {
 	// something like, but don't know how to test if correct
 	struct pollfd pfd;
-    pfd.fd = _serverSocket;
+    pfd.fd = socket;
     pfd.events = POLLIN;
     pfd.revents = 0;
     _pollFds.push_back(pfd);

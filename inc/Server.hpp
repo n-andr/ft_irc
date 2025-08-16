@@ -29,7 +29,7 @@ public:
 	void eventLoop();
 	void handleNewConnection();
 	void setupListeningSocket();
-	void addListeningSocketToPoll();
+	void addListeningSocketToPoll(int socket);
 	void setNonBlocking(int fd);
 
 };
