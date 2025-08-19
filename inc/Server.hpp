@@ -5,8 +5,13 @@
 #include <iostream> // for std::cerr
 #include <poll.h> // for poll() and struct pollfd
 #include <vector> // for std::vector
+#include <unistd.h> // for close()
+#include <fcntl.h> // for fcntl() open(), close(), etc.
+#include <sys/socket.h> // socket(), AF_INET, SOCK_STREAM
+#include <netinet/in.h> // struct sockaddr_in
+
+#define MAX_CLIENTS 100
 #include <map> // for std::map
-#include <sys/socket.h> // for recv
 #include "Client.hpp"
 
 #define L_SOCKET 0
@@ -31,7 +36,8 @@ public:
 	void eventLoop();
 	void handleNewConnection();
 	void setupListeningSocket();
-	void addListeningSocketToPoll();
+	void addListeningSocketToPoll(int socket);
+	void setNonBlocking(int fd);
 
 };
 

@@ -1,14 +1,14 @@
 #include "../inc/Server.hpp"
-#include <unistd.h> // for close()
-//#include <fcntl.h> // for open(), close(), etc.
 
 Server::Server(int port, const std::string& password) : _port(port), _password(password), _serverSocket(-1), _nFds(0) {}
 Server& Server::operator=(const Server& other){
 	if(this != &other) {
 		_port = other._port;
 		_password = other._password;
-		_serverSocket = other._serverSocket;
-		_pollFds = other._pollFds; // Is it a correct way to copy the poll file descriptors or do i need to iterate?
+		// _serverSocket = other._serverSocket;
+		// _pollFds = other._pollFds; //Do  Is it a correct way to copy the poll file descriptors?
+		_serverSocket = -1; //reset socket
+        _pollFds.clear(); // avoid double-close and undefined state if two Server objects manage the same FDs
 		_nFds = other._nFds;
 	}
 	return *this;
@@ -22,7 +22,7 @@ Server::~Server() {
 }
 void Server::start(){
 	setupListeningSocket();
-	addListeningSocketToPoll();
+	addListeningSocketToPoll(_serverSocket);
 	std::cout << "[info] Listening on port " << _port << " ...\n";
 	eventLoop();
 }
@@ -61,11 +61,60 @@ void Server::handleNewConnection() {
 	// Logic to handle new connections
 }
 
+
+/*
+AF_INET 
+	= Address Family = IPv4. (IPv6 would be AF_INET6.)
+SOCK_STREAM 
+	= TCP
+INADDR_ANY
+	= 0.0.0.0 → bind on all local interfaces.
+
+setsockopt(SO_REUSEADDR) :  to restart server quickly
+
+	When you close a TCP server socket, the OS often doesn’t free the port immediately.
+	Instead, it leaves it in a special state called TIME_WAIT (usually ~30–120 seconds)
+	SO_REUSEADDR allows to bind to the adress even if it’s in TIME_WAIT.
+*/
 void Server::setupListeningSocket() {
-	// Logic to set up the listening socket
+	_serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+	if (_serverSocket < 0) 
+		throw(std::runtime_error("Can't create a socket"));
+
+	int opt = 1;
+	if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
+   		throw(std::runtime_error("setsockopt(SO_REUSEADDR) failed"));
+
+	sockaddr_in addr; //socket address struct.
+	std::memset(&addr, 0, sizeof(addr)); //zero out all fields to avoid garbage in addr
+	addr.sin_family			= AF_INET;
+	addr.sin_addr.s_addr	= htonl(INADDR_ANY);
+	//addr.sin_port			= htons(static_cast<uint16_t>(_port));
+	addr.sin_port			= htons(_port);
+
+	if (bind(_serverSocket, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0)
+       	throw(std::runtime_error("bind failed"));
+
+	//maybe better to use connect() ???
+	if (listen(_serverSocket, SOMAXCONN) < 0)
+       	throw(std::runtime_error("listen failed"));
+	
+	setNonBlocking(_serverSocket);
 }
 
-void Server::addListeningSocketToPoll() {
-	// something like _pollFds.push_back({ _serverSocket, POLLIN, 0 });
+void Server::addListeningSocketToPoll(int socket) {
+	// something like, but don't know how to test if correct
+	struct pollfd pfd;
+    pfd.fd = socket;
+    pfd.events = POLLIN;
+    pfd.revents = 0;
+    _pollFds.push_back(pfd);
+}
+
+
+void Server::setNonBlocking(int fd){
+	int flags = fcntl(fd, F_GETFL, 0);
+    if (flags < 0) throw(std::runtime_error("fcntl(F_GETFL) failed"));
+    if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0) throw(std::runtime_error("fcntl(F_GETFL) failed"));
 }
 //add line for _nFds ++;
