@@ -9,6 +9,7 @@
 #include <fcntl.h> // for fcntl() open(), close(), etc.
 #include <sys/socket.h> // socket(), AF_INET, SOCK_STREAM
 #include <netinet/in.h> // struct sockaddr_in
+#include <cstring> //memset
 
 #define MAX_CLIENTS 100
 #include <map> // for std::map
@@ -23,7 +24,7 @@ private:
 	std::string _password;
 	int _serverSocket;
 	std::vector<pollfd> _pollFds; // not sure, which one is better
-	unsigned int	_nFds;//number of Fds including Listening Socket
+	int	_nFds;//number of Fds including Listening Socket
 	//std::vector<struct pollfd> _pollFds;
 	std::map<int, Client> _clients;   // key = fd, value = Client object
 
@@ -36,7 +37,7 @@ public:
 	void eventLoop();
 	void handleNewConnection();
 	void setupListeningSocket();
-	void addListeningSocketToPoll(int socket);
+	void addSocketToPoll(int socket);
 	void setNonBlocking(int fd);
 
 };
