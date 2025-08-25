@@ -29,8 +29,8 @@ void Server::start(){
 
 void Server::eventLoop()
 {
-	std::cout << "Event Loop" << std::endl;//control print
-	while (true)
+	std::cout << "Event Loop starts:" << std::endl;//control print
+	while (true)//server is running
 	{
 		poll(&_pollFds[0], _nFds, 100);
 		if (_pollFds[L_SOCKET].revents & POLLIN)
@@ -41,7 +41,7 @@ void Server::eventLoop()
 			if (_pollFds[i].revents & POLLIN)
 			{
 				Client *c = &_clients[_pollFds[i].fd];
-				bytes_read = recv(_pollFds[i].fd, &(c->getReadBuffer()), sizeof(c->getReadBuffer()), 0);//getters missing
+				bytes_read = recv(_pollFds[i].fd, &(c->getReadBuffer()), sizeof(c->getReadBuffer()), 0);
 				if (bytes_read <= 0)
 					std::cout << "empty read\n";
 					//empty_read();
@@ -109,12 +109,11 @@ void Server::addSocketToPoll(int socket) {
     pfd.events = POLLIN;
     pfd.revents = 0;
     _pollFds.push_back(pfd);
+	_nFds += 1;
 }
-
 
 void Server::setNonBlocking(int fd){
 	int flags = fcntl(fd, F_GETFL, 0);
     if (flags < 0) throw(std::runtime_error("fcntl(F_GETFL) failed"));
     if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0) throw(std::runtime_error("fcntl(F_GETFL) failed"));
 }
-//add line for _nFds ++;

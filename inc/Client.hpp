@@ -30,7 +30,45 @@ private:
     std::string _outgoing_buffer;// what server has for client
     std::string _command;// NULL or extracted command that needs to be parsed
 public:
-	std::string& getReadBuffer();
+	// Orthodox Canonical Form (OCF)
+    Client();
+    Client(const Client& other);
+    Client& operator=(const Client& other);
+    ~Client();
+
+    // Getters
+    int getSocketFd() const;
+    const std::string& getIpAddress() const;
+    int getPort() const;
+    bool isConnected() const;
+
+    bool hasPassedPassword() const;
+    const std::string& getNickname() const;
+    const std::string& getUsername() const;
+    bool isRegistered() const;
+    bool isOperator() const;
+
+    std::string& getReadBuffer();
+    std::string& getOutgoingBuffer();
+    std::string& getCommand();
+
+    // Setters
+    void setSocketFd(int fd);
+    void setIpAddress(const std::string& ip);
+    void setPort(int port);
+    void setConnected(bool status);
+
+    void setHasPassedPassword(bool value);
+    void setNickname(const std::string& nick);
+    void setUsername(const std::string& user);
+    void setRegistered(bool value);
+    void setOperator(bool value);
+
+    void setReadBuffer(const std::string& buffer);
+    void appendReadBuffer(const std::string& data); // extra helper
+    void setOutgoingBuffer(const std::string& buffer);
+    void appendOutgoingBuffer(const std::string& data); // extra helper
+    void setCommand(const std::string& cmd);
 };
 
 #endif
