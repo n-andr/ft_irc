@@ -1,5 +1,5 @@
 #include "../inc/Server.hpp"
-
+bool Server::_running = true;
 Server::Server(int port, const std::string& password) : _port(port), _password(password), _serverSocket(-1), _nFds(0) {}
 Server& Server::operator=(const Server& other){
 	if(this != &other) {
@@ -8,7 +8,7 @@ Server& Server::operator=(const Server& other){
 		// _serverSocket = other._serverSocket;
 		// _pollFds = other._pollFds; //Do  Is it a correct way to copy the poll file descriptors?
 		_serverSocket = -1; //reset socket
-        _pollFds.clear(); // avoid double-close and undefined state if two Server objects manage the same FDs
+		_pollFds.clear(); // avoid double-close and undefined state if two Server objects manage the same FDs
 		_nFds = other._nFds;
 	}
 	return *this;
@@ -27,10 +27,28 @@ void Server::start(){
 	eventLoop();
 }
 
+void Server::empty_read(int client_fd) 
+{
+    // 1. Close the socket
+    close(client_fd);
+    // 2. Remove from poll list
+    for (std::vector<pollfd>::iterator it = _pollFds.begin(); it != _pollFds.end(); ++it) {
+        if (it->fd == client_fd) {
+            _pollFds.erase(it);
+            break ;
+        }
+    }
+    _nFds = _pollFds.size();  // keep counter in sync
+    // 3. Remove from clients map
+    _clients.erase(client_fd);
+	//control print
+	std::cout << "Client " << client_fd << " disconnected." << std::endl;
+}
+
 void Server::eventLoop()
 {
 	std::cout << "Event Loop starts:" << std::endl;//control print
-	while (true)//server is running
+	while (_running)//server is running
 	{
 		poll(&_pollFds[0], _nFds, 100);
 		if (_pollFds[L_SOCKET].revents & POLLIN)
@@ -42,7 +60,7 @@ void Server::eventLoop()
 			{
 				Client *c = &_clients[_pollFds[i].fd];
 				bytes_read = recv(_pollFds[i].fd, &(c->getReadBuffer()), sizeof(c->getReadBuffer()), 0);
-				if (bytes_read <= 0)
+				if (bytes_read == 0)
 					std::cout << "empty read\n";
 					//empty_read();
 				else
@@ -53,8 +71,9 @@ void Server::eventLoop()
 				std::cout << "send data\n";
 				//send_data();
 		}
-		break ;//since we aren't actually listening for anything yet
+		//break ;//since we aren't actually listening for anything yet
 	}
+	std::cout << "\nAfter Poll Lopp\n";
 }
 
 void Server::handleNewConnection() {
@@ -93,11 +112,11 @@ void Server::setupListeningSocket() {
 	addr.sin_port			= htons(_port);
 
 	if (bind(_serverSocket, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0)
-       	throw(std::runtime_error("bind failed"));
+	   	throw(std::runtime_error("bind failed"));
 
 	//maybe better to use connect() ???
 	if (listen(_serverSocket, SOMAXCONN) < 0)
-       	throw(std::runtime_error("listen failed"));
+	   	throw(std::runtime_error("listen failed"));
 	
 	setNonBlocking(_serverSocket);
 }
@@ -105,15 +124,20 @@ void Server::setupListeningSocket() {
 void Server::addSocketToPoll(int socket) {
 	// something like, but don't know how to test if correct
 	struct pollfd pfd;
-    pfd.fd = socket;
-    pfd.events = POLLIN;
-    pfd.revents = 0;
-    _pollFds.push_back(pfd);
+	pfd.fd = socket;
+	pfd.events = POLLIN;
+	pfd.revents = 0;
+	_pollFds.push_back(pfd);
 	_nFds += 1;
 }
 
 void Server::setNonBlocking(int fd){
 	int flags = fcntl(fd, F_GETFL, 0);
-    if (flags < 0) throw(std::runtime_error("fcntl(F_GETFL) failed"));
-    if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0) throw(std::runtime_error("fcntl(F_GETFL) failed"));
+	if (flags < 0) throw(std::runtime_error("fcntl(F_GETFL) failed"));
+	if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0) throw(std::runtime_error("fcntl(F_GETFL) failed"));
+}
+
+void Server::signalHandler(int signum) {
+	std::cout << "\nSignal " << signum << " received. Stopping server...\n";
+    _running = false;
 }

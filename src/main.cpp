@@ -34,6 +34,9 @@ static bool checkArgs(int argc, char *argv[]){
 }
 
 int main(int argc, char* argv[]){
+	//register the signalHnadler(s)
+	std::signal(SIGINT, Server::signalHandler);
+    std::signal(SIGTERM, Server::signalHandler);
 	if (!checkArgs(argc, argv)) return 1;
 	try {
 		Server server(std::atoi(argv[1]), argv[2]);

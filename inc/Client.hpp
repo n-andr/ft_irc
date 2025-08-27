@@ -11,64 +11,64 @@
 class Client
 {
 private:
-    int _socket_fd; // or alternatively a pointer to the pollfd_list instance?
-    std::string _ip_address;
-    int _port;
-    bool _isConnected;
+	int _socket_fd; // or alternatively a pointer to the pollfd_list instance?
+	std::string _ip_address;
+	int _port;
+	bool _isConnected;
 
-    bool _has_passed_password;
-    std::string _nickname;
-    std::string _username;
-    bool _is_registered;// the above are filled. Can use the server now
-    bool _is_operator;// has operator rights
+	bool _has_passed_password;
+	std::string _nickname;
+	std::string _username;
+	bool _is_registered;// the above are filled. Can use the server now
+	bool _is_operator;// has operator rights
 
 	//something to save channels and invites. here is what GPT recommended:
-    // std::set<std::string> channels;
-    // std::set<std::string> invite_list;
+	// std::set<std::string> channels;
+	// std::set<std::string> invite_list;
   
-    std::string _read_buffer;// what server gets from client
-    std::string _outgoing_buffer;// what server has for client
-    std::string _command;// NULL or extracted command that needs to be parsed
+	std::string _read_buffer;// what server gets from client
+	std::string _outgoing_buffer;// what server has for client
+	std::string _command;// NULL or extracted command that needs to be parsed
 public:
 	// Orthodox Canonical Form (OCF)
-    Client();
-    Client(const Client& other);
-    Client& operator=(const Client& other);
-    ~Client();
+	Client();
+	Client(const Client& other);
+	Client& operator=(const Client& other);
+	~Client();
 
-    // Getters
-    int getSocketFd() const;
-    const std::string& getIpAddress() const;
-    int getPort() const;
-    bool isConnected() const;
+	// Getters
+	int getSocketFd() const;
+	const std::string& getIpAddress() const;
+	int getPort() const;
+	bool isConnected() const;
 
-    bool hasPassedPassword() const;
-    const std::string& getNickname() const;
-    const std::string& getUsername() const;
-    bool isRegistered() const;
-    bool isOperator() const;
+	bool hasPassedPassword() const;
+	const std::string& getNickname() const;
+	const std::string& getUsername() const;
+	bool isRegistered() const;
+	bool isOperator() const;
 
-    std::string& getReadBuffer();
-    std::string& getOutgoingBuffer();
-    std::string& getCommand();
+	std::string& getReadBuffer();
+	std::string& getOutgoingBuffer();
+	std::string& getCommand();
 
-    // Setters
-    void setSocketFd(int fd);
-    void setIpAddress(const std::string& ip);
-    void setPort(int port);
-    void setConnected(bool status);
+	// Setters
+	void setSocketFd(int fd);
+	void setIpAddress(const std::string& ip);
+	void setPort(int port);
+	void setConnected(bool status);
 
-    void setHasPassedPassword(bool value);
-    void setNickname(const std::string& nick);
-    void setUsername(const std::string& user);
-    void setRegistered(bool value);
-    void setOperator(bool value);
+	void setHasPassedPassword(bool value);
+	void setNickname(const std::string& nick);
+	void setUsername(const std::string& user);
+	void setRegistered(bool value);
+	void setOperator(bool value);
 
-    void setReadBuffer(const std::string& buffer);
-    void appendReadBuffer(const std::string& data); // extra helper
-    void setOutgoingBuffer(const std::string& buffer);
-    void appendOutgoingBuffer(const std::string& data); // extra helper
-    void setCommand(const std::string& cmd);
+	void setReadBuffer(const std::string& buffer);
+	void appendReadBuffer(const std::string& data); // extra helper
+	void setOutgoingBuffer(const std::string& buffer);
+	void appendOutgoingBuffer(const std::string& data); // extra helper
+	void setCommand(const std::string& cmd);
 };
 
 #endif

@@ -2,34 +2,34 @@
 
 // Orthodox Canonical Form (OCF)
 Client::Client()
-    : _socket_fd(-1), _ip_address(""), _port(0), _isConnected(false),
-      _has_passed_password(false), _nickname(""), _username(""),
-      _is_registered(false), _is_operator(false),
-      _read_buffer(""), _outgoing_buffer(""), _command("") {}
+	: _socket_fd(-1), _ip_address(""), _port(0), _isConnected(false),
+	  _has_passed_password(false), _nickname(""), _username(""),
+	  _is_registered(false), _is_operator(false),
+	  _read_buffer(""), _outgoing_buffer(""), _command("") {}
 
 Client::Client(const Client& other) {
 	if (this != &other)
-    	*this = other;
+		*this = other;
 }
 
 Client& Client::operator=(const Client& other) {
-    if (this != &other) {
-        _socket_fd = other._socket_fd;
-        _ip_address = other._ip_address;
-        _port = other._port;
-        _isConnected = other._isConnected;
+	if (this != &other) {
+		_socket_fd = other._socket_fd;
+		_ip_address = other._ip_address;
+		_port = other._port;
+		_isConnected = other._isConnected;
 
-        _has_passed_password = other._has_passed_password;
-        _nickname = other._nickname;
-        _username = other._username;
-        _is_registered = other._is_registered;
-        _is_operator = other._is_operator;
+		_has_passed_password = other._has_passed_password;
+		_nickname = other._nickname;
+		_username = other._username;
+		_is_registered = other._is_registered;
+		_is_operator = other._is_operator;
 
-        _read_buffer = other._read_buffer;
-        _outgoing_buffer = other._outgoing_buffer;
-        _command = other._command;
-    }
-    return (*this);
+		_read_buffer = other._read_buffer;
+		_outgoing_buffer = other._outgoing_buffer;
+		_command = other._command;
+	}
+	return (*this);
 }
 
 Client::~Client() {}

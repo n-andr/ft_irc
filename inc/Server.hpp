@@ -10,6 +10,7 @@
 #include <sys/socket.h> // socket(), AF_INET, SOCK_STREAM
 #include <netinet/in.h> // struct sockaddr_in
 #include <cstring> //memset
+#include <csignal> //signal
 
 #define MAX_CLIENTS 100
 #include <map> // for std::map
@@ -27,6 +28,7 @@ private:
 	int	_nFds;//number of Fds including Listening Socket
 	//std::vector<struct pollfd> _pollFds;
 	std::map<int, Client> _clients;   // key = fd, value = Client object
+	static bool _running;
 
 public:
 	Server(int port, const std::string& password);
@@ -39,6 +41,9 @@ public:
 	void setupListeningSocket();
 	void addSocketToPoll(int socket);
 	void setNonBlocking(int fd);
+
+	void empty_read(int client_fd);
+	static void signalHandler(int signum);
 
 };
 
