@@ -53,12 +53,41 @@ void Server::eventLoop()
 				std::cout << "send data\n";
 				//send_data();
 		}
-		break ;//since we aren't actually listening for anything yet
+		//break ;//since we aren't actually listening for anything yet
 	}
 }
 
 void Server::handleNewConnection() {
 	// Logic to handle new connections
+// 	new_client_socket = accept(listen_socket, ...);
+// set_socket_nonblocking(new_client_socket);
+// //now create a new list element for pollfd_list.
+// add_to_poll_list(new_client_socket);
+// create_client_object(new_client_socket);
+
+	struct sockaddr_in clientAddr;
+    socklen_t addrLen = sizeof(clientAddr);
+    int clientFd = accept(_serverSocket,
+                          reinterpret_cast<struct sockaddr*>(&clientAddr),
+                          &addrLen);
+    if (clientFd < 0) {
+        // With non-blocking listen socket it's normal to get EAGAIN/EWOULDBLOCK
+        if (errno == EAGAIN || errno == EWOULDBLOCK) return;
+        throw std::runtime_error(std::string("accept failed: ") + std::strerror(errno));
+    }
+	setNonBlocking(clientFd);
+
+	// std::cout << "[info] New client fd=" << clientFd
+    //       << " connected" << std::endl;
+
+	//more informative msg:
+	std::cout << "[info] New client fd=" << clientFd
+          << " from " << inet_ntoa(clientAddr.sin_addr)
+          << ":" << ntohs(clientAddr.sin_port) << std::endl;
+
+	addSocketToPoll(clientFd);
+	// ? Do we need to create a Client record here and store it in a map keyed by clientFd?
+
 }
 
 
@@ -112,6 +141,7 @@ void Server::addSocketToPoll(int socket) {
 	_nFds += 1;
 }
 
+//set non blocking, so it can't freeze the loop
 void Server::setNonBlocking(int fd){
 	int flags = fcntl(fd, F_GETFL, 0);
     if (flags < 0) throw(std::runtime_error("fcntl(F_GETFL) failed"));
