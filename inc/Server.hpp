@@ -12,6 +12,7 @@
 #include <cstring> //memset
 #include <arpa/inet.h> //inet_ntoa
 #include <csignal> //signal
+#include <cerrno>
 
 #define MAX_CLIENTS 100
 #include <map> // for std::map

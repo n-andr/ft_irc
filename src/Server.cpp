@@ -230,3 +230,10 @@ void Server::broadcastMessage(const std::string &msg, int senderFd) {
         }
     }
 }
+
+void Server::signalHandler(int signum)
+{
+	std::cout << "signal received: " << signum << std::endl;
+	if (signum == SIGINT)
+		_running = false;
+}
