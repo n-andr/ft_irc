@@ -37,21 +37,44 @@ void Server::eventLoop()
 			this->handleNewConnection();
 		for (int i = 1; i < _nFds; i++)
 		{
-			int bytes_read = 0;
 			if (_pollFds[i].revents & POLLIN)
 			{
-				Client *c = &_clients[_pollFds[i].fd];
-				bytes_read = recv(_pollFds[i].fd, &(c->getReadBuffer()), sizeof(c->getReadBuffer()), 0);
-				if (bytes_read <= 0)
-					std::cout << "empty read\n";
-					//empty_read();
-				else
-					std::cout << "non empty read\n";
-					//non_empty_read();
+				char buf[512];
+				int bytes_read = recv(_pollFds[i].fd, buf, sizeof(buf), 0);
+
+				if (bytes_read <= 0) {
+					disconnectClient(i);
+					continue;
+				} else {
+					std::string msg(buf, bytes_read);
+					std::cout << "[recv] from fd=" << _pollFds[i].fd << ": " << msg;
+					broadcastMessage(msg, _pollFds[i].fd);
+				}
 			}
-			if (_pollFds[i].revents & POLLOUT)
-				std::cout << "send data\n";
-				//send_data();
+
+
+
+			// ingoring cliet for now
+
+			// int bytes_read = 0;
+			// if (_pollFds[i].revents & POLLIN)
+			// {
+			// 	Client *c = &_clients[_pollFds[i].fd];
+			// 	bytes_read = recv(_pollFds[i].fd, &(c->getReadBuffer()), sizeof(c->getReadBuffer()), 0);
+			// 	if (bytes_read <= 0) {
+			// 		// client disconnected or error
+			// 		disconnectClient(i);
+			// 		continue;
+			// 	} else {
+			// 		// got some data
+			// 		std::string msg(c->getReadBuffer(), bytes_read);
+			// 		std::cout << "[recv] from fd=" << _pollFds[i].fd << ": " << msg;
+			// 		broadcastMessage(msg, _pollFds[i].fd);
+			// 	}
+			// }
+			// if (_pollFds[i].revents & POLLOUT)
+			// 	std::cout << "send data\n";
+			// 	//send_data();
 		}
 		//break ;//since we aren't actually listening for anything yet
 	}
@@ -132,7 +155,6 @@ void Server::setupListeningSocket() {
 }
 
 void Server::addSocketToPoll(int socket) {
-	// something like, but don't know how to test if correct
 	struct pollfd pfd;
     pfd.fd = socket;
     pfd.events = POLLIN;
@@ -146,4 +168,24 @@ void Server::setNonBlocking(int fd){
 	int flags = fcntl(fd, F_GETFL, 0);
     if (flags < 0) throw(std::runtime_error("fcntl(F_GETFL) failed"));
     if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0) throw(std::runtime_error("fcntl(F_GETFL) failed"));
+}
+
+void Server::disconnectClient(int index){
+	int fd = _pollFds[index].fd;
+	close(fd);
+    std::cout << "[info] Client fd=" << fd << " disconnected" << std::endl;
+
+    _pollFds[index] = _pollFds.back();
+    _pollFds.pop_back();
+    _nFds = static_cast<int>(_pollFds.size());
+}
+
+// Send a message to all connected clients (testing simple broadcast)
+void Server::broadcastMessage(const std::string &msg, int senderFd) {
+    for (size_t j = 1; j < _pollFds.size(); ++j) {
+        int fd = _pollFds[j].fd;
+        if (fd != senderFd) { //skip sender to avoid echoing msg
+            send(fd, msg.c_str(), msg.size(), 0);
+        }
+    }
 }

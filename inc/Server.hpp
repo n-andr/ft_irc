@@ -40,6 +40,8 @@ public:
 	void setupListeningSocket();
 	void addSocketToPoll(int socket);
 	void setNonBlocking(int fd);
+	void disconnectClient(int index);
+	void broadcastMessage(const std::string &msg, int senderFd);
 
 };
 
