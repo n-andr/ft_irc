@@ -43,6 +43,8 @@ public:
 	void setupListeningSocket();
 	void addSocketToPoll(int socket);
 	void setNonBlocking(int fd);
+	void disconnectClient(int index);
+	void broadcastMessage(const std::string &msg, int senderFd);
 
 	void empty_read(int client_fd);
 	static void signalHandler(int signum);
