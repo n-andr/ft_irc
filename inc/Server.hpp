@@ -10,6 +10,7 @@
 #include <sys/socket.h> // socket(), AF_INET, SOCK_STREAM
 #include <netinet/in.h> // struct sockaddr_in
 #include <cstring> //memset
+#include <arpa/inet.h> //inet_ntoa
 #include <csignal> //signal
 
 #define MAX_CLIENTS 100
@@ -26,7 +27,7 @@ private:
 	std::string _password;
 	int _serverSocket;
 	std::vector<pollfd> _pollFds; // not sure, which one is better
-	int	_nFds;//number of Fds including Listening Socket
+	int	_nFds;//number of Fds including Listening Socket 	N:is it different from _pollFds.size()?
 	//std::vector<struct pollfd> _pollFds;
 	std::map<int, Client> _clients;   // key = fd, value = Client object
 	static bool _running;
