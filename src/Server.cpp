@@ -41,6 +41,8 @@ void Server::empty_read(int client_fd)
 	_nFds = _pollFds.size();  // keep counter in sync
 	// 3. Remove from clients map
 	_clients.erase(client_fd);
+	// 4. Remove from all chat sets it is in
+	// tba
 	//control print
 	std::cout << "Client " << client_fd << " disconnected." << std::endl;
 }
@@ -59,6 +61,8 @@ void Server::errorDisconnect(int client_fd)
 	_nFds = _pollFds.size();  // keep counter in sync
 	// 3. Remove from clients map
 	_clients.erase(client_fd);
+	// 4. Remove from all chat sets it is in
+	// tba
 	//control print
 	std::cout << RED << "Error with Client " << client_fd << ". Client got disconnected by the server." << RESET << std::endl;
 }
