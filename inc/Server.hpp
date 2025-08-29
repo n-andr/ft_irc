@@ -15,6 +15,7 @@
 #define MAX_CLIENTS 100
 #include <map> // for std::map
 #include "Client.hpp"
+#include "Color.hpp"
 
 #define L_SOCKET 0
 
@@ -44,6 +45,7 @@ public:
 
 	void empty_read(int client_fd);
 	static void signalHandler(int signum);
+	void errorDisconnect(int client_fd);
 
 };
 

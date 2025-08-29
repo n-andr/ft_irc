@@ -29,20 +29,38 @@ void Server::start(){
 
 void Server::empty_read(int client_fd) 
 {
-    // 1. Close the socket
-    close(client_fd);
-    // 2. Remove from poll list
-    for (std::vector<pollfd>::iterator it = _pollFds.begin(); it != _pollFds.end(); ++it) {
-        if (it->fd == client_fd) {
-            _pollFds.erase(it);
-            break ;
-        }
-    }
-    _nFds = _pollFds.size();  // keep counter in sync
-    // 3. Remove from clients map
-    _clients.erase(client_fd);
+	// 1. Close the socket
+	close(client_fd);
+	// 2. Remove from poll list
+	for (std::vector<pollfd>::iterator it = _pollFds.begin(); it != _pollFds.end(); ++it) {
+		if (it->fd == client_fd) {
+			_pollFds.erase(it);
+			break ;
+		}
+	}
+	_nFds = _pollFds.size();  // keep counter in sync
+	// 3. Remove from clients map
+	_clients.erase(client_fd);
 	//control print
 	std::cout << "Client " << client_fd << " disconnected." << std::endl;
+}
+
+void Server::errorDisconnect(int client_fd)
+{
+	// 1. Close the socket
+	close(client_fd);
+	// 2. Remove from poll list
+	for (std::vector<pollfd>::iterator it = _pollFds.begin(); it != _pollFds.end(); ++it) {
+		if (it->fd == client_fd) {
+			_pollFds.erase(it);
+			break ;
+		}
+	}
+	_nFds = _pollFds.size();  // keep counter in sync
+	// 3. Remove from clients map
+	_clients.erase(client_fd);
+	//control print
+	std::cout << RED << "Error with Client " << client_fd << ". Client got disconnected by the server." << RESET << std::endl;
 }
 
 void Server::eventLoop()
@@ -73,7 +91,7 @@ void Server::eventLoop()
 		}
 		//break ;//since we aren't actually listening for anything yet
 	}
-	std::cout << "\nAfter Poll Lopp\n";
+	std::cout << "\nAfter Poll Loop\n";
 }
 
 void Server::handleNewConnection() {
@@ -138,6 +156,7 @@ void Server::setNonBlocking(int fd){
 }
 
 void Server::signalHandler(int signum) {
-	std::cout << "\nSignal " << signum << " received. Stopping server...\n";
-    _running = false;
+	std::cout << "\nSignal " << signum << " received.\n";
+	if (signum == SIGINT)
+		_running = false;
 }

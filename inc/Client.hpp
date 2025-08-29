@@ -7,6 +7,7 @@
 #include <vector> // for std::vector
 #include <map> // for std::map
 #include <sys/socket.h> // for recv
+#include "Color.hpp"
 
 class Client
 {

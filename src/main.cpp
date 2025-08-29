@@ -10,7 +10,7 @@ static bool isValidPort(char *port){
 	if (std::strlen(port) > 5) return false;
 	for (const char *tmp = port; *tmp; ++tmp){
 		if (!std::isdigit(static_cast<unsigned char>(*tmp)))
-            return false;
+			return false;
 	}
 	long portNumber = std::atol(port);
 	if (portNumber < 1024 || portNumber > 65535) return false;
@@ -36,7 +36,7 @@ static bool checkArgs(int argc, char *argv[]){
 int main(int argc, char* argv[]){
 	//register the signalHnadler(s)
 	std::signal(SIGINT, Server::signalHandler);
-    std::signal(SIGTERM, Server::signalHandler);
+	std::signal(SIGTERM, Server::signalHandler);
 	if (!checkArgs(argc, argv)) return 1;
 	try {
 		Server server(std::atoi(argv[1]), argv[2]);
