@@ -2,20 +2,20 @@
 #define SERVER_HPP
 
 #include <string>
-#include <iostream> // for std::cerr
-#include <poll.h> // for poll() and struct pollfd
-#include <vector> // for std::vector
-#include <unistd.h> // for close()
-#include <fcntl.h> // for fcntl() open(), close(), etc.
+#include <iostream>		// std::cerr
+#include <poll.h>		// poll() and struct pollfd
+#include <vector>		// std::vector
+#include <unistd.h>		// close()
+#include <fcntl.h>		// fcntl() open(), close(), etc.
 #include <sys/socket.h> // socket(), AF_INET, SOCK_STREAM
 #include <netinet/in.h> // struct sockaddr_in
-#include <cstring> //memset
-#include <arpa/inet.h> //inet_ntoa
-#include <csignal> //signal
+#include <cstring> 		// memset
+#include <arpa/inet.h> 	// inet_ntoa
+#include <csignal> 		// signal
+#include <map> 			// std::map
 #include <cerrno>
 
 #define MAX_CLIENTS 100
-#include <map> // for std::map
 #include "Client.hpp"
 #include "Color.hpp"
 
@@ -27,10 +27,9 @@ private:
 	int _port;
 	std::string _password;
 	int _serverSocket;
-	std::vector<pollfd> _pollFds; // not sure, which one is better
-	int	_nFds;//number of Fds including Listening Socket 	N:is it different from _pollFds.size()?
-	//std::vector<struct pollfd> _pollFds;
-	std::map<int, Client> _clients;   // key = fd, value = Client object
+	std::vector<pollfd> _pollFds;
+	int	_nFds; 							//number of Fds including Listening Socket
+	std::map<int, Client> _clients;		// key = fd, value = Client object
 	static bool _running;
 
 public:
