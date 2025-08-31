@@ -1,5 +1,7 @@
 #include "../inc/Server.hpp"
 
+/*the main poll() loop; reacts to POLLIN on listen FD and delegates client I/O*/
+
 void Server::eventLoop()
 {
 	std::cout << "Event Loop starts:" << std::endl;//control print
@@ -10,13 +12,14 @@ void Server::eventLoop()
 			this->handleNewConnection();
 		for (int i = 1; i < _nFds; i++)
 		{
+			//simple msg broadcaster
 			if (_pollFds[i].revents & POLLIN)
 			{
 				char buf[512];
 				int bytes_read = recv(_pollFds[i].fd, buf, sizeof(buf), 0);
 
 				if (bytes_read <= 0) {
-					disconnectClient(i);
+					disconnectClient(_pollFds[i].fd);
 					continue;
 				} else {
 					std::string msg(buf, bytes_read);

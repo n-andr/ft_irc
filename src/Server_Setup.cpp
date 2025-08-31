@@ -1,6 +1,6 @@
 #include "../inc/Server.hpp"
 
-/* startup, signal handling, _running flag */
+/* start(), signal handling, _running flag */
 
 bool Server::_running = true;
 

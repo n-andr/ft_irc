@@ -2,13 +2,11 @@
 
 /*
 Listening setup: 
-	setupListeningSocket(), setNonBlocking(int), applySocketOpts(int), bindAndListen(int)
+	setupListeningSocket(), setNonBlocking(int)
 Poll integration: 
-	addSocketToPoll(int), removeSocketFromPoll(int), indexOfFd(int)
+	addSocketToPoll(int)
 Connection lifecycle: 
-	handleNewConnection(), disconnectClient(int idx), errorDisconnect(int idx), emptyRead(int idx)
-I/O helpers (moved from send_data): sendAll(int fd, const std::string&), broadcastMessage(const std::string&, int exceptFd), optional buffered write/partial-send retry.
-
+	handleNewConnection(), disconnectClient(int client_fd), errorDisconnect(int idx)
 */
 
 void Server::setupListeningSocket() {
@@ -74,4 +72,28 @@ void Server::handleNewConnection() {
 	// create a Client record here and store it in a map keyed by clientFd
 	// create_client_object(new_client_socket); // to be done
 
+}
+
+void Server::disconnectClient(int client_fd){
+
+	// never kill the listening socket by accident
+#ifdef L_SOCKET
+    if (!_pollFds.empty() && _pollFds[L_SOCKET].fd == client_fd) {
+        std::cout << "[warn] refusing to disconnect listening socket fd=" << client_fd << std::endl;
+        return;
+    }
+#endif
+
+	if (client_fd >= 0)
+        close(client_fd);
+	for (std::vector<pollfd>::iterator it = _pollFds.begin(); it != _pollFds.end(); ++it) {
+		if (it->fd == client_fd) {
+			_pollFds.erase(it);
+			break ;
+		}
+	}
+    _nFds = _pollFds.size();
+	_clients.erase(client_fd);
+
+    std::cout << "[info] Client fd=" << client_fd << " disconnected" << std::endl; // log
 }

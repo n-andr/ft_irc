@@ -1,5 +1,7 @@
 #include "../inc/Server.hpp"
 
+/* send/broadcast helpers and (later) buffered writes/partial send handling */
+
 // Send a message to all connected clients (testing simple broadcast)
 void Server::broadcastMessage(const std::string &msg, int senderFd) {
     for (size_t j = 1; j < _pollFds.size(); ++j) {
