@@ -67,3 +67,7 @@ void Client::appendReadBuffer(const std::string& data) { _read_buffer += data; }
 void Client::setOutgoingBuffer(const std::string& buffer) { _outgoing_buffer = buffer; }
 void Client::appendOutgoingBuffer(const std::string& data) { _outgoing_buffer += data; }
 void Client::setCommand(const std::string& cmd) { _command = cmd; }
+
+//actual functions
+void Client::joinChannel(const std::string &name) { _channels.insert(name); }
+void Client::leaveChannel(const std::string &name) { _channels.erase(name); }

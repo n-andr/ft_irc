@@ -8,6 +8,7 @@
 #include <map> // for std::map
 #include <sys/socket.h> // for recv
 #include "Color.hpp"
+#include <set>
 
 class Client
 {
@@ -24,7 +25,7 @@ private:
 	bool _is_operator;// has operator rights
 
 	//something to save channels and invites. here is what GPT recommended:
-	// std::set<std::string> channels;
+	std::set<std::string> _channels;
 	// std::set<std::string> invite_list;
   
 	std::string _read_buffer;// what server gets from client
@@ -70,6 +71,10 @@ public:
 	void setOutgoingBuffer(const std::string& buffer);
 	void appendOutgoingBuffer(const std::string& data); // extra helper
 	void setCommand(const std::string& cmd);
+
+	//actual Functions
+	void joinChannel(const std::string& name);
+	void leaveChannel(const std::string &name);
 };
 
 #endif

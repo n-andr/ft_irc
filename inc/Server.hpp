@@ -18,6 +18,7 @@
 #define MAX_CLIENTS 100
 #include "Client.hpp"
 #include "Color.hpp"
+#include "Channel.hpp"
 
 #define L_SOCKET 0
 
@@ -31,6 +32,7 @@ private:
 	int	_nFds; 							//number of Fds including Listening Socket
 	std::map<int, Client> _clients;		// key = fd, value = Client object
 	static bool _running;
+	std::map<std::string, Channel> _channels;//key = #servername, value = Channel class object
 
 public:
 	Server(int port, const std::string& password);
@@ -50,7 +52,8 @@ public:
 	static void signalHandler(int signum);
 	void errorDisconnect(int client_fd);
 
-
+	//add channel(name);
+	
 	//For debugging only
 	void printClients();
 
