@@ -71,7 +71,12 @@ void Server::handleNewConnection() {
 	addSocketToPoll(clientFd);
 	// create a Client record here and store it in a map keyed by clientFd
 	// create_client_object(new_client_socket); // to be done
-
+	Client c;
+	c.setSocketFd(clientFd);
+	c.setIpAddress(inet_ntoa(clientAddr.sin_addr));// do we need this?
+	c.setPort(ntohs(clientAddr.sin_port));
+	_clients.insert(std::make_pair(clientFd, c));
+	printClients();
 }
 
 void Server::disconnectClient(int client_fd){
@@ -96,4 +101,5 @@ void Server::disconnectClient(int client_fd){
 	_clients.erase(client_fd);
 
     std::cout << "[info] Client fd=" << client_fd << " disconnected" << std::endl; // log
+	printClients();
 }

@@ -50,6 +50,10 @@ public:
 	static void signalHandler(int signum);
 	void errorDisconnect(int client_fd);
 
+
+	//For debugging only
+	void printClients();
+
 };
 
 
