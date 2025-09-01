@@ -75,6 +75,10 @@ public:
 	//actual Functions
 	void joinChannel(const std::string& name);
 	void leaveChannel(const std::string &name);
+
+	std::string getNextChunk(size_t max) const;
+	void consumeBytes(size_t n);
+	bool outgoingBufferIsEmpty();
 };
 
 #endif

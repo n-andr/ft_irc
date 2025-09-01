@@ -48,6 +48,11 @@ public:
 	void disconnectClient(int index);
 	void broadcastMessage(const std::string &msg, int senderFd);
 
+	void sendPendingData(Client &c);
+	void disablePollout(Client &client);
+	void enablePollout(Client &client);
+
+
 	void empty_read(int client_fd);
 	static void signalHandler(int signum);
 	void errorDisconnect(int client_fd);

@@ -24,10 +24,12 @@ void Server::eventLoop()
 				} else {
 					std::string msg(buf, bytes_read);
 					std::cout << "[recv] from fd=" << _pollFds[i].fd << ": " << msg;
-					broadcastMessage(msg, _pollFds[i].fd);
+					broadcastMessage(msg, _pollFds[i].fd);//this now sets pollout and appends out buf.
 				}
 			}
-
+			if (_pollFds[i].revents & POLLOUT) {
+				sendPendingData(_clients[_pollFds[i].fd]);
+			}
 			// ingoring client for now
 
 			// int bytes_read = 0;

@@ -71,3 +71,22 @@ void Client::setCommand(const std::string& cmd) { _command = cmd; }
 //actual functions
 void Client::joinChannel(const std::string &name) { _channels.insert(name); }
 void Client::leaveChannel(const std::string &name) { _channels.erase(name); }
+
+std::string Client::getNextChunk(size_t max) const
+{
+	if (_outgoing_buffer.empty()) 
+		return "";
+	if (_outgoing_buffer.size() <= max) 
+		return _outgoing_buffer;
+	return _outgoing_buffer.substr(0, max);
+}
+
+void Client::consumeBytes(size_t n){
+	if (n >= _outgoing_buffer.size()) {
+		_outgoing_buffer.clear();
+	} else {
+		_outgoing_buffer.erase(0, n);
+	}
+}
+
+bool Client::outgoingBufferIsEmpty() { return _outgoing_buffer.empty(); }
