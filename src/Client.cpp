@@ -5,7 +5,7 @@ Client::Client()
 	: _socket_fd(-1), _ip_address(""), _port(0), _isConnected(false),
 	  _has_passed_password(false), _nickname(""), _username(""),
 	  _is_registered(false), _is_operator(false),
-	  _read_buffer(""), _outgoing_buffer(""), _command("") {}
+	  _read_buffer(""), _outgoing_buffer(""), _command_capitalized("") {}
 
 Client::Client(const Client& other) {
 	if (this != &other)
@@ -27,7 +27,7 @@ Client& Client::operator=(const Client& other) {
 
 		_read_buffer = other._read_buffer;
 		_outgoing_buffer = other._outgoing_buffer;
-		_command = other._command;
+		_command_capitalized = other._command_capitalized;
 	}
 	return (*this);
 }
@@ -48,7 +48,7 @@ bool Client::isOperator() const { return _is_operator; }
 
 std::string& Client::getReadBuffer() { return _read_buffer; }
 std::string& Client::getOutgoingBuffer() { return _outgoing_buffer; }
-std::string& Client::getCommand() { return _command; }
+std::string& Client::getCommand() { return _command_capitalized; }
 
 // Setters
 void Client::setSocketFd(int fd) { _socket_fd = fd; }
@@ -66,7 +66,7 @@ void Client::setReadBuffer(const std::string& buffer) { _read_buffer = buffer; }
 void Client::appendReadBuffer(const std::string& data) { _read_buffer += data; }
 void Client::setOutgoingBuffer(const std::string& buffer) { _outgoing_buffer = buffer; }
 void Client::appendOutgoingBuffer(const std::string& data) { _outgoing_buffer += data; }
-void Client::setCommand(const std::string& cmd) { _command = cmd; }
+void Client::setCommand(const std::string& cmd) { _command_capitalized = cmd; }
 
 //actual functions
 void Client::joinChannel(const std::string &name) { _channels.insert(name); }

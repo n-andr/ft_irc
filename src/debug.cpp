@@ -1,4 +1,6 @@
 #include "../inc/Server.hpp"
+#include "../inc/Client.hpp"
+
 
 
 void Server::printClients()
@@ -25,4 +27,23 @@ void Server::printClients()
                   << "-----------------------------\n" << RESET;
     }
     std::cout << YELLOW << "==============================\n\n" << RESET;
+}
+
+
+void Client::printCommand() {
+    std::cout << "Raw input: [" << _raw_command_input << "]\n";
+    std::cout << "Command:   [" << _command_capitalized << "]\n";
+
+    std::cout << "Params:    [";
+    for (size_t i = 0; i < _params.size(); ++i) {
+        std::cout << _params[i];
+        if (i + 1 < _params.size())
+            std::cout << ", ";
+    }
+    std::cout << "]\n";
+
+    if (_trailing.empty())
+        std::cout << "Trailing:  [NULL]\n";
+    else
+        std::cout << "Trailing:  [" << _trailing << "]\n";
 }

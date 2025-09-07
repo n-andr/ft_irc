@@ -7,6 +7,7 @@
 #include <vector> // for std::vector
 #include <map> // for std::map
 #include <sys/socket.h> // for recv
+#include <sstream>   // for std::istringstream
 #include "Color.hpp"
 #include <set>
 
@@ -30,7 +31,14 @@ private:
   
 	std::string _read_buffer;// what server gets from client
 	std::string _outgoing_buffer;// what server has for client
-	std::string _command;// NULL or extracted command that needs to be parsed
+	//std::string _command;// NULL or extracted command that needs to be parsed
+
+	std::string _raw_command_input;  //without CRLF
+	std::string _command_capitalized; //command name in uppercase
+	std::vector<std::string> _params; 
+	std::string _trailing; //string or NULL if no trailing
+
+
 public:
 	// Orthodox Canonical Form (OCF)
 	Client();
@@ -79,6 +87,10 @@ public:
 	std::string getNextChunk(size_t max) const;
 	void consumeBytes(size_t n);
 	bool outgoingBufferIsEmpty();
+	void parseRawCommand(std::string &line);
+
+	//debugger
+	void printCommand();
 };
 
 #endif
