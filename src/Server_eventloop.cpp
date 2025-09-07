@@ -23,6 +23,10 @@ void Server::eventLoop()
 					continue;
 				} else {
 					std::string msg(buf, bytes_read);
+					Client c;
+					c.parseRawCommand(msg);
+					c.printCommand();
+
 					std::cout << "[recv] from fd=" << _pollFds[i].fd << ": " << msg;
 					broadcastMessage(msg, _pollFds[i].fd);//this now sets pollout and appends out buf.
 				}

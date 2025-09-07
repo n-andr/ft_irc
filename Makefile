@@ -7,7 +7,7 @@ CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 # Source files
 SRC_DIR = ./src
 SRCS = $(addprefix $(SRC_DIR)/,\
-	main.cpp Client.cpp Server.cpp Server_ocf.cpp Server_setup.cpp \
+	main.cpp Client.cpp Client_parsing.cpp Server.cpp Server_ocf.cpp Server_setup.cpp \
 	Server_socket.cpp Server_eventloop.cpp Server_send_data.cpp \
 	Channel.cpp debug.cpp)
 
