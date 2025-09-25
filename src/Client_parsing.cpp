@@ -25,8 +25,17 @@ static std::string to_upper(const std::string &s) {
     return out;
 }
 
-void Client::parseRawCommand(std::string &line){
-	_raw_command_input = removeCRLF(line);
+bool Client::extractCommand() {
+	size_t pos = _read_buffer.find("\r\n");
+	if (pos == std::string::npos)
+		return (false);
+	_raw_command_input = removeCRLF(_read_buffer.substr(0, pos));
+    consumeBytesReadBuffer(pos + 2);
+	return (true);
+}
+
+void Client::parseRawCommand(){
+	//raw command set in extract command
     _command_capitalized.clear();
     _params.clear();
     _trailing.clear();	
@@ -57,5 +66,4 @@ void Client::parseRawCommand(std::string &line){
 	_command_capitalized = to_upper(tokens[0]);
 	for (size_t i = 1; i < tokens.size(); i++)
 		_params.push_back(tokens[i]);
-
 }

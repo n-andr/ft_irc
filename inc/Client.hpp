@@ -84,10 +84,16 @@ public:
 	void joinChannel(const std::string& name);
 	void leaveChannel(const std::string &name);
 
+	//Read Buffer related
+	bool extractCommand();
+	void consumeBytesReadBuffer(size_t n);
+
+
+	//outgoing Buffer realted
 	std::string getNextChunk(size_t max) const;
 	void consumeBytes(size_t n);
 	bool outgoingBufferIsEmpty();
-	void parseRawCommand(std::string &line);
+	void parseRawCommand();
 
 	//debugger
 	void printCommand();

@@ -89,4 +89,13 @@ void Client::consumeBytes(size_t n){
 	}
 }
 
+
 bool Client::outgoingBufferIsEmpty() { return _outgoing_buffer.empty(); }
+
+void Client::consumeBytesReadBuffer(size_t n){
+	if (n >= _read_buffer.size()) {
+		_read_buffer.clear();
+	} else {
+		_read_buffer.erase(0, n);
+	}
+}

@@ -53,9 +53,10 @@ public:
 	void enablePollout(Client &client);
 
 
-	void empty_read(int client_fd);
+	//void empty_read(int client_fd);
 	static void signalHandler(int signum);
-	void errorDisconnect(int client_fd);
+	//void errorDisconnect(int client_fd);
+	void delegateCommand(Client &c);
 
 	//add channel(name);
 	
