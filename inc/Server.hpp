@@ -19,6 +19,7 @@
 #include "Client.hpp"
 #include "Color.hpp"
 #include "Channel.hpp"
+#include "Macros.hpp"
 
 #define L_SOCKET 0
 
@@ -58,10 +59,15 @@ public:
 	//void errorDisconnect(int client_fd);
 	void delegateCommand(Client &c);
 
+	//commands
+	void pass(Client& c);
+
 	//add channel(name);
 	
 	//For debugging only
 	void printClients();
+
+	void sendError(Client &c, const std::string &code, const std::string &message);
 
 };
 

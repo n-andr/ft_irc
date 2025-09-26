@@ -7,7 +7,7 @@ CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 # Source files
 SRC_DIR = ./src
 SRCS = $(addprefix $(SRC_DIR)/,\
-	main.cpp Client.cpp Client_parsing.cpp Server.cpp Server_ocf.cpp Server_setup.cpp \
+	main.cpp Client.cpp Client_get_set.cpp Client_parsing.cpp Server.cpp Server_ocf.cpp Server_setup.cpp \
 	Server_socket.cpp Server_eventloop.cpp Server_send_data.cpp \
 	Channel.cpp debug.cpp)
 
@@ -16,7 +16,7 @@ OBJS = $(SRCS:./src/%.cpp=$(OBJ_DIR)/%.o)
 
 INC_DIR = ./inc
 INC = $(addprefix $(INC_DIR)/,\
-	Client.hpp Server.hpp Color.hpp Channel.hpp)
+	Client.hpp Server.hpp Color.hpp Channel.hpp Macros.hpp)
 #INC_DIR (in case we want to use this later)
 
 

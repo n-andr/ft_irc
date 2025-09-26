@@ -61,6 +61,7 @@ public:
 	std::string& getReadBuffer();
 	std::string& getOutgoingBuffer();
 	std::string& getCommand();
+	std::vector<std::string>& getParams();
 
 	// Setters
 	void setSocketFd(int fd);
