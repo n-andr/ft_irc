@@ -35,15 +35,57 @@ void Server::pass(Client &c) {
 		sendError(c, ERR_PASSWDMISMATCH, PASSWDMISMATCH_MSG);
 }
 
+void Server::nick(Client &c) {
+	if (c.getParams().size() < 1) {
+		sendError(c, ERR_NONICKNAMEGIVEN, NONICKNAMEGIVEN_MSG);
+		std::cout << RED << "Too few Parameters for NICK. Research how to handle this" << RESET << std::endl;
+		return ;
+	}
+	//if too many params == error is dependent on the server
+	std::string requested_name = c.getParams()[0];
+	//tba: validity of nickname
+	for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); it++) {
+		if (it->second.getNickname() == requested_name) {
+			sendError(c, ERR_NICKNAMEINUSE, NICKNAMEINUSE_MSG);
+			return ;
+		}
+	}
+	c.setNickname(requested_name);
+	std::cout << GREEN << "NICK successful" << RESET << std::endl;
+
+}
+
+void Server::user(Client &c) {
+	if (c.isConnected()) {
+		sendError(c, ERR_ALREADYREGISTRED, ALREADYREGISTRED_MSG);
+		return;
+	}
+	const std::vector<std::string> p = c.getParams();
+	if (p.size() < 4) {
+		sendError(c, ERR_NEEDMOREPARAMS, NEEDMOREPARAMS_MSG);
+		std::cout << RED << "Too few Parameters for USER. Research how to handle this" << RESET << std::endl;
+		return ;
+	}
+	//if too many params == error is dependent on the server
+	std::string requested_name = p[0];
+	//tba: validity of nickname
+	//the other 3 arguments given. to store or not to store?
+	c.setUsername(requested_name);
+	if (c.hasPassedPassword() && !c.getNickname().empty())
+		c.setConnected(true);
+	std::cout << GREEN << "USER successful" << RESET << std::endl;
+	
+}
+
 void Server::delegateCommand(Client &c) {
 	const std::string &cmd = c.getCommand();
 
     if (cmd == "PASS")
         pass(c);
     else if (cmd == "USER")
-        std::cout << "USER would be executed here" << std::endl;
+        user(c);
     else if (cmd == "NICK")
-        std::cout << "NICK would be executed here" << std::endl;
+        nick(c);
     else if (cmd == "JOIN")
         std::cout << "JOIN would be executed here" << std::endl;
     else if (cmd == "INVITE")
@@ -64,9 +106,10 @@ void Server::delegateCommand(Client &c) {
 
 void Server::eventLoop()
 {
-	std::cout << "Event Loop starts:" << std::endl;//control print
+	//std::cout << "Event Loop starts:" << std::endl;//control print
 	while (_running)//server is running
 	{
+	//	std::cout << "loop\n";
 		poll(&_pollFds[0], _nFds, 100);
 		if (_pollFds[L_SOCKET].revents & POLLIN)
 			this->handleNewConnection();
@@ -83,6 +126,8 @@ void Server::eventLoop()
 					continue;
 				}
 				else {
+					buf[bytes_read] = '\0';
+					std::cout << "Buf = \"" << buf << "\"" << std::endl;
 					c.appendReadBuffer(buf);
 					if (c.extractCommand() == true)//successfully found a command and extracted it into raw command
 					{

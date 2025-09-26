@@ -61,6 +61,8 @@ public:
 
 	//commands
 	void pass(Client& c);
+	void nick(Client& c);
+	void user(Client& c);
 
 	//add channel(name);
 	
