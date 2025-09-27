@@ -30,15 +30,15 @@ bool Client::extractCommand() {
 
 	// If no CRLF found, try just LF (for netcat/testing)
 	// this is NOT proper IRC protocol. It's netcat being mean
-    if (pos == std::string::npos)
-		pos = _read_buffer.find('\n');
+    //if (pos == std::string::npos)
+	//	pos = _read_buffer.find('\n');
 	if (pos == std::string::npos)
 		return (false);
-	std::cout << "before extraction: REad buffer: \"" << getReadBuffer() << "\""<< std::endl;
+	//std::cout << "before extraction: REad buffer: \"" << getReadBuffer() << "\""<< std::endl;
 	_raw_command_input = removeCRLF(_read_buffer.substr(0, pos));
 	//std::cout << "pos = " << pos << std::endl;
     consumeBytesReadBuffer(pos + 2);
-	std::cout << "after extraction: REad buffer: \"" << getReadBuffer() << "\"" << std::endl;
+	//std::cout << "after extraction: REad buffer: \"" << getReadBuffer() << "\"" << std::endl;
 
 	return (true);
 }

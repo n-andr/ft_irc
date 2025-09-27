@@ -62,6 +62,7 @@ public:
 	std::string& getOutgoingBuffer();
 	std::string& getCommand();
 	std::vector<std::string>& getParams();
+	std::string& getTrailing();
 
 	// Setters
 	void setSocketFd(int fd);
@@ -96,8 +97,12 @@ public:
 	bool outgoingBufferIsEmpty();
 	void parseRawCommand();
 
+	std::string prefix(std::string& target) const;
+
 	//debugger
 	void printCommand();
+
+
 };
 
 #endif

@@ -16,6 +16,7 @@ std::string& Client::getReadBuffer() { return _read_buffer; }
 std::string& Client::getOutgoingBuffer() { return _outgoing_buffer; }
 std::string& Client::getCommand() { return _command_capitalized; }
 std::vector<std::string>& Client::getParams() { return _params; }
+std::string& Client::getTrailing() { return _trailing; }
 
 // Setters
 void Client::setSocketFd(int fd) { _socket_fd = fd; }
@@ -34,3 +35,20 @@ void Client::appendReadBuffer(const std::string& data) { _read_buffer += data; }
 void Client::setOutgoingBuffer(const std::string& buffer) { _outgoing_buffer = buffer; }
 void Client::appendOutgoingBuffer(const std::string& data) { _outgoing_buffer += data; }
 void Client::setCommand(const std::string& cmd) { _command_capitalized = cmd; }
+
+std::string Client::prefix(std::string& target) const {
+    // Build the standard IRC prefix string
+    std::string result = ":";
+    result += _nickname;
+
+    if (!_username.empty()) {
+        result += "!" + _username;
+    }
+    if (!_ip_address.empty()) {
+        result += "@" + _ip_address;//== hostname
+    }
+    result += " "; // trailing space before the actual command/message
+	result += _command_capitalized + " ";
+	result += target + " " + ":";
+    return result;
+}

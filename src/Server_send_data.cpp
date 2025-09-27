@@ -18,7 +18,7 @@ void Server::broadcastMessage(const std::string &msg, int senderFd) {
 void Server::sendPendingData(Client &c)
 {
 	// 2. Get the next chunk of data from the client’s outgoing buffer
-	std::string data = c.getNextChunk(1);
+	std::string data = c.getNextChunk(10);
 
 	// 3. Try sending it through the socket
 	int bytes_sent = send(c.getSocketFd(), data.c_str(), data.length(), 0);
@@ -41,7 +41,10 @@ void Server::sendPendingData(Client &c)
 	else
 	{
 		// 5. Remove the sent bytes from the buffer
+		std::cout << "OUT : [" << c.getOutgoingBuffer() << "]" << std::endl;
 		c.consumeBytes(bytes_sent);
+		std::cout << "OUT after consume bytes : [" << c.getOutgoingBuffer() << "]" << std::endl;
+
 
 		// 6. If all pending data has been sent, 
 		//	clear the POLLOUT flag for this socket

@@ -63,13 +63,16 @@ public:
 	void pass(Client& c);
 	void nick(Client& c);
 	void user(Client& c);
+	void privmsg(Client& c);
 
 	//add channel(name);
+	
+	void sendError(Client &c, const std::string &code, const std::string &message);
+	Client* getClientByNick(std::string& nick);
 	
 	//For debugging only
 	void printClients();
 
-	void sendError(Client &c, const std::string &code, const std::string &message);
 
 };
 

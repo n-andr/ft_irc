@@ -15,7 +15,7 @@ void Server::sendError(Client &c, const std::string &code,
 }
 
 void Server::pass(Client &c) {
-	if (c.isConnected()) {
+	if (c.isRegistered()) {
 		sendError(c, ERR_ALREADYREGISTRED, ALREADYREGISTRED_MSG);
 		return;
 	}
@@ -29,7 +29,7 @@ void Server::pass(Client &c) {
 		std::cout << GREEN << "Correct password" << RESET << std::endl;
 		c.setHasPassedPassword(true);
 		if (c.getNickname().size() != 0 && c.getUsername().size())
-			c.setConnected(true);
+			c.setRegistered(true);
 	}
 	else
 		sendError(c, ERR_PASSWDMISMATCH, PASSWDMISMATCH_MSG);
@@ -52,7 +52,8 @@ void Server::nick(Client &c) {
 	}
 	c.setNickname(requested_name);
 	std::cout << GREEN << "NICK successful" << RESET << std::endl;
-
+	if (c.hasPassedPassword() && !c.getUsername().empty())
+		c.setRegistered(true);
 }
 
 void Server::user(Client &c) {
@@ -72,9 +73,49 @@ void Server::user(Client &c) {
 	//the other 3 arguments given. to store or not to store?
 	c.setUsername(requested_name);
 	if (c.hasPassedPassword() && !c.getNickname().empty())
-		c.setConnected(true);
+		c.setRegistered(true);
 	std::cout << GREEN << "USER successful" << RESET << std::endl;
 	
+}
+
+Client* Server::getClientByNick(std::string& nick) {
+	for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
+        if (it->second.getNickname() == nick) {
+            return &it->second;
+        }
+    }
+    return NULL;
+}
+
+void Server::privmsg(Client& c) {
+	if (!c.isRegistered()) {
+		sendError(c, ERR_NOTREGISTERED, NOTREGISTERED_MSG);
+		return ;
+	}
+	std::vector<std::string> p = c.getParams();
+	if (p.empty()) {
+		sendError(c, ERR_NORECIPIENT, "PRIVMSG");
+        return;
+	}
+	if (c.getTrailing().empty()) {
+        sendError(c, ERR_NOTEXTTOSEND, "");
+        return;
+    }
+	for (std::vector<std::string>::iterator it = p.begin(); it != p.end(); it++) {
+		if ((*it)[0] == '#') {
+			std::cout << "Send to channel " << *it << std::endl;
+			continue ;
+		}
+		Client *t = getClientByNick(*it);
+		if (t == NULL) {
+			sendError(c, ERR_NOSUCHNICK, NOSUCHNICK_MSG(*it));
+			continue ;
+			//or return, depends on weither or not the target list is still executed after an error occurs
+		}
+		(*t).appendOutgoingBuffer(c.prefix(*it));
+		(*t).appendOutgoingBuffer(c.getTrailing());
+		enablePollout(*t);
+	}
 }
 
 void Server::delegateCommand(Client &c) {
@@ -98,6 +139,8 @@ void Server::delegateCommand(Client &c) {
         std::cout << "TOPIC would be executed here" << std::endl;
     else if (cmd == "MODE")
         std::cout << "MODE would be executed here" << std::endl;
+    else if (cmd == "PRIVMSG")
+        privmsg(c);
     else
         std::cout << "Unknown command: " << cmd << std::endl;
 }
@@ -127,7 +170,7 @@ void Server::eventLoop()
 				}
 				else {
 					buf[bytes_read] = '\0';
-					std::cout << "Buf = \"" << buf << "\"" << std::endl;
+					//std::cout << "Buf = \"" << buf << "\"" << std::endl;
 					c.appendReadBuffer(buf);
 					if (c.extractCommand() == true)//successfully found a command and extracted it into raw command
 					{
@@ -136,7 +179,7 @@ void Server::eventLoop()
 						delegateCommand(c);
 					}
 					//std::cout << "[recv] from fd=" << _pollFds[i].fd << ": " << msg;
-					broadcastMessage(c.getCommand(), _pollFds[i].fd);//this now sets pollout and appends out buf.
+					//broadcastMessage(c.getCommand(), _pollFds[i].fd);//this now sets pollout and appends out buf.
 				}
 			}
 			if (_pollFds[i].revents & POLLOUT) {
