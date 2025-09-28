@@ -65,3 +65,11 @@ void Client::consumeBytesReadBuffer(size_t n){
 		_read_buffer.erase(0, n);
 	}
 }
+
+bool Client::isInvited(std::string& name) {
+	for (std::set<std::string>::iterator it = _invites.begin(); it != _invites.end(); it++) {
+		if (*it == name)
+			return (true);
+	}
+	return (false);
+}

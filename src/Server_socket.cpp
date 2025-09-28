@@ -54,19 +54,19 @@ void Server::setNonBlocking(int fd){
 
 void Server::handleNewConnection() {
 	struct sockaddr_in clientAddr;
-    socklen_t addrLen = sizeof(clientAddr);
-    int clientFd = accept(_serverSocket,
-                          reinterpret_cast<struct sockaddr*>(&clientAddr),
-                          &addrLen);
-    if (clientFd < 0) {
-        if (errno == EAGAIN || errno == EWOULDBLOCK) return; 	// With non-blocking listen socket it's normal to get EAGAIN/EWOULDBLOCK
-        throw std::runtime_error(std::string("accept failed: ") + std::strerror(errno));
-    }
+	socklen_t addrLen = sizeof(clientAddr);
+	int clientFd = accept(_serverSocket,
+						reinterpret_cast<struct sockaddr*>(&clientAddr),
+						&addrLen);
+	if (clientFd < 0) {
+		if (errno == EAGAIN || errno == EWOULDBLOCK) return; 	// With non-blocking listen socket it's normal to get EAGAIN/EWOULDBLOCK
+		throw std::runtime_error(std::string("accept failed: ") + std::strerror(errno));
+	}
 	setNonBlocking(clientFd);
 
 	std::cout << "[info] New client fd=" << clientFd
-          << " from " << inet_ntoa(clientAddr.sin_addr)
-          << ":" << ntohs(clientAddr.sin_port) << std::endl;
+		  << " from " << inet_ntoa(clientAddr.sin_addr)
+		  << ":" << ntohs(clientAddr.sin_port) << std::endl;
 
 	addSocketToPoll(clientFd);
 	// create a Client record here and store it in a map keyed by clientFd
@@ -83,23 +83,23 @@ void Server::disconnectClient(int client_fd){
 
 	// never kill the listening socket by accident
 #ifdef L_SOCKET
-    if (!_pollFds.empty() && _pollFds[L_SOCKET].fd == client_fd) {
-        std::cout << "[warn] refusing to disconnect listening socket fd=" << client_fd << std::endl;
-        return;
-    }
+	if (!_pollFds.empty() && _pollFds[L_SOCKET].fd == client_fd) {
+		std::cout << "[warn] refusing to disconnect listening socket fd=" << client_fd << std::endl;
+		return;
+	}
 #endif
 
 	if (client_fd >= 0)
-        close(client_fd);
+		close(client_fd);
 	for (std::vector<pollfd>::iterator it = _pollFds.begin(); it != _pollFds.end(); ++it) {
 		if (it->fd == client_fd) {
 			_pollFds.erase(it);
 			break ;
 		}
 	}
-    _nFds = _pollFds.size();
+	_nFds = _pollFds.size();
 	_clients.erase(client_fd);
 
-    std::cout << "[info] Client fd=" << client_fd << " disconnected" << std::endl; // log
+	std::cout << "[info] Client fd=" << client_fd << " disconnected" << std::endl; // log
 	printClients();
 }

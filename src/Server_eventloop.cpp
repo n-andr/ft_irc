@@ -1,106 +1,19 @@
 #include "../inc/Server.hpp"
 
-void Server::sendError(Client &c, const std::string &code,
-                       const std::string &message) {
-    std::ostringstream oss;
-    oss << ":" << CYAN << SERVER_NAME << RESET
-        << " " << RED << code << RESET
-        << " " << (c.getNickname().empty() ? "*" : c.getNickname())
-        << " " << c.getCommand()
-        << " :" << RED << message << RESET
-        << "\r\n";
-
-    c.appendOutgoingBuffer(oss.str());// enqueue for POLLOUT
-	enablePollout(c);
-}
-
-void Server::pass(Client &c) {
-	if (c.isRegistered()) {
-		sendError(c, ERR_ALREADYREGISTRED, ALREADYREGISTRED_MSG);
-		return;
-	}
-	if (c.getParams().size() < 1) {
-		sendError(c, ERR_NEEDMOREPARAMS, NEEDMOREPARAMS_MSG);
-		std::cout << RED << "Too few Parameters for Pass. Research how to handle this" << RESET << std::endl;
-		return ;
-	}
-	//if too many params == error is dependent on the server
-	if (c.getParams()[0] == _password) {
-		std::cout << GREEN << "Correct password" << RESET << std::endl;
-		c.setHasPassedPassword(true);
-		if (c.getNickname().size() != 0 && c.getUsername().size())
-			c.setRegistered(true);
-	}
-	else
-		sendError(c, ERR_PASSWDMISMATCH, PASSWDMISMATCH_MSG);
-}
-
-void Server::nick(Client &c) {
-	if (c.getParams().size() < 1) {
-		sendError(c, ERR_NONICKNAMEGIVEN, NONICKNAMEGIVEN_MSG);
-		std::cout << RED << "Too few Parameters for NICK. Research how to handle this" << RESET << std::endl;
-		return ;
-	}
-	//if too many params == error is dependent on the server
-	std::string requested_name = c.getParams()[0];
-	//tba: validity of nickname
-	for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); it++) {
-		if (it->second.getNickname() == requested_name) {
-			sendError(c, ERR_NICKNAMEINUSE, NICKNAMEINUSE_MSG);
-			return ;
-		}
-	}
-	c.setNickname(requested_name);
-	std::cout << GREEN << "NICK successful" << RESET << std::endl;
-	if (c.hasPassedPassword() && !c.getUsername().empty())
-		c.setRegistered(true);
-}
-
-void Server::user(Client &c) {
-	if (c.isConnected()) {
-		sendError(c, ERR_ALREADYREGISTRED, ALREADYREGISTRED_MSG);
-		return;
-	}
-	const std::vector<std::string> p = c.getParams();
-	if (p.size() < 4) {
-		sendError(c, ERR_NEEDMOREPARAMS, NEEDMOREPARAMS_MSG);
-		std::cout << RED << "Too few Parameters for USER. Research how to handle this" << RESET << std::endl;
-		return ;
-	}
-	//if too many params == error is dependent on the server
-	std::string requested_name = p[0];
-	//tba: validity of nickname
-	//the other 3 arguments given. to store or not to store?
-	c.setUsername(requested_name);
-	if (c.hasPassedPassword() && !c.getNickname().empty())
-		c.setRegistered(true);
-	std::cout << GREEN << "USER successful" << RESET << std::endl;
-	
-}
-
-Client* Server::getClientByNick(std::string& nick) {
-	for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
-        if (it->second.getNickname() == nick) {
-            return &it->second;
-        }
-    }
-    return NULL;
-}
-
 void Server::privmsg(Client& c) {
 	if (!c.isRegistered()) {
-		sendError(c, ERR_NOTREGISTERED, NOTREGISTERED_MSG);
+		sendError(c, ERR_NOTREGISTERED, MSG_NOTREGISTERED);
 		return ;
 	}
 	std::vector<std::string> p = c.getParams();
 	if (p.empty()) {
 		sendError(c, ERR_NORECIPIENT, "PRIVMSG");
-        return;
+		return;
 	}
 	if (c.getTrailing().empty()) {
-        sendError(c, ERR_NOTEXTTOSEND, "");
-        return;
-    }
+		sendError(c, ERR_NOTEXTTOSEND, "");
+		return;
+	}
 	for (std::vector<std::string>::iterator it = p.begin(); it != p.end(); it++) {
 		if ((*it)[0] == '#') {
 			std::cout << "Send to channel " << *it << std::endl;
@@ -108,7 +21,7 @@ void Server::privmsg(Client& c) {
 		}
 		Client *t = getClientByNick(*it);
 		if (t == NULL) {
-			sendError(c, ERR_NOSUCHNICK, NOSUCHNICK_MSG(*it));
+			sendError(c, ERR_NOSUCHNICK, MSG_NOSUCHNICK(*it));
 			continue ;
 			//or return, depends on weither or not the target list is still executed after an error occurs
 		}
@@ -118,31 +31,72 @@ void Server::privmsg(Client& c) {
 	}
 }
 
+Channel* Server::getChannelByName(std::string& name) {
+	for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); it ++){
+		if (it->first == name)
+			return (&it->second);
+	}
+	return NULL;
+}
+
+Channel* Server::createNewChannel(std::string& name) {
+	std::map<std::string, Channel>::iterator it =
+        _channels.insert(std::make_pair(name, Channel(name))).first;
+	return (&it->second);
+}
+
+void Server::join(Client& c) {
+	std::vector<std::string> p = c.getParams();
+	if (p.empty()) {
+		sendError(c, ERR_NEEDMOREPARAMS, MSG_NEEDMOREPARAMS("JOIN"));
+		return ;
+	}
+	for (std::vector<std::string>::iterator it = p.begin(); it != p.end(); it++) {
+		//check validity of name -> sendError(c, ERR_NOSUCHCHANNEL, <channel>).
+		Channel *ch = getChannelByName(*it);
+		if (ch == NULL) {
+			ch = createNewChannel(*it);
+			ch->addOperator(c.getSocketFd()); // creator becomes operator
+			ch->addMember(c.getSocketFd());
+			c.joinChannel(*it);
+			continue ;
+		}
+		if (ch->getInviteOnly()) {
+			if (!c.isInvited(*it)) {
+				sendError(c, ERR_INVITEONLYCHAN, MSG_INVITEONLYCHAN(*it));
+				continue ;
+			}
+		}
+		(*ch).addMember(c.getSocketFd());
+		c.joinChannel(*it);
+	}
+}
+
 void Server::delegateCommand(Client &c) {
 	const std::string &cmd = c.getCommand();
 
-    if (cmd == "PASS")
-        pass(c);
-    else if (cmd == "USER")
-        user(c);
-    else if (cmd == "NICK")
-        nick(c);
-    else if (cmd == "JOIN")
-        std::cout << "JOIN would be executed here" << std::endl;
-    else if (cmd == "INVITE")
-        std::cout << "INVITE would be executed here" << std::endl;
-    else if (cmd == "KICK")
-        std::cout << "KICK would be executed here" << std::endl;
-    else if (cmd == "PART")
-        std::cout << "PART would be executed here" << std::endl;
-    else if (cmd == "TOPIC")
-        std::cout << "TOPIC would be executed here" << std::endl;
-    else if (cmd == "MODE")
-        std::cout << "MODE would be executed here" << std::endl;
-    else if (cmd == "PRIVMSG")
-        privmsg(c);
-    else
-        std::cout << "Unknown command: " << cmd << std::endl;
+	if (cmd == "PASS")
+		pass(c);
+	else if (cmd == "USER")
+		user(c);
+	else if (cmd == "NICK")
+		nick(c);
+	else if (cmd == "JOIN")
+		join(c);
+	else if (cmd == "INVITE")
+		std::cout << "INVITE would be executed here" << std::endl;
+	else if (cmd == "KICK")
+		std::cout << "KICK would be executed here" << std::endl;
+	else if (cmd == "PART")
+		std::cout << "PART would be executed here" << std::endl;
+	else if (cmd == "TOPIC")
+		std::cout << "TOPIC would be executed here" << std::endl;
+	else if (cmd == "MODE")
+		std::cout << "MODE would be executed here" << std::endl;
+	else if (cmd == "PRIVMSG")
+		privmsg(c);
+	else
+		std::cout << "Unknown command: " << cmd << std::endl;
 }
 
 /*the main poll() loop; reacts to POLLIN on listen FD and delegates client I/O*/

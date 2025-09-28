@@ -27,7 +27,7 @@ private:
 
 	//something to save channels and invites. here is what GPT recommended:
 	std::set<std::string> _channels;
-	// std::set<std::string> invite_list;
+	std::set<std::string> _invites;
   
 	std::string _read_buffer;// what server gets from client
 	std::string _outgoing_buffer;// what server has for client
@@ -85,11 +85,11 @@ public:
 	//actual Functions
 	void joinChannel(const std::string& name);
 	void leaveChannel(const std::string &name);
-
+	bool isInvited(std::string& name);
+	
 	//Read Buffer related
 	bool extractCommand();
 	void consumeBytesReadBuffer(size_t n);
-
 
 	//outgoing Buffer realted
 	std::string getNextChunk(size_t max) const;

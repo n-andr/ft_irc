@@ -8,7 +8,7 @@ CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 SRC_DIR = ./src
 SRCS = $(addprefix $(SRC_DIR)/,\
 	main.cpp Client.cpp Client_get_set.cpp Client_parsing.cpp Server.cpp Server_ocf.cpp Server_setup.cpp \
-	Server_socket.cpp Server_eventloop.cpp Server_send_data.cpp \
+	Server_socket.cpp Server_eventloop.cpp Server_send_data.cpp Registration.cpp\
 	Channel.cpp debug.cpp)
 
 OBJ_DIR = ./obj

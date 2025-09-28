@@ -10,19 +10,19 @@ static std::string removeCRLF(std::string line){
 Each word is pushed into the vector, so you get clean tokens without having to manually scan characters.*/
 
 static void split_spaces(const std::string &s, std::vector<std::string> &out) {
-    out.clear();
-    std::istringstream iss(s);
-    std::string word;
-    while (iss >> word) {        // operator>> skips whitespace automatically
-        out.push_back(word);
-    }
+	out.clear();
+	std::istringstream iss(s);
+	std::string word;
+	while (iss >> word) {// operator>> skips whitespace automatically
+		out.push_back(word);
+	}
 }
 
 static std::string to_upper(const std::string &s) {
-    std::string out(s);
-    for (size_t i = 0; i < out.size(); ++i)
-        out[i] = static_cast<char>(std::toupper(static_cast<unsigned char>(out[i])));
-    return out;
+	std::string out(s);
+	for (size_t i = 0; i < out.size(); ++i)
+		out[i] = static_cast<char>(std::toupper(static_cast<unsigned char>(out[i])));
+	return out;
 }
 
 bool Client::extractCommand() {
@@ -30,14 +30,14 @@ bool Client::extractCommand() {
 
 	// If no CRLF found, try just LF (for netcat/testing)
 	// this is NOT proper IRC protocol. It's netcat being mean
-    //if (pos == std::string::npos)
+	//if (pos == std::string::npos)
 	//	pos = _read_buffer.find('\n');
 	if (pos == std::string::npos)
 		return (false);
 	//std::cout << "before extraction: REad buffer: \"" << getReadBuffer() << "\""<< std::endl;
 	_raw_command_input = removeCRLF(_read_buffer.substr(0, pos));
 	//std::cout << "pos = " << pos << std::endl;
-    consumeBytesReadBuffer(pos + 2);
+	consumeBytesReadBuffer(pos + 2);
 	//std::cout << "after extraction: REad buffer: \"" << getReadBuffer() << "\"" << std::endl;
 
 	return (true);
@@ -45,9 +45,9 @@ bool Client::extractCommand() {
 
 void Client::parseRawCommand(){
 	//raw command set in extract command
-    _command_capitalized.clear();
-    _params.clear();
-    _trailing.clear();	
+	_command_capitalized.clear();
+	_params.clear();
+	_trailing.clear();	
 
 	// space followed by colon starts trailing
 	// spit into <everything before> " :" <trailing>

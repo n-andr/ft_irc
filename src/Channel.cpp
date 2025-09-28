@@ -62,3 +62,4 @@ void Channel::setInviteOnly(bool status) { _inviteOnly = status; }
 void Channel::addMember(int fd) { _members.insert(fd); }
 void Channel::removeMember(int fd) { _members.erase(fd); }
 bool Channel::isMember(int fd) const { return (_members.find(fd) != _members.end()); }
+void Channel::addOperator(int fd) { _operators.insert(fd); }

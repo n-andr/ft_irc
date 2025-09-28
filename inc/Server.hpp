@@ -64,10 +64,13 @@ public:
 	void nick(Client& c);
 	void user(Client& c);
 	void privmsg(Client& c);
+	void join(Client& c);
 
-	//add channel(name);
+	Channel* getChannelByName(std::string& name);
+
+	Channel* createNewChannel(std::string& name);
 	
-	void sendError(Client &c, const std::string &code, const std::string &message);
+	void sendError(Client &c, int code, const std::string &message);
 	Client* getClientByNick(std::string& nick);
 	
 	//For debugging only

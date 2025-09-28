@@ -37,18 +37,18 @@ void Client::appendOutgoingBuffer(const std::string& data) { _outgoing_buffer +=
 void Client::setCommand(const std::string& cmd) { _command_capitalized = cmd; }
 
 std::string Client::prefix(std::string& target) const {
-    // Build the standard IRC prefix string
-    std::string result = ":";
-    result += _nickname;
+	// Build the standard IRC prefix string
+	std::string result = ":";
+	result += _nickname;
 
-    if (!_username.empty()) {
-        result += "!" + _username;
-    }
-    if (!_ip_address.empty()) {
-        result += "@" + _ip_address;//== hostname
-    }
-    result += " "; // trailing space before the actual command/message
+	if (!_username.empty()) {
+		result += "!" + _username;
+	}
+	if (!_ip_address.empty()) {
+		result += "@" + _ip_address;//== hostname
+	}
+	result += " "; // trailing space before the actual command/message
 	result += _command_capitalized + " ";
 	result += target + " " + ":";
-    return result;
+	return result;
 }

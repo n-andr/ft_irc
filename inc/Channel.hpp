@@ -40,6 +40,7 @@ public:
 	void addMember(int fd);
 	void removeMember(int fd);
 	bool isMember(int fd) const;
+	void addOperator(int fd);
 
 };
 
