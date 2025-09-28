@@ -64,7 +64,9 @@ public:
 	void nick(Client& c);
 	void user(Client& c);
 	void privmsg(Client& c);
+	void privmsgToChannel(Client&c, std::string& name);
 	void join(Client& c);
+	void invite(Client& c);
 
 	Channel* getChannelByName(std::string& name);
 

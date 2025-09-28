@@ -28,6 +28,7 @@ public:
 	std::string& getTopic();
 	size_t getUserLImit();
 	bool getInviteOnly();
+	std::set<int>& getMembers();
 
 	//setters
 	void setName(std::string &name);

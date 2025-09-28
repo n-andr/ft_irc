@@ -1,5 +1,21 @@
 #include "../inc/Server.hpp"
 
+void Server::privmsgToChannel(Client& c, std::string& name) {
+	Channel *ch = getChannelByName(name);
+	if (ch == NULL) {
+		sendError(c, ERR_NOSUCHCHANNEL, MSG_NOSUCHCHANNEL(name));
+		return ;
+	}
+	for (std::set<int>::iterator it = ch->getMembers().begin(); it != ch->getMembers().end(); it++) {
+		if (*it == c.getSocketFd())
+			continue ;
+		Client *t = &_clients[*it];
+		t->appendOutgoingBuffer(c.prefix(name));
+		t->appendOutgoingBuffer(c.getTrailing());
+		enablePollout(*t);
+	}
+}
+
 void Server::privmsg(Client& c) {
 	if (!c.isRegistered()) {
 		sendError(c, ERR_NOTREGISTERED, MSG_NOTREGISTERED);
@@ -16,7 +32,7 @@ void Server::privmsg(Client& c) {
 	}
 	for (std::vector<std::string>::iterator it = p.begin(); it != p.end(); it++) {
 		if ((*it)[0] == '#') {
-			std::cout << "Send to channel " << *it << std::endl;
+			privmsgToChannel(c, *it);
 			continue ;
 		}
 		Client *t = getClientByNick(*it);
@@ -70,6 +86,10 @@ void Server::join(Client& c) {
 		(*ch).addMember(c.getSocketFd());
 		c.joinChannel(*it);
 	}
+}
+
+void Server::invite(Client& c) {
+	//nvite nick channel (no lists allowed)
 }
 
 void Server::delegateCommand(Client &c) {
