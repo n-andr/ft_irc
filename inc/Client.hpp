@@ -85,7 +85,8 @@ public:
 	//actual Functions
 	void joinChannel(const std::string& name);
 	void leaveChannel(const std::string &name);
-	bool isInvited(std::string& name);
+	void addInvite(const std::string& name);
+	bool isInvited(const std::string& name);
 	
 	//Read Buffer related
 	bool extractCommand();

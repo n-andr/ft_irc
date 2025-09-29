@@ -35,7 +35,11 @@ Client& Client::operator=(const Client& other) {
 Client::~Client() {}
 
 //actual functions
-void Client::joinChannel(const std::string &name) { _channels.insert(name); }
+void Client::joinChannel(const std::string &name) {
+	if (isInvited(name))
+		_invites.erase(name);
+	_channels.insert(name);
+}
 void Client::leaveChannel(const std::string &name) { _channels.erase(name); }
 
 std::string Client::getNextChunk(size_t max) const
@@ -66,10 +70,14 @@ void Client::consumeBytesReadBuffer(size_t n){
 	}
 }
 
-bool Client::isInvited(std::string& name) {
+bool Client::isInvited(const std::string& name) {
 	for (std::set<std::string>::iterator it = _invites.begin(); it != _invites.end(); it++) {
 		if (*it == name)
 			return (true);
 	}
 	return (false);
+}
+
+void Client::addInvite(const std::string& name) {
+	_invites.insert(name);
 }

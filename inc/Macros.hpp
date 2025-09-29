@@ -82,11 +82,11 @@ We can delete all unsued == still comented out ERR codes at the end
 // #define ERR_USERNOTINCHANNEL  441
 // #define MSG_USERNOTINCHANNEL(nick, channel) (std::string(nick) + " " + std::string(channel) + " :They aren't on that channel")
 
-// #define ERR_NOTONCHANNEL      442
-// #define MSG_NOTONCHANNEL(channel)  (std::string(channel) + " :You're not on that channel")
+#define ERR_NOTONCHANNEL      442
+#define MSG_NOTONCHANNEL(channel)  (std::string(channel) + " :You're not on that channel")
 
-// #define ERR_USERONCHANNEL     443
-// #define MSG_USERONCHANNEL(user, channel) (std::string(user) + " " + std::string(channel) + " :User is already on channel")
+#define ERR_USERONCHANNEL     443
+#define MSG_USERONCHANNEL(user, channel) (std::string(user) + " " + std::string(channel) + " :User is already on channel")
 
 // #define ERR_NOLOGIN           444
 // #define MSG_NOLOGIN       "User not logged in"!
@@ -145,8 +145,8 @@ We can delete all unsued == still comented out ERR codes at the end
 // #define ERR_NOPRIVILEGES      481
 // #define MSG_NOPRIVILEGES  ":Permission Denied- You're not an IRC operator"
 
-// #define ERR_CHANOPRIVSNEEDED  482
-// #define MSG_CHANOPRIVSNEEDED(channel) (std::string(channel) + " :You're not channel operator")
+#define ERR_CHANOPRIVSNEEDED  482
+#define MSG_CHANOPRIVSNEEDED(channel) (std::string(channel) + " :You're not channel operator")
 
 // #define ERR_CANTKILLSERVER    483
 // #define MSG_CANTKILLSERVER "You can't kill a server!"

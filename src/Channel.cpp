@@ -64,3 +64,4 @@ void Channel::addMember(int fd) { _members.insert(fd); }
 void Channel::removeMember(int fd) { _members.erase(fd); }
 bool Channel::isMember(int fd) const { return (_members.find(fd) != _members.end()); }
 void Channel::addOperator(int fd) { _operators.insert(fd); }
+bool Channel::isOperator(int fd) { return (_operators.find(fd) != _operators.end()); }

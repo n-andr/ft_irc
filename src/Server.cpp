@@ -32,7 +32,8 @@ void Server::sendError(Client &c, int code,
 	enablePollout(c);
 }
 
-Client* Server::getClientByNick(std::string& nick) {
+Client* Server::getClientByNick(std::string& nick)//non existend -> NULL
+{
 	for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
 		if (it->second.getNickname() == nick) {
 			return &it->second;
