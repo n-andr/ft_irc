@@ -65,3 +65,17 @@ void Channel::removeMember(int fd) { _members.erase(fd); }
 bool Channel::isMember(int fd) const { return (_members.find(fd) != _members.end()); }
 void Channel::addOperator(int fd) { _operators.insert(fd); }
 bool Channel::isOperator(int fd) { return (_operators.find(fd) != _operators.end()); }
+
+Channel* Server::getChannelByName(std::string& name) {
+	for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); it ++){
+		if (it->first == name)
+			return (&it->second);
+	}
+	return NULL;
+}
+
+Channel* Server::createNewChannel(std::string& name) {
+	std::map<std::string, Channel>::iterator it =
+		_channels.insert(std::make_pair(name, Channel(name))).first;
+	return (&it->second);
+}

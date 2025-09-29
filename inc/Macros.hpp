@@ -52,8 +52,8 @@ We can delete all unsued == still comented out ERR codes at the end
 // #define ERR_WILDTOPLEVEL      414
 // #define MSG_WILDTOPLEVEL  "Wildcard in toplevel domain"!
 
-// #define ERR_UNKNOWNCOMMAND    421
-// #define MSG_UNKNOWNCOMMAND(cmd) (std::string(cmd) + " :Unknown command")
+#define ERR_UNKNOWNCOMMAND    421
+#define MSG_UNKNOWNCOMMAND(cmd) (std::string(cmd) + " :Unknown command")
 
 // #define ERR_NOMOTD            422
 // #define MSG_NOMOTD        "MOTD File is missing"

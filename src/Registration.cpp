@@ -43,7 +43,7 @@ void Server::nick(Client &c) {
 }
 
 void Server::user(Client &c) {
-	if (c.isConnected()) {
+	if (c.isRegistered()) {
 		sendError(c, ERR_ALREADYREGISTRED, MSG_ALREADYREGISTRED);
 		return;
 	}

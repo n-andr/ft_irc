@@ -35,12 +35,7 @@ Client& Client::operator=(const Client& other) {
 Client::~Client() {}
 
 //actual functions
-void Client::joinChannel(const std::string &name) {
-	if (isInvited(name))
-		_invites.erase(name);
-	_channels.insert(name);
-}
-void Client::leaveChannel(const std::string &name) { _channels.erase(name); }
+
 
 std::string Client::getNextChunk(size_t max) const
 {
@@ -51,6 +46,8 @@ std::string Client::getNextChunk(size_t max) const
 	return _outgoing_buffer.substr(0, max);
 }
 
+bool Client::outgoingBufferIsEmpty() { return _outgoing_buffer.empty(); }
+
 void Client::consumeBytes(size_t n){
 	if (n >= _outgoing_buffer.size()) {
 		_outgoing_buffer.clear();
@@ -58,9 +55,6 @@ void Client::consumeBytes(size_t n){
 		_outgoing_buffer.erase(0, n);
 	}
 }
-
-
-bool Client::outgoingBufferIsEmpty() { return _outgoing_buffer.empty(); }
 
 void Client::consumeBytesReadBuffer(size_t n){
 	if (n >= _read_buffer.size()) {
@@ -81,3 +75,10 @@ bool Client::isInvited(const std::string& name) {
 void Client::addInvite(const std::string& name) {
 	_invites.insert(name);
 }
+void Client::joinChannel(const std::string &name) {
+	if (isInvited(name))
+		_invites.erase(name);
+	_channels.insert(name);
+}
+
+void Client::leaveChannel(const std::string &name) { _channels.erase(name); }
