@@ -17,7 +17,7 @@ private:
 	int _socket_fd; // or alternatively a pointer to the pollfd_list instance?
 	std::string _ip_address;
 	int _port;
-	bool _isConnected;
+	//bool _isConnected;
 
 	bool _has_passed_password;
 	std::string _nickname;
@@ -50,7 +50,7 @@ public:
 	int getSocketFd() const;
 	const std::string& getIpAddress() const;
 	int getPort() const;
-	bool isConnected() const;
+	//bool isConnected() const;
 
 	bool hasPassedPassword() const;
 	const std::string& getNickname() const;

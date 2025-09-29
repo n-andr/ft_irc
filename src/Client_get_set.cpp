@@ -4,7 +4,7 @@
 int Client::getSocketFd() const { return _socket_fd; }
 const std::string& Client::getIpAddress() const { return _ip_address; }
 int Client::getPort() const { return _port; }
-bool Client::isConnected() const { return _isConnected; }
+//bool Client::isConnected() const { return _isConnected; }
 
 bool Client::hasPassedPassword() const { return _has_passed_password; }
 const std::string& Client::getNickname() const { return _nickname; }
@@ -22,7 +22,7 @@ std::string& Client::getTrailing() { return _trailing; }
 void Client::setSocketFd(int fd) { _socket_fd = fd; }
 void Client::setIpAddress(const std::string& ip) { _ip_address = ip; }
 void Client::setPort(int port) { _port = port; }
-void Client::setConnected(bool status) { _isConnected = status; }
+//void Client::setConnected(bool status) { _isConnected = status; }
 
 void Client::setHasPassedPassword(bool value) { _has_passed_password = value; }
 void Client::setNickname(const std::string& nick) { _nickname = nick; }

@@ -41,3 +41,17 @@ Client* Server::getClientByNick(std::string& nick)//non existend -> NULL
 	}
 	return NULL;
 }
+
+Channel* Server::getChannelByName(std::string& name) {
+	for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); it ++){
+		if (it->first == name)
+			return (&it->second);
+	}
+	return NULL;
+}
+
+Channel* Server::createNewChannel(std::string& name) {
+	std::map<std::string, Channel>::iterator it =
+		_channels.insert(std::make_pair(name, Channel(name))).first;
+	return (&it->second);
+}

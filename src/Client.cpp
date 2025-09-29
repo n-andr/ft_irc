@@ -2,7 +2,7 @@
 
 // Orthodox Canonical Form (OCF)
 Client::Client()
-	: _socket_fd(-1), _ip_address(""), _port(0), _isConnected(false),
+	: _socket_fd(-1), _ip_address(""), _port(0), //_isConnected(false),
 	  _has_passed_password(false), _nickname(""), _username(""),
 	  _is_registered(false), _is_operator(false),
 	  _read_buffer(""), _outgoing_buffer(""), _command_capitalized("") {}
@@ -17,7 +17,7 @@ Client& Client::operator=(const Client& other) {
 		_socket_fd = other._socket_fd;
 		_ip_address = other._ip_address;
 		_port = other._port;
-		_isConnected = other._isConnected;
+		//_isConnected = other._isConnected;
 
 		_has_passed_password = other._has_passed_password;
 		_nickname = other._nickname;
