@@ -15,7 +15,7 @@ void Server::printClients()
 		Client c = it->second;
 		std::cout << YELLOW << "FD: " << c.getSocketFd() << "\n"
 				  << "   IP: " << c.getIpAddress() << ":" << c.getPort() << "\n"
-				  << "   Connected: " << (c.isConnected() ? "yes" : "no") << "\n"
+				//  << "   Connected: " << (c.isConnected() ? "yes" : "no") << "\n"
 				  << "   Nickname: " << c.getNickname() << "\n"
 				  << "   Username: " << c.getUsername() << "\n"
 				  << "   Registered: " << (c.isRegistered() ? "yes" : "no") << "\n"
