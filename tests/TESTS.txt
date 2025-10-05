@@ -1,0 +1,5 @@
+# Expect test files to run (relative to tests/)
+registration.expect
+# add more later:
+# pm_two_clients.expect
+# join_channel.expect

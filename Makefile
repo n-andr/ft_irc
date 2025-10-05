@@ -41,6 +41,16 @@ clean:
 fclean: clean
 	rm -f $(NAME)
 
+test:
+	@bash tests/run_tests.sh
+
+# verbose run (show live logs)
+testv:
+	@VERBOSE=1 bash tests/run_tests.sh
+	
+test-clean:
+	@rm -rf tests/logs
+
 re: fclean all
 
 .PHONY: all clean fclean re

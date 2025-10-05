@@ -1,0 +1,140 @@
+#!/usr/bin/expect -f
+# 3 tests: PASS, NICK, USER — using server stdout markers via tail -f.
+
+# --- config ---
+set timeout 5
+set host       [expr {[info exists env(HOST)] ? $env(HOST) : "127.0.0.1"}]
+set port       [expr {[info exists env(PORT)] ? $env(PORT) : "6667"}]
+set pass       [expr {[info exists env(PASS)] ? $env(PASS) : "pass"}]
+set server_cmd [expr {[info exists env(SERVER_CMD)] ? $env(SERVER_CMD) : "./ircserv 6667 pass"}]
+set logdir     "tests/logs"
+set logfile    "$logdir/server.expect.log"
+
+# ---- verbosity control ----
+# VERBOSE=1 will show all spawned I/O (server logs, nc output).
+# By default we silence it and write to an expect transcript.
+set verbose [expr {[info exists env(VERBOSE)] ? $env(VERBOSE) : 0}]
+if {$verbose} {
+  log_user 1
+} else {
+  log_user 0
+  catch {exec mkdir -p tests/logs}
+  # capture interactions for debugging without printing to stdout
+  log_file -a tests/logs/expect.transcript.log
+}
+
+# server markers (adjust if your wording differs)
+set ok_pass_re {Correct password}
+set ok_nick_re {NICK successful}
+set ok_user_re {USER successful}
+set new_client_re {New client fd=}
+
+# --- prep logs ---
+catch {exec mkdir -p $logdir}
+catch {exec rm -f $logfile}
+
+# --- start server in background -> write PID ---
+set start_cmd [format {( %s ) > %s 2>&1 & echo $!} $server_cmd $logfile]
+set server_pid [exec sh -c $start_cmd]
+
+# --- follow the log with tail -f (this is what we "expect" on) ---
+spawn tail -n +1 -f $logfile
+set server_id $spawn_id
+
+# wait until server is listening (optional but nice)
+expect -i $server_id -re {Listening on port}
+
+# --- helpers ---
+proc drain_server {} {
+  # consume any pending log lines so next expects see only fresh lines
+  set ::timeout 0
+  expect -i $::server_id {
+    -re {.+} { exp_continue }
+    timeout { }
+  }
+  set ::timeout 5
+}
+proc assert_seen {pat label} {
+  # wait for new matching line from the log
+  if {[catch {
+        expect -i $::server_id -re $pat
+      }]} {
+    puts "KO detail: missing -> $label"
+    set ::case_rc 1
+  }
+}
+proc run_case {name send_block assert_block} {
+  puts "\n--- TEST $::test_index: $name ---"
+  set ::case_rc 0
+
+  # start a client
+  spawn nc $::host $::port
+  set cid $spawn_id
+
+  # flush old log lines, then wait for the accept log for THIS client
+  drain_server
+  assert_seen $::new_client_re "server accept log"
+
+  # helper to send with CRLF
+  proc sendln {s} { send -- "$s\r\n" }
+
+  # send commands
+  uplevel $send_block
+  after 100
+
+  # check markers
+  uplevel $assert_block
+
+  # close client
+  catch { close -i $cid }
+  catch { wait  -i $cid }
+
+  if {$::case_rc == 0} { puts "OK"; return 0 } else { puts "KO"; return 1 }
+}
+
+# --- run 3 tests ---
+set failures 0
+set test_index 1
+
+# TEST 1: PASS
+set rc [run_case "PASS" {
+  sendln "pass $::pass"
+} {
+  assert_seen $::ok_pass_re "PASS confirmation"
+}]
+if {$rc != 0} { incr failures }
+incr test_index
+
+# TEST 2: NICK
+set rc [run_case "NICK" {
+  sendln "pass $::pass"
+  sendln "nick alice"
+} {
+  assert_seen $::ok_pass_re "PASS confirmation"
+  assert_seen $::ok_nick_re "NICK confirmation"
+}]
+if {$rc != 0} { incr failures }
+incr test_index
+
+# TEST 3: USER
+set rc [run_case "USER" {
+  sendln "pass $::pass"
+  sendln "nick bob"
+  sendln "user bob 0 * :Bob Real"
+} {
+  assert_seen $::ok_pass_re "PASS confirmation"
+  assert_seen $::ok_nick_re "NICK confirmation"
+  assert_seen $::ok_user_re "USER confirmation"
+}]
+if {$rc != 0} { incr failures }
+
+# --- shutdown server & tail ---
+catch {exec kill -INT $server_pid}
+after 150
+if {![catch {exec kill -0 $server_pid}]} { catch {exec kill $server_pid} }
+catch {close -i $server_id}
+catch {wait  -i $server_id}
+
+puts "\n=== SUMMARY ==="
+puts "Failures: $failures"
+exit $failures
