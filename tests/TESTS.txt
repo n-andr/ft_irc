@@ -1,5 +1,6 @@
 # Expect test files to run (relative to tests/)
-registration.expect
+# registration.expect
+registration_bash.sh
 # add more later:
 # pm_two_clients.expect
 # join_channel.expect
