@@ -1,6 +1,7 @@
 #include "../inc/Server.hpp"
 
 void Server::join(Client& c) {
+	//check registered
 	std::vector<std::string> p = c.getParams();
 	if (p.empty()) {
 		sendError(c, ERR_NEEDMOREPARAMS, MSG_NEEDMOREPARAMS("JOIN"));
@@ -29,6 +30,7 @@ void Server::join(Client& c) {
 
 void Server::invite(Client& c) {
 	//nvite nick channel (no lists allowed)
+	//checkc registered
 	std::vector<std::string> p = c.getParams();
 	if (p.size() < 2) {
 		sendError(c, ERR_NEEDMOREPARAMS, MSG_NEEDMOREPARAMS("INVITE"));

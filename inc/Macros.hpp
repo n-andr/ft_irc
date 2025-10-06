@@ -16,6 +16,157 @@ We can delete all unsued == still comented out ERR codes at the end
 ! behind message -> this message is not yet exctly as in the RFC 1459
 */
 
+// #define RPL_NONE                300
+// #define MSG_NONE()              ":Dummy reply number. Not used."
+
+// #define RPL_AWAY                301
+// #define MSG_AWAY(nick, message) (std::string(nick) + " :" + std::string(message))
+
+// #define RPL_USERHOST            302
+// #define MSG_USERHOST(reply)     (":" + std::string(reply))
+
+// #define RPL_ISON                303
+// #define MSG_ISON(nicks)         (":" + std::string(nicks))
+
+// #define RPL_UNAWAY              305
+// #define MSG_UNAWAY()            ":You are no longer marked as being away"
+
+// #define RPL_NOWAWAY             306
+// #define MSG_NOWAWAY()          ":You have been marked as being away"
+
+
+
+// #define RPL_WHOISUSER           311
+// #define MSG_WHOISUSER(nick, user, host, real) \
+//     (std::string(nick) + " " + std::string(user) + " " + std::string(host) + " * :" + std::string(real))
+
+// #define RPL_WHOISSERVER         312
+// #define MSG_WHOISSERVER(nick, server, info) \
+//     (std::string(nick) + " " + std::string(server) + " :" + std::string(info))
+
+// #define RPL_WHOISOPERATOR       313
+// #define MSG_WHOISOPERATOR(nick) (std::string(nick) + " :is an IRC operator")
+
+// #define RPL_WHOWASUSER          314
+// #define MSG_WHOWASUSER(nick, user, host, real) \
+//     (std::string(nick) + " " + std::string(user) + " " + std::string(host) + " * :" + std::string(real))
+
+// #define RPL_ENDOFWHO            315
+// #define MSG_ENDOFWHO(name)      (std::string(name) + " :End of /WHO list")
+
+// #define RPL_WHOISIDLE           317
+// #define MSG_WHOISIDLE(nick, seconds) \
+//     (std::string(nick) + " " + std::string(seconds) + " :seconds idle")
+
+// #define RPL_ENDOFWHOIS          318
+// #define MSG_ENDOFWHOIS(nick)    (std::string(nick) + " :End of /WHOIS list")
+
+// #define RPL_WHOISCHANNELS       319
+// #define MSG_WHOISCHANNELS(nick, channels) \
+//     (std::string(nick) + " :" + std::string(channels))
+
+// #define RPL_LISTSTART           321
+// #define MSG_LISTSTART()         "Channel :Users  Name"
+
+// #define RPL_LIST                322
+// #define MSG_LIST(channel, users, topic) \
+//     (std::string(channel) + " " + std::string(users) + " :" + std::string(topic))
+
+// #define RPL_LISTEND             323
+// #define MSG_LISTEND()           ":End of /LIST"
+
+// #define RPL_CHANNELMODEIS       324
+// #define MSG_CHANNELMODEIS(channel, mode, params) \
+//     (std::string(channel) + " " + std::string(mode) + " " + std::string(params))
+
+// #define RPL_NOTOPIC             331
+// #define MSG_NOTOPIC(channel)    (std::string(channel) + " :No topic is set")
+
+// #define RPL_TOPIC               332
+// #define MSG_TOPIC(channel, topic) \
+//     (std::string(channel) + " :" + std::string(topic))
+
+// #define RPL_INVITING            341
+// #define MSG_INVITING(channel, nick) \
+//     (std::string(channel) + " " + std::string(nick))
+
+// #define RPL_SUMMONING           342
+// #define MSG_SUMMONING(user)     (std::string(user) + " :Summoning user to IRC")
+
+// #define RPL_VERSION             351
+// #define MSG_VERSION(version, debug, server, comments) \
+//     (std::string(version) + "." + std::string(debug) + " " + std::string(server) + " :" + std::string(comments))
+
+// #define RPL_WHOREPLY            352
+// #define MSG_WHOREPLY(channel, user, host, server, nick, flags, hopcount, real) \
+//     (std::string(channel) + " " + std::string(user) + " " + std::string(host) + " " + \
+//      std::string(server) + " " + std::string(nick) + " " + std::string(flags) + \
+//      " :" + std::string(hopcount) + " " + std::string(real))
+
+// #define RPL_NAMREPLY            353
+// #define MSG_NAMREPLY(channel, nicks) \
+//     (std::string(channel) + " :" + std::string(nicks))
+
+// #define RPL_LINKS               364
+// #define MSG_LINKS(mask, server, hopcount, info) \
+//     (std::string(mask) + " " + std::string(server) + " :" + std::string(hopcount) + " " + std::string(info))
+
+// #define RPL_ENDOFLINKS          365
+// #define MSG_ENDOFLINKS(mask)    (std::string(mask) + " :End of /LINKS list")
+
+// #define RPL_ENDOFNAMES          366
+// #define MSG_ENDOFNAMES(channel) (std::string(channel) + " :End of /NAMES list")
+
+// #define RPL_BANLIST             367
+// #define MSG_BANLIST(channel, banid) \
+//     (std::string(channel) + " " + std::string(banid))
+
+// #define RPL_ENDOFBANLIST        368
+// #define MSG_ENDOFBANLIST(channel) \
+//     (std::string(channel) + " :End of channel ban list")
+
+// #define RPL_ENDOFWHOWAS         369
+// #define MSG_ENDOFWHOWAS(nick)   (std::string(nick) + " :End of WHOWAS")
+
+// #define RPL_INFO                371
+// #define MSG_INFO(string)        (":" + std::string(string))
+
+// #define RPL_ENDOFINFO           374
+// #define MSG_ENDOFINFO()        ":End of /INFO list"
+
+// #define RPL_MOTDSTART           375
+// #define MSG_MOTDSTART(server)   (":- " + std::string(server) + " Message of the day - ")
+
+// #define RPL_MOTD                372
+// #define MSG_MOTD(text)          (":- " + std::string(text))
+
+// #define RPL_ENDOFMOTD           376
+// #define MSG_ENDOFMOTD()         ":End of /MOTD command"
+
+// #define RPL_YOUREOPER           381
+// #define MSG_YOUREOPER()         ":You are now an IRC operator"
+
+// #define RPL_REHASHING           382
+// #define MSG_REHASHING(config)   (std::string(config) + " :Rehashing")
+
+// #define RPL_TIME                391
+// #define MSG_TIME(server, time)  (std::string(server) + " :" + std::string(time))
+
+// #define RPL_USERSSTART          392
+// #define MSG_USERSSTART()       ":UserID   Terminal  Host"
+
+// #define RPL_USERS               393
+// #define MSG_USERS(user, term, host) \
+//     (":" + std::string(user) + " " + std::string(term) + " " + std::string(host))
+
+// #define RPL_ENDOFUSERS          394
+// #define MSG_ENDOFUSERS()		":End of users"
+
+// #define RPL_NOUSERS             395
+// #define MSG_NOUSERS()           ":Nobody logged in"
+
+////////////////////////////////////////////////////////////////
+
 #define ERR_NOSUCHNICK        401
 #define MSG_NOSUCHNICK(nick)    (std::string(nick) + " :No such nick/channel")
 

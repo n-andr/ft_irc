@@ -41,7 +41,6 @@ void Server::eventLoop()
 		for (int i = 1; i < _nFds; i++)
 		{
 			Client &c = _clients[_pollFds[i].fd];
-			//simple msg broadcaster
 			if (_pollFds[i].revents & POLLIN)
 			{
 				char buf[512];

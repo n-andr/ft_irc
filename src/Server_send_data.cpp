@@ -41,9 +41,9 @@ void Server::sendPendingData(Client &c)
 	else
 	{
 		// 5. Remove the sent bytes from the buffer
-		std::cout << "OUT : [" << c.getOutgoingBuffer() << "]" << std::endl;
+	//	std::cout << "OUT : [" << c.getOutgoingBuffer() << "]" << std::endl;
 		c.consumeBytes(bytes_sent);
-		std::cout << "OUT after consume bytes : [" << c.getOutgoingBuffer() << "]" << std::endl;
+		//std::cout << "OUT after consume bytes : [" << c.getOutgoingBuffer() << "]" << std::endl;
 
 
 		// 6. If all pending data has been sent, 
