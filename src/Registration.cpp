@@ -48,9 +48,8 @@ void Server::user(Client &c) {
 		return;
 	}
 	const std::vector<std::string> p = c.getParams();
-	if (p.size() < 4) {
+	if (p.size() < 3 || c.getTrailing().empty()) {
 		sendError(c, ERR_NEEDMOREPARAMS, MSG_NEEDMOREPARAMS("USER"));
-		std::cout << RED << "Too few Parameters for USER. Research how to handle this" << RESET << std::endl;
 		return ;
 	}
 	//if too many params == error is dependent on the server

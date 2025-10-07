@@ -67,6 +67,9 @@ public:
 	void privmsgToChannel(Client&c, std::string& name);
 	void join(Client& c);
 	void invite(Client& c);
+	void kick(Client& c);
+	void topic(Client& c);
+	void mode(Client& c);
 
 	Channel* getChannelByName(std::string& name);
 

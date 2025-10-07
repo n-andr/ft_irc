@@ -13,6 +13,8 @@ private:
 	std::set<int> _operators;
 	size_t _userLimit;
 	bool _inviteOnly;
+	//topic locked
+	//key
 
 public: 
 	//OCF

@@ -37,78 +37,78 @@ We can delete all unsued == still comented out ERR codes at the end
 
 
 // #define RPL_WHOISUSER           311
-// #define MSG_WHOISUSER(nick, user, host, real) \
+// #define MSG_WHOISUSER(nick, user, host, real) /*\*/
 //     (std::string(nick) + " " + std::string(user) + " " + std::string(host) + " * :" + std::string(real))
 
 // #define RPL_WHOISSERVER         312
-// #define MSG_WHOISSERVER(nick, server, info) \
+// #define MSG_WHOISSERVER(nick, server, info) /*\*/
 //     (std::string(nick) + " " + std::string(server) + " :" + std::string(info))
 
 // #define RPL_WHOISOPERATOR       313
 // #define MSG_WHOISOPERATOR(nick) (std::string(nick) + " :is an IRC operator")
 
 // #define RPL_WHOWASUSER          314
-// #define MSG_WHOWASUSER(nick, user, host, real) \
+// #define MSG_WHOWASUSER(nick, user, host, real) /*\*/
 //     (std::string(nick) + " " + std::string(user) + " " + std::string(host) + " * :" + std::string(real))
 
 // #define RPL_ENDOFWHO            315
 // #define MSG_ENDOFWHO(name)      (std::string(name) + " :End of /WHO list")
 
 // #define RPL_WHOISIDLE           317
-// #define MSG_WHOISIDLE(nick, seconds) \
+// #define MSG_WHOISIDLE(nick, seconds) /*\*/
 //     (std::string(nick) + " " + std::string(seconds) + " :seconds idle")
 
 // #define RPL_ENDOFWHOIS          318
 // #define MSG_ENDOFWHOIS(nick)    (std::string(nick) + " :End of /WHOIS list")
 
 // #define RPL_WHOISCHANNELS       319
-// #define MSG_WHOISCHANNELS(nick, channels) \
+// #define MSG_WHOISCHANNELS(nick, channels) /*\*/
 //     (std::string(nick) + " :" + std::string(channels))
 
 // #define RPL_LISTSTART           321
 // #define MSG_LISTSTART()         "Channel :Users  Name"
 
 // #define RPL_LIST                322
-// #define MSG_LIST(channel, users, topic) \
+// #define MSG_LIST(channel, users, topic) /*\*/
 //     (std::string(channel) + " " + std::string(users) + " :" + std::string(topic))
 
 // #define RPL_LISTEND             323
 // #define MSG_LISTEND()           ":End of /LIST"
 
 // #define RPL_CHANNELMODEIS       324
-// #define MSG_CHANNELMODEIS(channel, mode, params) \
+// #define MSG_CHANNELMODEIS(channel, mode, params) /*\*/
 //     (std::string(channel) + " " + std::string(mode) + " " + std::string(params))
 
-// #define RPL_NOTOPIC             331
-// #define MSG_NOTOPIC(channel)    (std::string(channel) + " :No topic is set")
+#define RPL_NOTOPIC             331
+#define MSG_NOTOPIC(channel)    (std::string(channel) + " :No topic is set")
 
-// #define RPL_TOPIC               332
-// #define MSG_TOPIC(channel, topic) \
-//     (std::string(channel) + " :" + std::string(topic))
+#define RPL_TOPIC               332
+#define MSG_TOPIC(channel, topic) \
+	(std::string(channel) + " :" + std::string(topic))
 
 // #define RPL_INVITING            341
-// #define MSG_INVITING(channel, nick) \
+// #define MSG_INVITING(channel, nick) /*\*/
 //     (std::string(channel) + " " + std::string(nick))
 
 // #define RPL_SUMMONING           342
 // #define MSG_SUMMONING(user)     (std::string(user) + " :Summoning user to IRC")
 
 // #define RPL_VERSION             351
-// #define MSG_VERSION(version, debug, server, comments) \
+// #define MSG_VERSION(version, debug, server, comments) /*\*/
 //     (std::string(version) + "." + std::string(debug) + " " + std::string(server) + " :" + std::string(comments))
 
 // #define RPL_WHOREPLY            352
-// #define MSG_WHOREPLY(channel, user, host, server, nick, flags, hopcount, real) \
-//     (std::string(channel) + " " + std::string(user) + " " + std::string(host) + " " + \
-//      std::string(server) + " " + std::string(nick) + " " + std::string(flags) + \
+// #define MSG_WHOREPLY(channel, user, host, server, nick, flags, hopcount, real) /*\*/
+//     (std::string(channel) + " " + std::string(user) + " " + std::string(host) + " " + /*\*/
+//      std::string(server) + " " + std::string(nick) + " " + std::string(flags) + /*\*/
 //      " :" + std::string(hopcount) + " " + std::string(real))
 
 // #define RPL_NAMREPLY            353
-// #define MSG_NAMREPLY(channel, nicks) \
+// #define MSG_NAMREPLY(channel, nicks) /*\*/
 //     (std::string(channel) + " :" + std::string(nicks))
 
 // #define RPL_LINKS               364
-// #define MSG_LINKS(mask, server, hopcount, info) \
+// #define MSG_LINKS(mask, server, hopcount, info) /*\*/
 //     (std::string(mask) + " " + std::string(server) + " :" + std::string(hopcount) + " " + std::string(info))
 
 // #define RPL_ENDOFLINKS          365
@@ -118,11 +118,11 @@ We can delete all unsued == still comented out ERR codes at the end
 // #define MSG_ENDOFNAMES(channel) (std::string(channel) + " :End of /NAMES list")
 
 // #define RPL_BANLIST             367
-// #define MSG_BANLIST(channel, banid) \
+// #define MSG_BANLIST(channel, banid) /*\*/
 //     (std::string(channel) + " " + std::string(banid))
 
 // #define RPL_ENDOFBANLIST        368
-// #define MSG_ENDOFBANLIST(channel) \
+// #define MSG_ENDOFBANLIST(channel) /*\*/
 //     (std::string(channel) + " :End of channel ban list")
 
 // #define RPL_ENDOFWHOWAS         369
@@ -156,7 +156,7 @@ We can delete all unsued == still comented out ERR codes at the end
 // #define MSG_USERSSTART()       ":UserID   Terminal  Host"
 
 // #define RPL_USERS               393
-// #define MSG_USERS(user, term, host) \
+// #define MSG_USERS(user, term, host) /*\*/
 //     (":" + std::string(user) + " " + std::string(term) + " " + std::string(host))
 
 // #define RPL_ENDOFUSERS          394
@@ -230,8 +230,8 @@ We can delete all unsued == still comented out ERR codes at the end
 // #define ERR_UNAVAILRESOURCE   437
 // #define MSG_UNAVAILRESOURCE "Nick/channel is temporarily unavailable"!
 
-// #define ERR_USERNOTINCHANNEL  441
-// #define MSG_USERNOTINCHANNEL(nick, channel) (std::string(nick) + " " + std::string(channel) + " :They aren't on that channel")
+#define ERR_USERNOTINCHANNEL  441
+#define MSG_USERNOTINCHANNEL(nick, channel) (std::string(nick) + " " + std::string(channel) + " :They aren't on that channel")
 
 #define ERR_NOTONCHANNEL      442
 #define MSG_NOTONCHANNEL(channel)  (std::string(channel) + " :You're not on that channel")
@@ -283,9 +283,6 @@ We can delete all unsued == still comented out ERR codes at the end
 
 // #define ERR_BADCHANNELKEY     475
 // #define MSG_BADCHANNELKEY(channel) (std::string(channel) + " :Cannot join channel (+k)")
-
-// #define ERR_BADCHANMASK       476
-// #define MSG_BADCHANMASK   "Bad Channel Mask"!
 
 // #define ERR_NOCHANMODES       477
 // #define MSG_NOCHANMODES   "Channel doesn't support modes"!

@@ -1,5 +1,90 @@
 #include "../inc/Server.hpp"
 
+void Server::kick(Client &c) {
+	if (!c.isRegistered()) {
+		sendError(c, ERR_NOTREGISTERED, MSG_NOTREGISTERED);
+		return ;
+	}
+	std::vector<std::string> p = c.getParams();
+	if (p.empty() || p.size() < 2) {
+		sendError(c, ERR_NEEDMOREPARAMS, MSG_NEEDMOREPARAMS("JOIN"));
+		return ;
+	}
+	//check nbr relations channels vs nicks
+	Channel *ch = getChannelByName(p[0]);//assuming no list is given. Otherwise put everything starting here into a loop
+	if (ch == NULL) {
+		sendError(c, ERR_NOSUCHCHANNEL, MSG_NOSUCHCHANNEL(p[0]));
+		return ;
+	}
+	if (ch != NULL && !ch->isMember(c.getSocketFd())) {
+		sendError(c, ERR_NOTONCHANNEL, MSG_NOTONCHANNEL(p[0]));
+		return ;
+	}
+	if (!ch->isOperator(c.getSocketFd())) {
+		sendError(c, ERR_CHANOPRIVSNEEDED, MSG_CHANOPRIVSNEEDED(p[0]));
+		return ;
+	}
+	Client *target = getClientByNick(p[1]);
+	if (target == NULL) {
+		sendError(c, ERR_NOSUCHNICK, MSG_NOSUCHNICK(p[1]));
+		return ;
+	}
+	if (!ch->isMember(target->getSocketFd())) {
+		sendError(c, ERR_USERNOTINCHANNEL, MSG_USERNOTINCHANNEL(p[1], p[0]));
+		return ;
+	}
+	//do the actual kicking
+}
+
+void Server::mode(Client &c) {
+	if (!c.isRegistered()) {
+		sendError(c, ERR_NOTREGISTERED, MSG_NOTREGISTERED);
+		return ;
+	}
+	std::vector<std::string> p = c.getParams();
+	if (p.empty()) {
+		sendError(c, ERR_NEEDMOREPARAMS, MSG_NEEDMOREPARAMS("JOIN"));
+		return ;
+	}
+}
+
+void Server::topic(Client &c) {
+	if (!c.isRegistered()) {
+		sendError(c, ERR_NOTREGISTERED, MSG_NOTREGISTERED);
+		return ;
+	}
+	std::vector<std::string> p = c.getParams();
+	if (p.empty()) {
+		sendError(c, ERR_NEEDMOREPARAMS, MSG_NEEDMOREPARAMS("JOIN"));
+		return ;
+	}
+	//optional error if too many args?
+	Channel *ch = getChannelByName(p[0]);
+	if (ch == NULL) {
+		sendError(c, ERR_NOSUCHCHANNEL, MSG_NOSUCHCHANNEL(p[0]));
+		return ;
+	}
+	if (ch != NULL && !ch->isMember(c.getSocketFd())) {
+		sendError(c, ERR_NOTONCHANNEL, MSG_NOTONCHANNEL(p[0]));
+		return ;
+	}
+	//if +t && not operator -> error
+	std::string t = c.getTrailing();
+	if (t.empty()) {
+		if (ch->getTopic().empty())
+			sendError(c, RPL_NOTOPIC, MSG_NOTOPIC(p[0]));
+		sendError(c, RPL_TOPIC, MSG_TOPIC(p[0], ch->getTopic()));
+	}
+	ch->setTopic(t);
+	//send command response for setting the topic?
+	//Potentially to everyone in a channel?
+	//:<nick>!<user>@<host> TOPIC <channel> :<topic>
+	//for every channel member
+		//outgoing append prefix(channel name)
+		//outgoing append topic
+		//enable pollout
+}
+
 void Server::delegateCommand(Client &c) {
 	const std::string &cmd = c.getCommand();
 
@@ -15,10 +100,8 @@ void Server::delegateCommand(Client &c) {
 		invite(c);
 	else if (cmd == "KICK")
 		std::cout << "KICK would be executed here" << std::endl;
-	else if (cmd == "PART")
-		std::cout << "PART would be executed here" << std::endl;
 	else if (cmd == "TOPIC")
-		std::cout << "TOPIC would be executed here" << std::endl;
+		topic(c);
 	else if (cmd == "MODE")
 		std::cout << "MODE would be executed here" << std::endl;
 	else if (cmd == "PRIVMSG")

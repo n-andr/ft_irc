@@ -102,4 +102,6 @@ void Server::disconnectClient(int client_fd){
 
 	std::cout << "[info] Client fd=" << client_fd << " disconnected" << std::endl; // log
 	printClients();
+	if (_clients.empty())
+		_running = false;
 }

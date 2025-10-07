@@ -6,6 +6,10 @@ void Server::privmsgToChannel(Client& c, std::string& name) {
 		sendError(c, ERR_NOSUCHCHANNEL, MSG_NOSUCHCHANNEL(name));
 		return ;
 	}
+	if (ch != NULL && !ch->isMember(c.getSocketFd())) {
+		sendError(c, ERR_NOTONCHANNEL, MSG_NOTONCHANNEL(name));
+		return ;
+	}
 	for (std::set<int>::iterator it = ch->getMembers().begin(); it != ch->getMembers().end(); it++) {
 		if (*it == c.getSocketFd())
 			continue ;
