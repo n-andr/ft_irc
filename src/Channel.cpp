@@ -3,11 +3,13 @@
 // Default constructor
 Channel::Channel()
 	: _name("")
-	, _topic("")
 	, _members()
 	, _operators()
 	, _userLimit(0)	  // 0 = no limit
 	, _inviteOnly(false) // default = open channel
+	, _topicLocked(false)
+	, _topic("")
+	, _key("")
 {}
 
 // Destructor
@@ -16,22 +18,26 @@ Channel::~Channel() {}
 // Copy constructor
 Channel::Channel(const Channel &other)
 	: _name(other._name)
-	, _topic(other._topic)
 	, _members(other._members)
 	, _operators(other._operators)
 	, _userLimit(other._userLimit)
 	, _inviteOnly(other._inviteOnly)
-{}
+	, _topicLocked(false)
+	, _topic(other._topic)
+	, _key("")
+	{}
 
 // Copy assignment operator
 Channel &Channel::operator=(const Channel &other) {
 	if (this != &other) {
 		_name	   = other._name;
-		_topic	  = other._topic;
 		_members	= other._members;
 		_operators  = other._operators;
 		_userLimit  = other._userLimit;
 		_inviteOnly = other._inviteOnly;
+		_topicLocked = other._topicLocked;
+		_topic	  = other._topic;
+		_key = other._key;
 	}
 	return *this;
 }
@@ -39,11 +45,13 @@ Channel &Channel::operator=(const Channel &other) {
 // Constructor with name
 Channel::Channel(const std::string &name)
 	: _name(name)
-	, _topic("")
 	, _members()
 	, _operators()
-	, _userLimit(0)
-	, _inviteOnly(false)
+	, _userLimit(0)	  // 0 = no limit
+	, _inviteOnly(false) // default = open channel
+	, _topicLocked(false)
+	, _topic("")
+	, _key("")
 {}
 
 //getters
