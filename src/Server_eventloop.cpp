@@ -34,6 +34,11 @@ void Server::kick(Client &c) {
 		return ;
 	}
 	//do the actual kicking
+	ch->removeMember(target->getSocketFd());
+	if (ch->isOperator(target->getSocketFd())) {
+		ch->removeOperator(target->getSocketFd());
+	}
+	target->leaveChannel(p[0]);
 }
 
 void Server::mode(Client &c) {
@@ -68,12 +73,15 @@ void Server::topic(Client &c) {
 		sendError(c, ERR_NOTONCHANNEL, MSG_NOTONCHANNEL(p[0]));
 		return ;
 	}
-	//if +t && not operator -> error
 	std::string t = c.getTrailing();
 	if (t.empty()) {
 		if (ch->getTopic().empty())
-			sendError(c, RPL_NOTOPIC, MSG_NOTOPIC(p[0]));
+		sendError(c, RPL_NOTOPIC, MSG_NOTOPIC(p[0]));
 		sendError(c, RPL_TOPIC, MSG_TOPIC(p[0], ch->getTopic()));
+	}
+	if (ch->getTopicLocked() && !ch->isOperator(c.getSocketFd())) {
+		sendError(c, ERR_CHANOPRIVSNEEDED, MSG_CHANOPRIVSNEEDED(p[0]));
+		return ;
 	}
 	ch->setTopic(t);
 	//send command response for setting the topic?
