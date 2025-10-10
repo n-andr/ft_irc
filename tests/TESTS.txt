@@ -1,0 +1,7 @@
+# Expect test files to run (relative to tests/)
+# registration.expect
+# registration_bash.sh #need to be fixed
+start-3-nc-linux.sh
+# add more later:
+# pm_two_clients.expect
+# join_channel.expect
