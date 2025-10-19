@@ -8,8 +8,8 @@ PASS="${PASS:-pass}"
 # pick a terminal
 if command -v gnome-terminal >/dev/null 2>&1; then
   LAUNCH='gnome-terminal --'
-elif command -v xterm >/dev/null 2>&1; then
-  LAUNCH='xterm -e'
+# elif command -v xterm >/dev/null 2>&1; then
+#   LAUNCH='xterm -e'
 else
   echo "[err] need gnome-terminal or xterm installed" >&2
   exit 1
