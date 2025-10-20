@@ -272,8 +272,8 @@ We can delete all unsued == still comented out ERR codes at the end
 // #define ERR_CHANNELISFULL     471
 // #define MSG_CHANNELISFULL(channel) (std::string(channel) + " :Cannot join channel (+l)")
 
-// #define ERR_UNKNOWNMODE       472
-// #define MSG_UNKNOWNMODE(character) (std::string(character) + " :is unknown mode char to me")
+#define ERR_UNKNOWNMODE       472
+#define MSG_UNKNOWNMODE(character) (std::string(character) + " :is unknown mode char to me")
 
 #define ERR_INVITEONLYCHAN    473
 #define MSG_INVITEONLYCHAN(channel) (std::string(channel) + " :Cannot join channel (+i)")

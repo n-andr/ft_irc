@@ -47,3 +47,29 @@ void Client::printCommand() {
 	else
 		std::cout << "Trailing:  [" << _trailing << "]\n";
 }
+
+
+void Server::printModeParseResult(const std::string channelName, const ModeParseResult &r)
+{
+    std::cout << "---- MODE DEBUG ----\n";
+	std::cout << "Channel name: " << channelName << std::endl;
+    if (!r.error.empty())
+        std::cout << "Error: " << r.error << "\n";
+
+    for (size_t i = 0; i < r.order.size(); ++i) {
+        const ModeChange &m = r.order[i];
+        std::cout << (m.set ? '+' : '-') << m.mode;
+        if (m.hasArg)
+            std::cout << " (" << m.arg << ")";
+        std::cout << "\n";
+    }
+
+    if (!r.leftoverArgs.empty()) {
+        std::cout << "Leftovers:";
+        for (size_t i = 0; i < r.leftoverArgs.size(); ++i)
+            std::cout << " " << r.leftoverArgs[i];
+        std::cout << "\n";
+    }
+
+    std::cout << "--------------------\n";
+}

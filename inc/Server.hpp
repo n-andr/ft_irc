@@ -23,6 +23,20 @@
 
 #define L_SOCKET 0
 
+struct ModeChange {
+    bool        set;    // + = true, - = false
+    char        mode;
+    bool        hasArg;
+    std::string arg;       // used if hasArg == true
+};
+
+//organize all options and args in this struct
+struct ModeParseResult {
+    std::vector<ModeChange> order;    // what to execute in order
+    std::string             error;   // empty if ok or error macro(?)
+    std::vector<std::string> leftoverArgs; // any args not consumed
+};
+
 class Server
 {
 private:
@@ -71,6 +85,8 @@ public:
 	void topic(Client& c);
 	void mode(Client& c);
 
+	ModeParseResult splitModeParams(Client &c);
+
 	Channel* getChannelByName(std::string& name);
 
 	Channel* createNewChannel(std::string& name);
@@ -80,6 +96,7 @@ public:
 	
 	//For debugging only
 	void printClients();
+	void printModeParseResult(const std::string channelName, const ModeParseResult &r);
 
 
 };
