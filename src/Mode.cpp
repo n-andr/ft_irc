@@ -111,7 +111,7 @@ void Server::mode(Client &c) {
     }
 
 	//if first arg is not a channel name
-	if (p[0].front() != '#'){
+	if (p[0][0] != '#'){
 		sendError(c, ERR_NEEDMOREPARAMS, MSG_NEEDMOREPARAMS("MODE"));
 		return;
 	}
