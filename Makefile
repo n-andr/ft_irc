@@ -11,7 +11,7 @@ SRCS = $(addprefix $(SRC_DIR)/,\
 	Client.cpp Client_get_set.cpp Client_parsing.cpp \
 	Server.cpp Server_ocf.cpp Server_setup.cpp Server_socket.cpp Server_send_data.cpp \
 	Channel.cpp \
-	Registration.cpp Privmsg.cpp Invite_join.cpp \
+	Registration.cpp Privmsg.cpp Invite_join.cpp Mode.cpp\
 	debug.cpp )
 
 OBJ_DIR = ./obj

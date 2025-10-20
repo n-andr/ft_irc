@@ -41,18 +41,6 @@ void Server::kick(Client &c) {
 	target->leaveChannel(p[0]);
 }
 
-void Server::mode(Client &c) {
-	if (!c.isRegistered()) {
-		sendError(c, ERR_NOTREGISTERED, MSG_NOTREGISTERED);
-		return ;
-	}
-	std::vector<std::string> p = c.getParams();
-	if (p.empty()) {
-		sendError(c, ERR_NEEDMOREPARAMS, MSG_NEEDMOREPARAMS("JOIN"));
-		return ;
-	}
-}
-
 void Server::topic(Client &c) {
 	if (!c.isRegistered()) {
 		sendError(c, ERR_NOTREGISTERED, MSG_NOTREGISTERED);
@@ -111,7 +99,7 @@ void Server::delegateCommand(Client &c) {
 	else if (cmd == "TOPIC")
 		topic(c);
 	else if (cmd == "MODE")
-		std::cout << "MODE would be executed here" << std::endl;
+		mode(c);
 	else if (cmd == "PRIVMSG")
 		privmsg(c);
 	else
