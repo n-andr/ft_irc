@@ -14,8 +14,11 @@ void Server::pass(Client &c) {
 	if (c.getParams()[0] == _password) {
 		std::cout << GREEN << "Correct password" << RESET << std::endl;
 		c.setHasPassedPassword(true);
-		if (c.getNickname().size() != 0 && c.getUsername().size())
+		sendServerReply(c, -1, CUSTOM_PASS_CORRECT);
+		if (c.getNickname().size() != 0 && c.getUsername().size()) {
 			c.setRegistered(true);
+			sendServerReply(c, -1, CUSTOM_REGISTRATION_SUCCESS);
+		}
 	}
 	else
 		sendError(c, ERR_PASSWDMISMATCH, MSG_PASSWDMISMATCH);
@@ -38,8 +41,11 @@ void Server::nick(Client &c) {
 	}
 	c.setNickname(requested_name);
 	std::cout << GREEN << "NICK successful" << RESET << std::endl;
-	if (c.hasPassedPassword() && !c.getUsername().empty())
+	sendServerReply(c, -1, CUSTOM_NICK_SET(requested_name));
+	if (c.hasPassedPassword() && !c.getUsername().empty()) {
 		c.setRegistered(true);
+		sendServerReply(c, -1, CUSTOM_REGISTRATION_SUCCESS);
+	}
 }
 
 void Server::user(Client &c) {
@@ -57,8 +63,10 @@ void Server::user(Client &c) {
 	//tba: validity of nickname
 	//the other 3 arguments given. to store or not to store?
 	c.setUsername(requested_name);
-	if (c.hasPassedPassword() && !c.getNickname().empty())
+	sendServerReply(c, -1, CUSTOM_USER_SET(requested_name));
+	if (c.hasPassedPassword() && !c.getNickname().empty()) {
 		c.setRegistered(true);
+		sendServerReply(c, -1, CUSTOM_REGISTRATION_SUCCESS);
+	}
 	std::cout << GREEN << "USER successful" << RESET << std::endl;
-	
 }

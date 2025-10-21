@@ -39,6 +39,8 @@ void Server::kick(Client &c) {
 		ch->removeOperator(target->getSocketFd());
 	}
 	target->leaveChannel(p[0]);
+	sendInfoToTarget(c, *target, CUSTOM_YOU_GOT_KICKED(c.getNickname(), p[0]));
+	sendInfoToChannel(c, *ch, CUSTOM_SOMEONE_WAS_KICKED(c.getNickname(), target->getNickname(), p[0]));
 }
 
 void Server::topic(Client &c) {
@@ -64,21 +66,18 @@ void Server::topic(Client &c) {
 	std::string t = c.getTrailing();
 	if (t.empty()) {
 		if (ch->getTopic().empty())
-		sendError(c, RPL_NOTOPIC, MSG_NOTOPIC(p[0]));
-		sendError(c, RPL_TOPIC, MSG_TOPIC(p[0], ch->getTopic()));
+			sendServerReply(c, RPL_NOTOPIC, MSG_NOTOPIC(p[0]));
+		else 
+			sendServerReply(c, RPL_TOPIC, MSG_TOPIC(p[0], ch->getTopic()));
+		return ;
 	}
 	if (ch->getTopicLocked() && !ch->isOperator(c.getSocketFd())) {
 		sendError(c, ERR_CHANOPRIVSNEEDED, MSG_CHANOPRIVSNEEDED(p[0]));
 		return ;
 	}
 	ch->setTopic(t);
-	//send command response for setting the topic?
-	//Potentially to everyone in a channel?
-	//:<nick>!<user>@<host> TOPIC <channel> :<topic>
-	//for every channel member
-		//outgoing append prefix(channel name)
-		//outgoing append topic
-		//enable pollout
+	//sendServerReply(c, -1, CUSTOM_TOPIC_CHANGED(c.getNickname(), ch->getName(), t));
+	sendInfoToChannel(c, *ch, CUSTOM_TOPIC_CHANGED(c.getNickname(), ch->getName(), t));
 }
 
 void Server::delegateCommand(Client &c) {
@@ -95,7 +94,7 @@ void Server::delegateCommand(Client &c) {
 	else if (cmd == "INVITE")
 		invite(c);
 	else if (cmd == "KICK")
-		std::cout << "KICK would be executed here" << std::endl;
+		kick(c);
 	else if (cmd == "TOPIC")
 		topic(c);
 	else if (cmd == "MODE")

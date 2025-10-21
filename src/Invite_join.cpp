@@ -18,6 +18,8 @@ void Server::join(Client& c) {
 			ch->addOperator(c.getSocketFd()); // creator becomes operator
 			ch->addMember(c.getSocketFd());
 			c.joinChannel(*it);
+			sendInfoToChannel(c, *ch, CUSTOM_JOIN(c.getNickname(), ch->getName()));
+			//sendServerReply(c, -1, CUSTOM_JOIN(c.getNickname(), ch->getName()));
 			continue ;
 		}
 		if (ch->getInviteOnly()) {
@@ -26,8 +28,14 @@ void Server::join(Client& c) {
 				continue ;
 			}
 		}
-		(*ch).addMember(c.getSocketFd());
+		if (ch->isMember(c.getSocketFd())) {
+			sendError(c, ERR_USERONCHANNEL, MSG_USERONCHANNEL(c.getNickname(), ch->getName()));
+			return ;
+		}
+		ch->addMember(c.getSocketFd());
 		c.joinChannel(*it);
+		//sendServerReply(c, -1, CUSTOM_JOIN(c.getNickname(), ch->getName()));
+		sendInfoToChannel(c, *ch, CUSTOM_JOIN(c.getNickname(), ch->getName()));
 	}
 }
 
@@ -63,7 +71,13 @@ void Server::invite(Client& c) {
 			return ;
 		}
 	}
+	/*else {//throw error at invite to noneexisting channel
+		sendError(c, ERR_NOSUCHCHANNEL, MSG_NOSUCHCHANNEL(p[1]));
+		return ;
+	}*/
 	target->addInvite(p[1]);
 	//confirmation message to target. check syntax!
+	sendInfoToTarget(c, *target, CUSTOM_INVITED(p[1]));
 	//confirmation message to c (server or client prefix?)
+	sendServerReply(c, RPL_INVITING, MSG_INVITING(p[1], p[0]));
 }

@@ -82,3 +82,18 @@ void Client::joinChannel(const std::string &name) {
 }
 
 void Client::leaveChannel(const std::string &name) { _channels.erase(name); }
+
+
+std::string Client::userPrefix() {
+	std::string result = ":";
+	result += _nickname;
+
+	if (!_username.empty()) {
+		result += "!" + _username;
+	}
+	if (!_ip_address.empty()) {
+		result += "@" + _ip_address;//== hostname
+	}
+	result += " "; // trailing space before the actual command/message
+	return (result);
+}

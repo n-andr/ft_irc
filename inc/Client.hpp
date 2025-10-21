@@ -99,6 +99,7 @@ public:
 	void parseRawCommand();
 
 	std::string prefix(std::string& target) const;
+	std::string userPrefix();//creates the first part of the prefix with user info
 
 	//debugger
 	void printCommand();

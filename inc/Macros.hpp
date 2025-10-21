@@ -16,6 +16,18 @@ We can delete all unsued == still comented out ERR codes at the end
 ! behind message -> this message is not yet exctly as in the RFC 1459
 */
 
+#define CUSTOM_INVITED(channel) ("You have been invited to " + std::string(channel))
+#define CUSTOM_JOIN(nick, channel) (std::string(nick) + " has joined " + std::string(channel))
+#define CUSTOM_PASS_CORRECT "Password Corrrect"
+#define CUSTOM_NICK_SET(nick) ("Your Nickname was set to " + std::string(nick))
+#define CUSTOM_USER_SET(user) ("Your Username was set to " + std::string(user))
+#define CUSTOM_REGISTRATION_SUCCESS "Registration complete. You may use the Server for messaging now."
+#define CUSTOM_TOPIC_CHANGED(nick, channel, topic) (std::string(nick) \
+	+ " has changed " + std::string(channel) + "'s topic to: " + std::string(topic))
+#define CUSTOM_YOU_GOT_KICKED(nick, channel) (std::string(nick) \
+	+ " has kicked you from " + std::string(channel))
+#define CUSTOM_SOMEONE_WAS_KICKED(kicker, kicked, channel) (std::string(kicker) \
+	+ " kicked " + std::string(kicked) + " from " + std::string(channel))
 // #define RPL_NONE                300
 // #define MSG_NONE()              ":Dummy reply number. Not used."
 
@@ -86,9 +98,8 @@ We can delete all unsued == still comented out ERR codes at the end
 #define MSG_TOPIC(channel, topic) \
 	(std::string(channel) + " :" + std::string(topic))
 
-// #define RPL_INVITING            341
-// #define MSG_INVITING(channel, nick) /*\*/
-//     (std::string(channel) + " " + std::string(nick))
+#define RPL_INVITING            341
+#define MSG_INVITING(channel, nick)	(std::string(channel) + " " + std::string(nick))
 
 // #define RPL_SUMMONING           342
 // #define MSG_SUMMONING(user)     (std::string(user) + " :Summoning user to IRC")

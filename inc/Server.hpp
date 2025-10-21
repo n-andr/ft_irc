@@ -90,7 +90,10 @@ public:
 	Channel* getChannelByName(std::string& name);
 
 	Channel* createNewChannel(std::string& name);
-	
+	void sendServerReply(Client &c, int code, const std::string &message);
+	void sendInfoToTarget(Client &c, Client &t, const std::string &message);
+	void sendInfoToChannel(Client &c, Channel &ch, const std::string &message);
+
 	void sendError(Client &c, int code, const std::string &message);
 	Client* getClientByNick(std::string& nick);
 	

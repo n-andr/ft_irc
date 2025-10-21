@@ -18,6 +18,57 @@ void Server::enablePollout(Client &client) {
 	}
 }
 
+//when a server sends a non error message, like the response to topic
+void Server::sendServerReply(Client &c, int code,
+					   const std::string &message) {
+	std::ostringstream oss;
+	oss << ":" << CYAN << SERVER_NAME << RESET;
+	if (code != -1)
+		oss << " " << GREEN << code << RESET;
+	oss << " " << (c.getNickname().empty() ? "*" : c.getNickname())
+		<< " " << c.getCommand()
+		<< " :" << GREEN << message << RESET
+		<< "\r\n";
+
+	c.appendOutgoingBuffer(oss.str());// enqueue for POLLOUT
+	enablePollout(c);
+}
+
+//when someone elses command affects a user. For example when someone invited you to a channel
+void Server::sendInfoToTarget(Client &c, Client &t, const std::string &message) {
+	std::ostringstream oss;
+	oss << ":" << CYAN << c.userPrefix() << RESET
+		//<< " " << GREEN << code << RESET
+		<< " " << (c.getNickname().empty() ? "*" : c.getNickname())
+		<< " " << c.getCommand() //optional add arguments after this?
+		<< " " << (t.getNickname().empty() ? "*" : t.getNickname())
+		<< " :" << GREEN << message << RESET
+		<< "\r\n";
+
+	t.appendOutgoingBuffer(oss.str());// enqueue for POLLOUT
+	enablePollout(t);
+}
+
+void Server::sendInfoToChannel(Client &c, Channel &ch, const std::string &message) {
+	std::ostringstream oss;
+	oss << ":" << CYAN << c.userPrefix() << RESET
+		//<< " " << GREEN << code << RESET
+		<< " " << (c.getNickname().empty() ? "*" : c.getNickname())
+		<< " " << c.getCommand() //optional add arguments after this?
+		<< " " << (ch.getName().empty() ? "*" : ch.getName())
+		<< " :" << GREEN << message << RESET
+		<< "\r\n";
+	
+	for (std::set<int>::iterator it = ch.getMembers().begin(); it != ch.getMembers().end(); it++) {
+		//if (*it != c.getSocketFd()) {
+		_clients[*it].appendOutgoingBuffer(oss.str());// enqueue for POLLOUT
+		enablePollout(_clients[*it]);
+		//}
+			//sendInfoToTarget(c, _clients[*it], message);
+	}
+}
+
+
 void Server::sendError(Client &c, int code,
 					   const std::string &message) {
 	std::ostringstream oss;
