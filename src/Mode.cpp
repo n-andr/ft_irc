@@ -90,8 +90,10 @@ ModeParseResult Server::splitModeParams(Client &cl)
 
     // Whatever remains are leftovers (we can through an error or just ignore them)
     out.leftoverArgs = args;
+	if (!out.leftoverArgs.empty())	sendError(cl, -1, CUSTOM_MODE_TOO_MANY_ARGS);
     return out;
 }
+
 
 void Server::mode(Client &c) {
 	if (!c.isRegistered()) {
@@ -115,15 +117,21 @@ void Server::mode(Client &c) {
 		sendError(c, ERR_NEEDMOREPARAMS, MSG_NEEDMOREPARAMS("MODE"));
 		return;
 	}
-	std::string  &channelName = p[0];
+	//parsing and organizing into struct
+	std::string  channelName = p[0];
 	ModeParseResult modeOrganized = splitModeParams(c);
 
-	printModeParseResult(channelName, modeOrganized);
+	printModeParseResult(channelName, modeOrganized); //debug, delete later
 
 	//if there was an error don't execute
-	if(!modeOrganized.error.empty()){
+	if(!modeOrganized.error.empty() || !modeOrganized.leftoverArgs.empty()){
 		return;
 	}
+
+	//execution:
+	execute_mode(c, channelName, modeOrganized);
+
+	// check that modeOrganized doesn't leak
 }
 
 

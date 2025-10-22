@@ -68,13 +68,15 @@ void Server::sendInfoToChannel(Client &c, Channel &ch, const std::string &messag
 	}
 }
 
-
+//send code -1 for custom errors with no error code
 void Server::sendError(Client &c, int code,
 					   const std::string &message) {
 	std::ostringstream oss;
-	oss << ":" << CYAN << SERVER_NAME << RESET
-		<< " " << RED << code << RESET
-		<< " " << (c.getNickname().empty() ? "*" : c.getNickname())
+	oss << ":" << CYAN << SERVER_NAME << RESET;
+	if (code != -1) {                      // only print code number when present
+        oss << " " << RED << code << RESET;
+    }
+	oss << " " << (c.getNickname().empty() ? "*" : c.getNickname())
 		<< " " << c.getCommand()
 		<< " :" << RED << message << RESET
 		<< "\r\n";
