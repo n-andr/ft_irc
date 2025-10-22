@@ -28,6 +28,8 @@ We can delete all unsued == still comented out ERR codes at the end
 	+ " has kicked you from " + std::string(channel))
 #define CUSTOM_SOMEONE_WAS_KICKED(kicker, kicked, channel) (std::string(kicker) \
 	+ " kicked " + std::string(kicked) + " from " + std::string(channel))
+#define CUSTOM_MODE_TOO_MANY_ARGS "MODE: Too many arguments"
+
 // #define RPL_NONE                300
 // #define MSG_NONE()              ":Dummy reply number. Not used."
 

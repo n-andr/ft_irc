@@ -24,7 +24,7 @@
 #define L_SOCKET 0
 
 struct ModeChange {
-    bool        set;    // + = true, - = false
+    bool        set;    // +(set) = true, -(unset) = false
     char        mode;
     bool        hasArg;
     std::string arg;       // used if hasArg == true
@@ -33,7 +33,7 @@ struct ModeChange {
 //organize all options and args in this struct
 struct ModeParseResult {
     std::vector<ModeChange> order;    // what to execute in order
-    std::string             error;   // empty if ok or error macro(?)
+    std::string             error;   // empty if no errors 
     std::vector<std::string> leftoverArgs; // any args not consumed
 };
 
@@ -86,6 +86,7 @@ public:
 	void mode(Client& c);
 
 	ModeParseResult splitModeParams(Client &c);
+	void 	execute_mode(Client &c, std::string &channelName, ModeParseResult modeOrganized);
 
 	Channel* getChannelByName(std::string& name);
 
@@ -103,6 +104,8 @@ public:
 
 
 };
+
+typedef bool (*ModeHandler)(Server&, Channel&, Client&, const ModeChange&);
 
 
 #endif
