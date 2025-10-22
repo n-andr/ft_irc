@@ -81,7 +81,7 @@ void 	Server::execute_mode(Client &c, std::string &channelName, ModeParseResult 
 		sendError(c, ERR_CHANOPRIVSNEEDED, MSG_CHANOPRIVSNEEDED(channelName));
 		return;
 	}
-
+	handleMode();
 	for (size_t i = 0; i < modeOrganized.order.size(); i++)
 	{
 		const ModeChange current = modeOrganized.order[i];
