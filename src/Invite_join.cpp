@@ -14,6 +14,10 @@ void Server::join(Client& c) {
 		//check validity of name -> sendError(c, ERR_NOSUCHCHANNEL, <channel>).
 		Channel *ch = getChannelByName(*it);
 		if (ch == NULL) {
+			if (c.getChannels().size() >= MAX_CHANNELS_PER_CLIENT) {
+				sendError(c, ERR_TOOMANYCHANNELS, MSG_TOOMANYCHANNELS(*it));
+				return ;
+			}
 			ch = createNewChannel(*it);
 			ch->addOperator(c.getSocketFd()); // creator becomes operator
 			ch->addMember(c.getSocketFd());
@@ -30,6 +34,18 @@ void Server::join(Client& c) {
 		}
 		if (ch->isMember(c.getSocketFd())) {
 			sendError(c, ERR_USERONCHANNEL, MSG_USERONCHANNEL(c.getNickname(), ch->getName()));
+			return ;
+		}
+		if (c.getChannels().size() >= MAX_CHANNELS_PER_CLIENT) {
+			sendError(c, ERR_TOOMANYCHANNELS, MSG_TOOMANYCHANNELS(*it));
+			return ;
+		}
+		if (ch->getUserLImit() > 0 && ch->getMembers().size() >= ch->getUserLImit()) {
+			sendError(c, ERR_CHANNELISFULL, MSG_CHANNELISFULL(ch->getName()));
+			return ;
+		}
+		if (ch->getMembers().size() >= MAX_CLIENTS_PER_CHANNEL) {
+			sendServerReply(c, -1, CUSTOM_CHANNELISFULL(ch->getName()));
 			return ;
 		}
 		ch->addMember(c.getSocketFd());

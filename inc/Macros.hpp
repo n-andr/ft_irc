@@ -5,6 +5,15 @@
 // Server configuration
 // ============================
 #define SERVER_NAME "ircserv.by.Nandreev.Sgramsch"
+#define MAX_CHANNELS_PER_CLIENT 2
+#define MAX_CLIENTS_PER_CHANNEL 2
+#define MAX_PASS_SIZE 10
+
+//this shoudl enable including Macro ints (and only macros, because it runs at compile time) into macro strings
+#define STR_HELPER(x) #x
+#define STR(x) STR_HELPER(x)
+#include "Color.hpp"
+#include <sstream>
 
 // ============================
 // Error numerics (RFC 2812)
@@ -28,6 +37,8 @@ We can delete all unsued == still comented out ERR codes at the end
 	+ " has kicked you from " + std::string(channel))
 #define CUSTOM_SOMEONE_WAS_KICKED(kicker, kicked, channel) (std::string(kicker) \
 	+ " kicked " + std::string(kicked) + " from " + std::string(channel))
+#define CUSTOM_CHANNELISFULL(channel) ("Server imposed Limit of Clients per Channel reached. " + std::string(channel) + " is already full. You did not join.")
+#define CUSTOM_BUFFER_OVERFLOW ("Max Buffer length: 512 Bytes. Your message is too long.")
 // #define RPL_NONE                300
 // #define MSG_NONE()              ":Dummy reply number. Not used."
 
@@ -190,8 +201,8 @@ We can delete all unsued == still comented out ERR codes at the end
 #define ERR_CANNOTSENDTOCHAN  404
 #define MSG_CANNOTSENDTOCHAN(channelname) (std::string(channelname) + " :Cannot send to channel")
 
-// #define ERR_TOOMANYCHANNELS   405
-// #define MSG_TOOMANYCHANNELS(channelName) (std::string(channelName) + " :You have joined too many channels"
+#define ERR_TOOMANYCHANNELS   405
+#define MSG_TOOMANYCHANNELS(channelName) (std::string(channelName) + " :You have joined too many channels")
 
 // #define ERR_WASNOSUCHNICK     406
 // #define MSG_WASNOSUCHNICK(nickname) (std::string(nickname) + " :There was no such nickname")
@@ -280,8 +291,8 @@ We can delete all unsued == still comented out ERR codes at the end
 // #define ERR_KEYSET            467
 // #define MSG_KEYSET(channel)	(std::string(channel) + " :Channel key already set")
 
-// #define ERR_CHANNELISFULL     471
-// #define MSG_CHANNELISFULL(channel) (std::string(channel) + " :Cannot join channel (+l)")
+#define ERR_CHANNELISFULL     471
+#define MSG_CHANNELISFULL(channel) (std::string(channel) + " :Cannot join channel (+l)")
 
 #define ERR_UNKNOWNMODE       472
 #define MSG_UNKNOWNMODE(character) (std::string(character) + " :is unknown mode char to me")

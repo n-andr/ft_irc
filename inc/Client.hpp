@@ -38,6 +38,8 @@ private:
 	std::vector<std::string> _params; 
 	std::string _trailing; //string or NULL if no trailing
 
+	bool _disconnect;
+	bool _InBufOverflow;
 
 public:
 	// Orthodox Canonical Form (OCF)
@@ -57,12 +59,17 @@ public:
 	const std::string& getUsername() const;
 	bool isRegistered() const;
 	bool isOperator() const;
+	bool getdisconnect();
+	void setdisconnect(bool status);
+	void setBufferOverflow(bool status);
 
 	std::string& getReadBuffer();
 	std::string& getOutgoingBuffer();
 	std::string& getCommand();
 	std::vector<std::string>& getParams();
 	std::string& getTrailing();
+	std::set<std::string>& getChannels();
+	bool getBufOverflow();
 
 	// Setters
 	void setSocketFd(int fd);

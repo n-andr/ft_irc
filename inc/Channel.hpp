@@ -33,6 +33,7 @@ public:
 
 	//getters
 	std::set<int>& getMembers();
+	std::set<int>& getOperators();
 	std::string& getName();
 	
 	std::string& getTopic();

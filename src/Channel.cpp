@@ -60,6 +60,7 @@ std::string& Channel::getTopic() { return _topic; }
 size_t Channel::getUserLImit() { return _userLimit; }
 bool Channel::getInviteOnly() { return _inviteOnly; }
 std::set<int>& Channel::getMembers() { return _members; }
+std::set<int>& Channel::getOperators() { return _operators; }
 const std::string& Channel::getKey() { return _key; }
 bool Channel::getTopicLocked() { return _topicLocked; }
 
@@ -73,7 +74,11 @@ void Channel::setKey(std::string& new_key) { _key = new_key; }
 
 //actual Member functions
 void Channel::addMember(int fd) { _members.insert(fd); }
-void Channel::removeMember(int fd) { _members.erase(fd); }
+void Channel::removeMember(int fd) {
+	_members.erase(fd);
+	if (isOperator(fd))
+		removeOperator(fd);
+}
 void Channel::removeOperator(int fd) { _operators.erase(fd); }
 bool Channel::isMember(int fd) const { return (_members.find(fd) != _members.end()); }
 void Channel::addOperator(int fd) { _operators.insert(fd); }

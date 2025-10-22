@@ -41,6 +41,10 @@ void Server::kick(Client &c) {
 	target->leaveChannel(p[0]);
 	sendInfoToTarget(c, *target, CUSTOM_YOU_GOT_KICKED(c.getNickname(), p[0]));
 	sendInfoToChannel(c, *ch, CUSTOM_SOMEONE_WAS_KICKED(c.getNickname(), target->getNickname(), p[0]));
+	if (ch->getMembers().size() == 0) {
+		std::cout << "No members, deleted Channel " << ch->getName() << std::endl;
+		_channels.erase(ch->getName());
+	}
 }
 
 void Server::topic(Client &c) {
@@ -124,7 +128,10 @@ void Server::eventLoop()
 				char buf[512];
 				int bytes_read = recv(_pollFds[i].fd, buf, sizeof(buf), 0);
 				if (bytes_read <= 0) {
-					disconnectClient(_pollFds[i].fd);
+					if (c.getdisconnect())
+						disconnectClient(_pollFds[i].fd);
+					else
+						eraseClientFootprint(_pollFds[i].fd);
 					continue;
 				}
 				else {
@@ -136,6 +143,13 @@ void Server::eventLoop()
 						c.parseRawCommand();
 						c.printCommand();
 						delegateCommand(c);
+					}
+					else if (c.getBufOverflow() == true) {
+						size_t pos = c.getReadBuffer().find("\r\n");
+						c.appendOutgoingBuffer(CUSTOM_BUFFER_OVERFLOW);
+						enablePollout(c);
+						c.consumeBytesReadBuffer(pos + 2);
+						c.setBufferOverflow(false);
 					}
 					//std::cout << "[recv] from fd=" << _pollFds[i].fd << ": " << msg;
 					//broadcastMessage(c.getCommand(), _pollFds[i].fd);//this now sets pollout and appends out buf.

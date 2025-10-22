@@ -79,6 +79,27 @@ void Server::handleNewConnection() {
 	printClients();
 }
 
+void Server::eraseClientFootprint(int client_fd) {
+	std::map<int, Client>::iterator itClient = _clients.find(client_fd);
+    if (itClient == _clients.end())
+        return;//can't disconnect non existend client
+
+    Client &c = itClient->second;
+
+    // Clean up channels before erasing
+    for (std::set<std::string>::iterator it = c.getChannels().begin(); it != c.getChannels().end(); ++it) {
+		std::map<std::string, Channel>::iterator itChannel = getChannelItByName(*it);
+		if (itChannel == _channels.end()) continue;
+		Channel &ch = itChannel->second;
+		if (ch.isMember(client_fd)) ch.removeMember(client_fd);
+		if (ch.getMembers().empty()) {
+			std::cout << "Empty Channel\n";
+			_channels.erase(itChannel);
+		}
+    }
+	c.setdisconnect(true);
+}
+
 void Server::disconnectClient(int client_fd){
 
 	// never kill the listening socket by accident

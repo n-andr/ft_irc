@@ -34,6 +34,11 @@ bool Client::extractCommand() {
 	//	pos = _read_buffer.find('\n');
 	if (pos == std::string::npos)
 		return (false);
+	if (pos + 2 > 512)//the buffer limit includes the \r\n
+	{
+		setBufferOverflow(true);
+		return (false);
+	}
 	//std::cout << "before extraction: REad buffer: \"" << getReadBuffer() << "\""<< std::endl;
 	_raw_command_input = removeCRLF(_read_buffer.substr(0, pos));
 	//std::cout << "pos = " << pos << std::endl;

@@ -61,6 +61,7 @@ public:
 	void addSocketToPoll(int socket);
 	void setNonBlocking(int fd);
 	void disconnectClient(int index);
+	void eraseClientFootprint(int client_fd);
 	void broadcastMessage(const std::string &msg, int senderFd);
 
 	void sendPendingData(Client &c);
@@ -87,7 +88,8 @@ public:
 
 	ModeParseResult splitModeParams(Client &c);
 
-	Channel* getChannelByName(std::string& name);
+	Channel* getChannelByName(const std::string& name);
+	std::map<std::string, Channel>::iterator getChannelItByName(const std::string &name);
 
 	Channel* createNewChannel(std::string& name);
 	void sendServerReply(Client &c, int code, const std::string &message);

@@ -93,12 +93,16 @@ Client* Server::getClientByNick(std::string& nick)//non existend -> NULL
 	return NULL;
 }
 
-Channel* Server::getChannelByName(std::string& name) {
+Channel* Server::getChannelByName(const std::string& name) {
 	for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); it ++){
 		if (it->first == name)
 			return (&it->second);
 	}
 	return NULL;
+}
+
+std::map<std::string, Channel>::iterator Server::getChannelItByName(const std::string &name) {
+    return _channels.find(name);
 }
 
 Channel* Server::createNewChannel(std::string& name) {

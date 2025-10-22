@@ -17,12 +17,18 @@ std::string& Client::getOutgoingBuffer() { return _outgoing_buffer; }
 std::string& Client::getCommand() { return _command_capitalized; }
 std::vector<std::string>& Client::getParams() { return _params; }
 std::string& Client::getTrailing() { return _trailing; }
+std::set<std::string>& Client::getChannels() { return _channels; }
+bool Client::getdisconnect() { return _disconnect; }
+bool Client::getBufOverflow() { return _InBufOverflow; }
+
+void Client::setdisconnect(bool status) { _disconnect = status; }
 
 // Setters
 void Client::setSocketFd(int fd) { _socket_fd = fd; }
 void Client::setIpAddress(const std::string& ip) { _ip_address = ip; }
 void Client::setPort(int port) { _port = port; }
 //void Client::setConnected(bool status) { _isConnected = status; }
+void Client::setBufferOverflow(bool status) { _InBufOverflow = status; }
 
 void Client::setHasPassedPassword(bool value) { _has_passed_password = value; }
 void Client::setNickname(const std::string& nick) { _nickname = nick; }
