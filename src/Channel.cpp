@@ -57,9 +57,10 @@ Channel::Channel(const std::string &name)
 //getters
 std::string& Channel::getName() { return _name; }
 std::string& Channel::getTopic() { return _topic; }
-size_t Channel::getUserLImit() { return _userLimit; }
+size_t Channel::getUserLimit() { return _userLimit; }
 bool Channel::getInviteOnly() { return _inviteOnly; }
 std::set<int>& Channel::getMembers() { return _members; }
+std::set<int>& Channel::getOperators() { return _operators; }
 const std::string& Channel::getKey() { return _key; }
 bool Channel::getTopicLocked() { return _topicLocked; }
 

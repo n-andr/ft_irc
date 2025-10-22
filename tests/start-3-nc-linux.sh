@@ -32,7 +32,9 @@ launch_client() {
       sleep 0.1
       printf "nick %s\r\n" "${NICK}"
 	  sleep 0.1
-      printf "user %s 0 * 0:%s\r\n" "${NICK}" "${REAL}"
+      printf "user %s 0 * :%s\r\n" "${NICK}" "${REAL}"
+	  sleep 0.1
+	  printf "join #test\r\n" 
       echo "[${CLIENT_NAME}] registered — type IRC commands" >&3
 
       # forward keyboard input with CRLF (Linux nc doesn’t add CR)
