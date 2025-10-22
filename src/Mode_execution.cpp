@@ -72,6 +72,11 @@ void 	Server::execute_mode(Client &c, std::string &channelName, ModeParseResult 
 		sendError(c, ERR_NOSUCHCHANNEL, MSG_NOSUCHCHANNEL(channelName));
 		return;
 	}
+	//debug
+	std::cout << "Executing MODE for channel: " << channelName << std::endl;
+	std::cout << "Before execution" << channelName << std::endl;
+	printChannelInfo(*ch);
+	//end debug
 	if (!ch->isMember(c.getSocketFd())){
 		sendError(c, ERR_NOTONCHANNEL, MSG_NOTONCHANNEL(channelName));
 		return;
@@ -95,5 +100,8 @@ void 	Server::execute_mode(Client &c, std::string &channelName, ModeParseResult 
 		// it->second is the value — the handler function pointer
 		(it->second)(*this, *ch, c, current);
 	}
-	
+	//debug
+	std::cout << "After execution" << channelName << std::endl;
+	printChannelInfo(*ch);
+	//end debug
 }

@@ -101,6 +101,7 @@ public:
 	//For debugging only
 	void printClients();
 	void printModeParseResult(const std::string channelName, const ModeParseResult &r);
+	void printChannelInfo( Channel &channel);
 
 
 };

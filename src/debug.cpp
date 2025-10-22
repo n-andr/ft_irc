@@ -73,3 +73,22 @@ void Server::printModeParseResult(const std::string channelName, const ModeParse
 
     std::cout << "--------------------\n";
 }
+
+void Server::printChannelInfo(Channel &channel)
+{
+	std::cout << "---- CHANNEL INFO ----\n";
+	std::cout << "Name: " << channel.getName() << "\n";
+	std::cout << "Topic: " << channel.getTopic() << "\n";
+	std::cout << "User limit: " << channel.getUserLimit() << "\n";
+	std::cout << "Invite only: " << (channel.getInviteOnly() ? "yes" : "no") << "\n";
+	std::cout << "Topic locked: " << (channel.getTopicLocked() ? "yes" : "no") << "\n";
+	std::cout << "Key: " << (channel.getKey().empty() ? "none" : channel.getKey()) << "\n";
+	std::cout << "Members (" << channel.getMembers().size() << "):\n";
+	std::cout << "Operators (" << channel.getOperators().size() << "):\n";
+
+	for (std::set<int>::const_iterator it = channel.getMembers().begin(); it != channel.getMembers().end(); ++it) {
+		std::cout << _clients[*it].getNickname() << " - FD: " << *it << (channel.isOperator(*it) ? " (operator)" : "") << "\n";
+	}
+
+	std::cout << "----------------------\n";
+}
