@@ -29,6 +29,18 @@ bool handle_t(Server& serv, Channel& ch, Client& c, const ModeChange& mode){
 	return true;
 }
 
+static bool isValidPassword(std::string s) {
+	if (s.empty() || s.size() > MAX_PASS_SIZE)
+        return false;
+    for (size_t i = 0; i < s.size(); i++) {
+		unsigned char ch = static_cast<unsigned char>(s[i]);
+        if (!std::isprint(ch)) return false; // must be printable ASCII
+		if (std::isspace(ch)) return false; // no spaces, tabs, etc.
+		if (ch == ':') return false; //not to confuse with trailing
+    }
+    return true;
+}
+
 bool handle_k(Server& serv, Channel& ch, Client& c, const ModeChange& mode){
 	if (mode.set){
 		//set pass
@@ -37,6 +49,10 @@ bool handle_k(Server& serv, Channel& ch, Client& c, const ModeChange& mode){
             return false;
         }
 		std::string key = mode.arg;
+		if (!isValidPassword(key)){
+			serv.sendError(c, -1, "MODE +k: key is not valid");
+            return false;
+		}
 		ch.setKey(key); // if pass alredy exists - override it
 	} else {
 		//remove pass
