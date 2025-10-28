@@ -5,6 +5,10 @@
 // Server configuration
 // ============================
 #define SERVER_NAME "ircserv.by.Nandreev.Sgramsch"
+#define SERVER_VER "1.0"
+#define SERVER_CREATION_DATE "1.10.2025"
+#define USER_MODES ""
+#define CHANNEL_MODES "itkol"
 #define MAX_CHANNELS_PER_CLIENT 2
 #define MAX_CLIENTS_PER_CHANNEL 2
 #define MAX_PASS_SIZE 10
@@ -38,7 +42,29 @@ We can delete all unsued == still comented out ERR codes at the end
 #define CUSTOM_SOMEONE_WAS_KICKED(kicker, kicked, channel) (std::string(kicker) \
 	+ " kicked " + std::string(kicked) + " from " + std::string(channel))
 #define CUSTOM_CHANNELISFULL(channel) ("Server imposed Limit of Clients per Channel reached. " + std::string(channel) + " is already full. You did not join.")
-#define CUSTOM_BUFFER_OVERFLOW ("Max Buffer length: 512 Bytes. Your message is too long.")
+#define CUSTOM_BUFFER_OVERFLOW (RED "Max Buffer length: 512 Bytes. Your message is too long.\n" RESET)
+#define CUSTOM_INVALID_USERNAME(name) ("Invalid Username " + std::string(name) + ".")
+
+#define RPL_WELCOME             001
+#define MSG_WELCOME(userPrefix) \
+    (std::string("Welcome to the Internet Relay Network " + std::string(userPrefix)))
+
+#define RPL_YOURHOST            002
+#define MSG_YOURHOST(servername, version) \
+    (std::string("Your host is ") + std::string(servername) + \
+     ", running version " + std::string(version))
+
+#define RPL_CREATED             003
+#define MSG_CREATED(date) \
+    (std::string("This server was created ") + std::string(date))
+
+#define RPL_MYINFO              004
+#define MSG_MYINFO(servername, version, userModes, channelModes) \
+	("Server: " + std::string(servername) + "\nVersion: " + \
+	std::string(version) + "\nUser modes: " + std::string(userModes) \
+	+ "\nChannel modes: " + std::string(channelModes))
+
+
 // #define RPL_NONE                300
 // #define MSG_NONE()              ":Dummy reply number. Not used."
 

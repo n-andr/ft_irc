@@ -42,6 +42,7 @@ void Client::setOutgoingBuffer(const std::string& buffer) { _outgoing_buffer = b
 void Client::appendOutgoingBuffer(const std::string& data) { _outgoing_buffer += data; }
 void Client::setCommand(const std::string& cmd) { _command_capitalized = cmd; }
 
+
 std::string Client::prefix(std::string& target) const {
 	// Build the standard IRC prefix string
 	std::string result = ":";

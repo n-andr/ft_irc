@@ -96,14 +96,17 @@ public:
 	void sendInfoToTarget(Client &c, Client &t, const std::string &message);
 	void sendInfoToChannel(Client &c, Channel &ch, const std::string &message);
 
+	void sendCustomError(Client &c, const std::string &message);
 	void sendError(Client &c, int code, const std::string &message);
 	Client* getClientByNick(std::string& nick);
-	
+	void sendWelcomes(Client &c);
 	//For debugging only
 	void printClients();
 	void printModeParseResult(const std::string channelName, const ModeParseResult &r);
-
-
+	bool isValidUsername(std::string &s);
+	bool isValidNickname(std::string &s);
+	bool isSpecial(char c);
+	bool validChannelName(std::string &s);
 };
 
 

@@ -11,6 +11,10 @@ void Server::kick(Client &c) {
 		return ;
 	}
 	//check nbr relations channels vs nicks
+	if (!validChannelName(p[0])) {
+		sendError(c, ERR_NOSUCHCHANNEL, MSG_NOSUCHCHANNEL(p[0]));
+		return ;
+	}
 	Channel *ch = getChannelByName(p[0]);//assuming no list is given. Otherwise put everything starting here into a loop
 	if (ch == NULL) {
 		sendError(c, ERR_NOSUCHCHANNEL, MSG_NOSUCHCHANNEL(p[0]));
@@ -58,6 +62,10 @@ void Server::topic(Client &c) {
 		return ;
 	}
 	//optional error if too many args?
+	if (!validChannelName(p[0])) {
+		sendError(c, ERR_NOSUCHCHANNEL, MSG_NOSUCHCHANNEL(p[0]));
+		return ;
+	}
 	Channel *ch = getChannelByName(p[0]);
 	if (ch == NULL) {
 		sendError(c, ERR_NOSUCHCHANNEL, MSG_NOSUCHCHANNEL(p[0]));
@@ -143,11 +151,11 @@ void Server::eventLoop()
 						c.parseRawCommand();
 						c.printCommand();
 						delegateCommand(c);
+						c.clearCommand();
 					}
 					else if (c.getBufOverflow() == true) {
 						size_t pos = c.getReadBuffer().find("\r\n");
-						c.appendOutgoingBuffer(CUSTOM_BUFFER_OVERFLOW);
-						enablePollout(c);
+						sendCustomError(c, CUSTOM_BUFFER_OVERFLOW);
 						c.consumeBytesReadBuffer(pos + 2);
 						c.setBufferOverflow(false);
 					}

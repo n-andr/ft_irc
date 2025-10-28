@@ -60,9 +60,7 @@ public:
 	bool isRegistered() const;
 	bool isOperator() const;
 	bool getdisconnect();
-	void setdisconnect(bool status);
-	void setBufferOverflow(bool status);
-
+	
 	std::string& getReadBuffer();
 	std::string& getOutgoingBuffer();
 	std::string& getCommand();
@@ -70,12 +68,14 @@ public:
 	std::string& getTrailing();
 	std::set<std::string>& getChannels();
 	bool getBufOverflow();
-
+	
 	// Setters
+	void setBufferOverflow(bool status);
+	void setdisconnect(bool status);
 	void setSocketFd(int fd);
 	void setIpAddress(const std::string& ip);
 	void setPort(int port);
-	void setConnected(bool status);
+	//void setConnected(bool status);
 
 	void setHasPassedPassword(bool value);
 	void setNickname(const std::string& nick);
@@ -98,6 +98,7 @@ public:
 	//Read Buffer related
 	bool extractCommand();
 	void consumeBytesReadBuffer(size_t n);
+	void clearCommand();//clears all cmd related info
 
 	//outgoing Buffer realted
 	std::string getNextChunk(size_t max) const;

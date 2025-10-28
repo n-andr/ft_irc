@@ -6,6 +6,16 @@
 //#include <exception> //for exception 
 #include "../inc/Server.hpp"
 
+static bool isValidPassword(std::string s) {
+	if (s.empty())
+        return false;
+    for (size_t i = 0; i < s.size(); i++) {
+        if (s[i] == '\0' || s[i] == '\r' || s[i] == '\n' || s[i] == ' ')
+            return false;
+    }
+    return true;
+}
+
 static bool isValidPort(char *port){
 	if (std::strlen(port) > 5) return false;
 	for (const char *tmp = port; *tmp; ++tmp){
@@ -33,6 +43,10 @@ static bool checkArgs(int argc, char *argv[]){
 	if (std::string(argv[2]).size() > MAX_PASS_SIZE) {
 		std::cerr << RED << "Error: <password> too long. Max size: 10." << RESET << std::endl;
 		return false;
+	}
+	if (isValidPassword(argv[2]) == false) {
+		std::cerr << RED << "Error: <password> invalid." << RESET << std::endl;
+		return (false);
 	}
 	return true;
 }

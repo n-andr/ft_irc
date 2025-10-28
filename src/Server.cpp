@@ -83,6 +83,18 @@ void Server::sendError(Client &c, int code,
 	enablePollout(c);
 }
 
+void Server::sendCustomError(Client &c, const std::string &message) {
+	std::ostringstream oss;
+	oss << ":" << CYAN << SERVER_NAME << RESET
+		<< " " << (c.getNickname().empty() ? "*" : c.getNickname())
+		<< " " << (c.getCommand().empty() ? "no Cmd parsed" : c.getCommand())
+		<< " :" << RED << message << RESET
+		<< "\r\n";
+
+	c.appendOutgoingBuffer(oss.str());// enqueue for POLLOUT
+	enablePollout(c);
+}
+
 Client* Server::getClientByNick(std::string& nick)//non existend -> NULL
 {
 	for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); ++it) {

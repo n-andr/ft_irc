@@ -1,5 +1,20 @@
 #include "../inc/Server.hpp"
 
+bool Server::validChannelName(std::string &s) {
+	if (s.size() < 2 || s.size() > 50)
+		return (false);
+	if (s.empty())
+		return (false);
+	if (s[0] != '#')
+		return (false);
+	for (size_t i = 1; i < s.size(); i++) {
+        // Disallowed: NUL, CR, LF, space, comma, bell
+        if (s[i] == '\0' || s[i] == '\r' || s[i] == '\n' || s[i] == ' ' || s[i] == ',' || s[i] == '\a')
+            return false;
+    }
+	return (true);
+}
+
 void Server::join(Client& c) {
 	if (!c.isRegistered()) {
 		sendError(c, ERR_NOTREGISTERED, MSG_NOTREGISTERED);
@@ -11,7 +26,10 @@ void Server::join(Client& c) {
 		return ;
 	}
 	for (std::vector<std::string>::iterator it = p.begin(); it != p.end(); it++) {
-		//check validity of name -> sendError(c, ERR_NOSUCHCHANNEL, <channel>).
+		if (!validChannelName(*it)) {
+			sendError(c, ERR_NOSUCHCHANNEL, MSG_NOSUCHCHANNEL(*it));
+			continue ;
+		}
 		Channel *ch = getChannelByName(*it);
 		if (ch == NULL) {
 			if (c.getChannels().size() >= MAX_CHANNELS_PER_CLIENT) {
@@ -72,6 +90,10 @@ void Server::invite(Client& c) {
 		return ;
 	}
 	//optional: check if target == c (inviting yourself)
+	if (!validChannelName(p[1])) {
+		sendError(c, ERR_NOSUCHCHANNEL, MSG_NOSUCHCHANNEL(p[1]));
+		return ;
+	}
 	Channel *ch = getChannelByName(p[1]);
 	if (ch != NULL) {
 		if (ch->isMember(target->getSocketFd())) {

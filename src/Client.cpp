@@ -97,3 +97,10 @@ std::string Client::userPrefix() {
 	result += " "; // trailing space before the actual command/message
 	return (result);
 }
+
+void Client::clearCommand() {
+	_raw_command_input = "";
+	_command_capitalized = "";
+	_params.clear();
+	_trailing = "";
+}
