@@ -58,7 +58,7 @@ void Server::join(Client& c) {
 			sendError(c, ERR_TOOMANYCHANNELS, MSG_TOOMANYCHANNELS(*it));
 			return ;
 		}
-		if (ch->getUserLImit() > 0 && ch->getMembers().size() >= ch->getUserLImit()) {
+		if (ch->getUserLimit() > 0 && ch->getMembers().size() >= ch->getUserLimit()) {
 			sendError(c, ERR_CHANNELISFULL, MSG_CHANNELISFULL(ch->getName()));
 			return ;
 		}

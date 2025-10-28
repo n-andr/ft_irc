@@ -37,7 +37,7 @@ public:
 	std::string& getName();
 	
 	std::string& getTopic();
-	size_t getUserLImit();
+	size_t getUserLimit();
 	bool getInviteOnly();
 	const std::string& getKey();
 	bool getTopicLocked();

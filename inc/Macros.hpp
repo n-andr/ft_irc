@@ -65,6 +65,11 @@ We can delete all unsued == still comented out ERR codes at the end
 	+ "\nChannel modes: " + std::string(channelModes))
 
 
+#define CUSTOM_MODE_TOO_MANY_ARGS "MODE: Too many arguments"
+#define CUSTOM_MODE_CHANGE(condition, trueMsg, falseMsg) \
+	((condition) ? std::string (trueMsg) : std::string (falseMsg))
+
+
 // #define RPL_NONE                300
 // #define MSG_NONE()              ":Dummy reply number. Not used."
 

@@ -14,6 +14,7 @@
 #include <csignal> 		// signal
 #include <map> 			// std::map
 #include <cerrno>
+#include <cstdlib> //atoi
 
 #define MAX_CLIENTS 100
 #include "Client.hpp"
@@ -24,7 +25,7 @@
 #define L_SOCKET 0
 
 struct ModeChange {
-    bool        set;    // + = true, - = false
+    bool        set;    // +(set) = true, -(unset) = false
     char        mode;
     bool        hasArg;
     std::string arg;       // used if hasArg == true
@@ -33,7 +34,7 @@ struct ModeChange {
 //organize all options and args in this struct
 struct ModeParseResult {
     std::vector<ModeChange> order;    // what to execute in order
-    std::string             error;   // empty if ok or error macro(?)
+    std::string             error;   // empty if no errors 
     std::vector<std::string> leftoverArgs; // any args not consumed
 };
 
@@ -87,6 +88,7 @@ public:
 	void mode(Client& c);
 
 	ModeParseResult splitModeParams(Client &c);
+	void 	execute_mode(Client &c, std::string &channelName, ModeParseResult modeOrganized);
 
 	Channel* getChannelByName(const std::string& name);
 	std::map<std::string, Channel>::iterator getChannelItByName(const std::string &name);
@@ -100,14 +102,21 @@ public:
 	void sendError(Client &c, int code, const std::string &message);
 	Client* getClientByNick(std::string& nick);
 	void sendWelcomes(Client &c);
-	//For debugging only
-	void printClients();
-	void printModeParseResult(const std::string channelName, const ModeParseResult &r);
 	bool isValidUsername(std::string &s);
 	bool isValidNickname(std::string &s);
 	bool isSpecial(char c);
 	bool validChannelName(std::string &s);
+	
+	
+	//For debugging only
+	void printClients();
+	void printModeParseResult(const std::string channelName, const ModeParseResult &r);
+	void printChannelInfo( Channel &channel);
+
+
 };
+
+typedef bool (*ModeHandler)(Server&, Channel&, Client&, const ModeChange&);
 
 
 #endif
