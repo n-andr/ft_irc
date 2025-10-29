@@ -10,8 +10,12 @@ static bool isValidPassword(std::string s) {
 	if (s.empty())
         return false;
     for (size_t i = 0; i < s.size(); i++) {
-        if (s[i] == '\0' || s[i] == '\r' || s[i] == '\n' || s[i] == ' ')
-            return false;
+		unsigned char ch = static_cast<unsigned char>(s[i]);
+		if (!std::isprint(ch)) return false; // must be printable ASCII
+		if (std::isspace(ch)) return false; // no spaces, tabs, etc.
+		if (ch == ':') return false; //not to confuse with trailing
+        // if (s[i] == '\0' || s[i] == '\r' || s[i] == '\n' || s[i] == ' ')
+        //     return false;
     }
     return true;
 }

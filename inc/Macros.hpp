@@ -129,9 +129,9 @@ We can delete all unsued == still comented out ERR codes at the end
 // #define RPL_LISTEND             323
 // #define MSG_LISTEND()           ":End of /LIST"
 
-// #define RPL_CHANNELMODEIS       324
-// #define MSG_CHANNELMODEIS(channel, mode, params) /*\*/
-//     (std::string(channel) + " " + std::string(mode) + " " + std::string(params))
+#define RPL_CHANNELMODEIS       324
+#define MSG_CHANNELMODEIS(channel, mode, params) \
+    (std::string(channel) + " " + std::string(mode) + " " + std::string(params))
 
 #define RPL_NOTOPIC             331
 #define MSG_NOTOPIC(channel)    (std::string(channel) + " :No topic is set")

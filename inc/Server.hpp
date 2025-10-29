@@ -88,6 +88,7 @@ public:
 	void mode(Client& c);
 
 	ModeParseResult splitModeParams(Client &c);
+	void printChannelModes(Client &c,const std::string &channelName);
 	void 	execute_mode(Client &c, std::string &channelName, ModeParseResult modeOrganized);
 
 	Channel* getChannelByName(const std::string& name);

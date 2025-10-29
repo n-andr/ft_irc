@@ -94,17 +94,20 @@ ModeParseResult Server::splitModeParams(Client &cl)
     return out;
 }
 
-
 void Server::mode(Client &c) {
 	if (!c.isRegistered()) {
 		sendError(c, ERR_NOTREGISTERED, MSG_NOTREGISTERED);
 		return ;
 	}
 	std::vector<std::string> p = c.getParams();
-	if (p.empty()) {
+	if (p.empty() && c.getTrailing().empty()) {
 		sendError(c, ERR_NEEDMOREPARAMS, MSG_NEEDMOREPARAMS("MODE"));
 		return ;
 	}
+	if (p.size() == 1 && p[0][0] == '#' ) {
+    	printChannelModes(c, p[0]);
+		return;
+    }
 
 	//"MODE: need <channel> and <modestring>";
 	if (p.size() < 2) {
