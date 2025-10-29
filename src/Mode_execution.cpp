@@ -163,6 +163,28 @@ void handleMode() {
     modeHandlers['l'] = &handle_l;
 }
 
+void Server::printChannelModes(Client &c, const std::string &channelName){
+	std::string modeString = "+";
+	std::string params = "";
+	Channel *ch = getChannelByName(channelName);
+	if (!ch){
+		sendError(c, ERR_NOSUCHCHANNEL, MSG_NOSUCHCHANNEL(channelName));
+		return;
+	}
+	if (ch->getInviteOnly()) modeString += 'i';
+	if (ch->getTopicLocked()) modeString += 't';
+	if (!ch->getKey().empty()) {
+        modeString += 'k';
+        params += '*';
+    }
+    if (ch->getUserLimit() != 0) {
+        modeString += 'l';
+        if (!params.empty()) params += ' ';
+        params += toStr(ch->getUserLimit());
+	}
+	sendServerReply(c, RPL_CHANNELMODEIS, MSG_CHANNELMODEIS(channelName, modeString, params));
+}
+
 void 	Server::execute_mode(Client &c, std::string &channelName, ModeParseResult modeOrganized){
 
 	Channel *ch = getChannelByName(channelName);
@@ -170,7 +192,7 @@ void 	Server::execute_mode(Client &c, std::string &channelName, ModeParseResult 
 		sendError(c, ERR_NOSUCHCHANNEL, MSG_NOSUCHCHANNEL(channelName));
 		return;
 	}
-	//debug
+	//debug (delete later)
 	std::cout << "Executing MODE for channel: " << channelName << std::endl;
 	std::cout << "Before execution" << channelName << std::endl;
 	printChannelInfo(*ch);
@@ -198,7 +220,7 @@ void 	Server::execute_mode(Client &c, std::string &channelName, ModeParseResult 
 		// it->second is the value — the handler function pointer
 		(it->second)(*this, *ch, c, current);
 	}
-	//debug
+	//debug (delete later)
 	std::cout << "After execution" << channelName << std::endl;
 	printChannelInfo(*ch);
 	//end debug
