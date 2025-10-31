@@ -12,7 +12,7 @@ SRCS = $(addprefix $(SRC_DIR)/,\
 	Server.cpp Server_ocf.cpp Server_setup.cpp Server_socket.cpp Server_send_data.cpp \
 	Channel.cpp \
 	Registration.cpp Privmsg.cpp Invite_join.cpp Mode.cpp Mode_execution.cpp\
-	debug.cpp )
+	Kick_Topic.cpp )
 
 OBJ_DIR = ./obj
 OBJS = $(SRCS:./src/%.cpp=$(OBJ_DIR)/%.o)

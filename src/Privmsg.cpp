@@ -43,7 +43,6 @@ void Server::privmsg(Client& c) {
 		if (t == NULL) {
 			sendError(c, ERR_NOSUCHNICK, MSG_NOSUCHNICK(*it));
 			continue ;
-			//or return, depends on weither or not the target list is still executed after an error occurs
 		}
 		(*t).appendOutgoingBuffer(c.prefix(*it));
 		(*t).appendOutgoingBuffer(c.getTrailing());

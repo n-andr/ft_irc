@@ -34,7 +34,6 @@ We can delete all unsued == still comented out ERR codes at the end
 #define CUSTOM_PASS_CORRECT "Password Corrrect"
 #define CUSTOM_NICK_SET(nick) ("Your Nickname was set to " + std::string(nick))
 #define CUSTOM_USER_SET(user) ("Your Username was set to " + std::string(user))
-#define CUSTOM_REGISTRATION_SUCCESS "Registration complete. You may use the Server for messaging now."
 #define CUSTOM_TOPIC_CHANGED(nick, channel, topic) (std::string(nick) \
 	+ " has changed " + std::string(channel) + "'s topic to: " + std::string(topic))
 #define CUSTOM_YOU_GOT_KICKED(nick, channel) (std::string(nick) \
@@ -44,6 +43,7 @@ We can delete all unsued == still comented out ERR codes at the end
 #define CUSTOM_CHANNELISFULL(channel) ("Server imposed Limit of Clients per Channel reached. " + std::string(channel) + " is already full. You did not join.")
 #define CUSTOM_BUFFER_OVERFLOW (RED "Max Buffer length: 512 Bytes. Your message is too long.\n" RESET)
 #define CUSTOM_INVALID_USERNAME(name) ("Invalid Username " + std::string(name) + ".")
+#define CUSTOM_TOO_MANY_ARGS(cmdname) ("Too many arguments for command " + std::string(cmdname))
 
 #define RPL_WELCOME             001
 #define MSG_WELCOME(userPrefix) \

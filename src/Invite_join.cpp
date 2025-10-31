@@ -8,10 +8,9 @@ bool Server::validChannelName(std::string &s) {
 	if (s[0] != '#')
 		return (false);
 	for (size_t i = 1; i < s.size(); i++) {
-        // Disallowed: NUL, CR, LF, space, comma, bell
-        if (s[i] == '\0' || s[i] == '\r' || s[i] == '\n' || s[i] == ' ' || s[i] == ',' || s[i] == '\a')
-            return false;
-    }
+		if (s[i] == '\0' || s[i] == '\r' || s[i] == '\n' || s[i] == ' ' || s[i] == ',' || s[i] == '\a' || s[i] == ':')
+			return false;
+	}
 	return (true);
 }
 
@@ -23,6 +22,10 @@ void Server::join(Client& c) {
 	std::vector<std::string> p = c.getParams();
 	if (p.empty()) {
 		sendError(c, ERR_NEEDMOREPARAMS, MSG_NEEDMOREPARAMS("JOIN"));
+		return ;
+	}
+	if (!c.getTrailing().empty()) {
+		sendCustomError(c, CUSTOM_TOO_MANY_ARGS("JOIN"));
 		return ;
 	}
 	for (std::vector<std::string>::iterator it = p.begin(); it != p.end(); it++) {
@@ -37,11 +40,10 @@ void Server::join(Client& c) {
 				return ;
 			}
 			ch = createNewChannel(*it);
-			ch->addOperator(c.getSocketFd()); // creator becomes operator
+			ch->addOperator(c.getSocketFd());
 			ch->addMember(c.getSocketFd());
 			c.joinChannel(*it);
 			sendInfoToChannel(c, *ch, CUSTOM_JOIN(c.getNickname(), ch->getName()));
-			//sendServerReply(c, -1, CUSTOM_JOIN(c.getNickname(), ch->getName()));
 			continue ;
 		}
 		if (ch->getInviteOnly()) {
@@ -68,7 +70,6 @@ void Server::join(Client& c) {
 		}
 		ch->addMember(c.getSocketFd());
 		c.joinChannel(*it);
-		//sendServerReply(c, -1, CUSTOM_JOIN(c.getNickname(), ch->getName()));
 		sendInfoToChannel(c, *ch, CUSTOM_JOIN(c.getNickname(), ch->getName()));
 	}
 }
@@ -83,13 +84,15 @@ void Server::invite(Client& c) {
 		sendError(c, ERR_NEEDMOREPARAMS, MSG_NEEDMOREPARAMS("INVITE"));
 		return ;
 	}
-	//optional: error if too many args
+	if (!c.getTrailing().empty() || p.size() > 2) {
+		sendCustomError(c, CUSTOM_TOO_MANY_ARGS("INVITE"));
+		return ;
+	}
 	Client *target = getClientByNick(p[0]);
 	if (target == NULL) {
 		sendError(c, ERR_NOSUCHNICK, MSG_NOSUCHNICK(p[0]));
 		return ;
 	}
-	//optional: check if target == c (inviting yourself)
 	if (!validChannelName(p[1])) {
 		sendError(c, ERR_NOSUCHCHANNEL, MSG_NOSUCHCHANNEL(p[1]));
 		return ;
@@ -109,13 +112,7 @@ void Server::invite(Client& c) {
 			return ;
 		}
 	}
-	/*else {//throw error at invite to noneexisting channel
-		sendError(c, ERR_NOSUCHCHANNEL, MSG_NOSUCHCHANNEL(p[1]));
-		return ;
-	}*/
 	target->addInvite(p[1]);
-	//confirmation message to target. check syntax!
 	sendInfoToTarget(c, *target, CUSTOM_INVITED(p[1]));
-	//confirmation message to c (server or client prefix?)
 	sendServerReply(c, RPL_INVITING, MSG_INVITING(p[1], p[0]));
 }

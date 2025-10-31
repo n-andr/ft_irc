@@ -17,14 +17,15 @@ void Server::pass(Client &c) {
 		std::cout << RED << "Too few Parameters for Pass. Research how to handle this" << RESET << std::endl;
 		return ;
 	}
-	//if too many params == error is dependent on the server
+	if (c.getParams().size() > 1 || !c.getTrailing().empty()) {
+		sendCustomError(c, CUSTOM_TOO_MANY_ARGS("PASS"));
+		return ;
+	}
 	if (c.getParams()[0] == _password) {
-		std::cout << GREEN << "Correct password" << RESET << std::endl;
 		c.setHasPassedPassword(true);
 		sendServerReply(c, -1, CUSTOM_PASS_CORRECT);
 		if (c.getNickname().size() != 0 && c.getUsername().size()) {
 			c.setRegistered(true);
-			sendServerReply(c, -1, CUSTOM_REGISTRATION_SUCCESS);
 			sendWelcomes(c);
 		}
 	}
@@ -34,13 +35,13 @@ void Server::pass(Client &c) {
 
 bool	Server::isSpecial(char c) {
 	switch (c) {
-        case '[': case ']': case '\\':
-        case '`': case '_': case '^':
-        case '{': case '|': case '}':
-            return true;
-        default:
-            return false;
-    }
+		case '[': case ']': case '\\':
+		case '`': case '_': case '^':
+		case '{': case '|': case '}':
+			return true;
+		default:
+			return false;
+	}
 }
 
 bool Server::isValidNickname(std::string &s) {
@@ -61,7 +62,10 @@ void Server::nick(Client &c) {
 		std::cout << RED << "Too few Parameters for NICK. Research how to handle this" << RESET << std::endl;
 		return ;
 	}
-	//if too many params == error is dependent on the server
+	if (c.getParams().size() > 1 || !c.getTrailing().empty()) {
+		sendCustomError(c, CUSTOM_TOO_MANY_ARGS("NICK"));
+		return ;
+	}
 	std::string requested_name = c.getParams()[0];
 	if (isValidNickname(requested_name) == false) {
 		sendError(c, ERR_NOSUCHNICK, MSG_NOSUCHNICK(requested_name));
@@ -74,11 +78,9 @@ void Server::nick(Client &c) {
 		}
 	}
 	c.setNickname(requested_name);
-	std::cout << GREEN << "NICK successful" << RESET << std::endl;
 	sendServerReply(c, -1, CUSTOM_NICK_SET(requested_name));
 	if (c.hasPassedPassword() && !c.getUsername().empty() && c.isRegistered() == false) {
 		c.setRegistered(true);
-		sendServerReply(c, -1, CUSTOM_REGISTRATION_SUCCESS);
 		sendWelcomes(c);
 	}
 }
@@ -103,7 +105,10 @@ void Server::user(Client &c) {
 		sendError(c, ERR_NEEDMOREPARAMS, MSG_NEEDMOREPARAMS("USER"));
 		return ;
 	}
-	//if too many params == error is dependent on the server
+	if (p.size() > 3) {
+		sendCustomError(c, CUSTOM_TOO_MANY_ARGS("USER"));
+		return ;
+	}
 	std::string requested_name = p[0];
 	if (!isValidUsername(requested_name)) {
 		sendCustomError(c, CUSTOM_INVALID_USERNAME(requested_name));
@@ -113,8 +118,6 @@ void Server::user(Client &c) {
 	sendServerReply(c, -1, CUSTOM_USER_SET(requested_name));
 	if (c.hasPassedPassword() && !c.getNickname().empty()) {
 		c.setRegistered(true);
-		sendServerReply(c, -1, CUSTOM_REGISTRATION_SUCCESS);
 		sendWelcomes(c);
 	}
-	std::cout << GREEN << "USER successful" << RESET << std::endl;
 }

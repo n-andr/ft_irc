@@ -36,7 +36,7 @@ Client::~Client() {}
 
 //actual functions
 
-
+//gets the next chunk of data to send from a client
 std::string Client::getNextChunk(size_t max) const
 {
 	if (_outgoing_buffer.empty()) 
@@ -48,6 +48,8 @@ std::string Client::getNextChunk(size_t max) const
 
 bool Client::outgoingBufferIsEmpty() { return _outgoing_buffer.empty(); }
 
+
+//consumes the bytes send from outgoing buffer
 void Client::consumeBytes(size_t n){
 	if (n >= _outgoing_buffer.size()) {
 		_outgoing_buffer.clear();
@@ -56,6 +58,7 @@ void Client::consumeBytes(size_t n){
 	}
 }
 
+//consumes the bytes read from read buffer
 void Client::consumeBytesReadBuffer(size_t n){
 	if (n >= _read_buffer.size()) {
 		_read_buffer.clear();
@@ -75,6 +78,7 @@ bool Client::isInvited(const std::string& name) {
 void Client::addInvite(const std::string& name) {
 	_invites.insert(name);
 }
+
 void Client::joinChannel(const std::string &name) {
 	if (isInvited(name))
 		_invites.erase(name);
@@ -83,7 +87,7 @@ void Client::joinChannel(const std::string &name) {
 
 void Client::leaveChannel(const std::string &name) { _channels.erase(name); }
 
-
+//returns the User prefix WITHOUT a cmd.
 std::string Client::userPrefix() {
 	std::string result = ":";
 	result += _nickname;
@@ -98,6 +102,7 @@ std::string Client::userPrefix() {
 	return (result);
 }
 
+//cempties all cmd related buffers between cmds. 
 void Client::clearCommand() {
 	_raw_command_input = "";
 	_command_capitalized = "";

@@ -25,37 +25,26 @@ static std::string to_upper(const std::string &s) {
 	return out;
 }
 
+//returns true if a full command was found in read buffer and got successfully moved into raw command.
 bool Client::extractCommand() {
 	size_t pos = _read_buffer.find("\r\n");
-
-	// If no CRLF found, try just LF (for netcat/testing)
-	// this is NOT proper IRC protocol. It's netcat being mean
-	//if (pos == std::string::npos)
-	//	pos = _read_buffer.find('\n');
 	if (pos == std::string::npos)
 		return (false);
-	if (pos + 2 > 512)//the buffer limit includes the \r\n
+	if (pos + 2 > 512)
 	{
 		setBufferOverflow(true);
 		return (false);
 	}
-	//std::cout << "before extraction: REad buffer: \"" << getReadBuffer() << "\""<< std::endl;
 	_raw_command_input = removeCRLF(_read_buffer.substr(0, pos));
-	//std::cout << "pos = " << pos << std::endl;
 	consumeBytesReadBuffer(pos + 2);
-	//std::cout << "after extraction: REad buffer: \"" << getReadBuffer() << "\"" << std::endl;
-
 	return (true);
 }
 
+//parse raw command into CMD, params and trailing
 void Client::parseRawCommand(){
-	//raw command set in extract command
 	_command_capitalized.clear();
 	_params.clear();
 	_trailing.clear();	
-
-	// space followed by colon starts trailing
-	// spit into <everything before> " :" <trailing>
 
 	std::string before_trailing = _raw_command_input;
 	size_t position = std::string::npos;
@@ -72,7 +61,6 @@ void Client::parseRawCommand(){
 		_trailing = _raw_command_input.substr(position + 2);
 	}
 
-	//spit into command and params
 	std::vector<std::string> tokens;
 	split_spaces(before_trailing, tokens);
 	if (tokens.empty()) return;

@@ -25,7 +25,7 @@ Channel::Channel(const Channel &other)
 	, _topicLocked(false)
 	, _topic(other._topic)
 	, _key("")
-	{}
+{}
 
 // Copy assignment operator
 Channel &Channel::operator=(const Channel &other) {
@@ -79,7 +79,7 @@ void Channel::removeMember(int fd) {
 	if (isOperator(fd))
 		removeOperator(fd);
 }
+void Channel::addOperator(int fd) { _operators.insert(fd); }
 void Channel::removeOperator(int fd) { _operators.erase(fd); }
 bool Channel::isMember(int fd) const { return (_members.find(fd) != _members.end()); }
-void Channel::addOperator(int fd) { _operators.insert(fd); }
 bool Channel::isOperator(int fd) { return (_operators.find(fd) != _operators.end()); }

@@ -3,7 +3,7 @@
 void Server::disablePollout(Client &client) {
 	for (size_t i = 0; i < _pollFds.size(); ++i) {
 		if (_pollFds[i].fd == client.getSocketFd()) {
-			_pollFds[i].events &= ~POLLOUT;  // clear POLLOUT bit
+			_pollFds[i].events &= ~POLLOUT; // clear POLLOUT bit
 			break;
 		}
 	}
@@ -12,7 +12,7 @@ void Server::disablePollout(Client &client) {
 void Server::enablePollout(Client &client) {
 	for (size_t i = 0; i < _pollFds.size(); ++i) {
 		if (_pollFds[i].fd == client.getSocketFd()) {
-			_pollFds[i].events |= POLLOUT;  // clear POLLOUT bit
+			_pollFds[i].events |= POLLOUT;  // fill POLLOUT bit
 			break;
 		}
 	}
@@ -30,7 +30,7 @@ void Server::sendServerReply(Client &c, int code,
 		<< " :" << GREEN << message << RESET
 		<< "\r\n";
 
-	c.appendOutgoingBuffer(oss.str());// enqueue for POLLOUT
+	c.appendOutgoingBuffer(oss.str());
 	enablePollout(c);
 }
 
@@ -38,53 +38,48 @@ void Server::sendServerReply(Client &c, int code,
 void Server::sendInfoToTarget(Client &c, Client &t, const std::string &message) {
 	std::ostringstream oss;
 	oss << ":" << CYAN << c.userPrefix() << RESET
-		//<< " " << GREEN << code << RESET
 		<< " " << (c.getNickname().empty() ? "*" : c.getNickname())
-		<< " " << c.getCommand() //optional add arguments after this?
+		<< " " << c.getCommand()
 		<< " " << (t.getNickname().empty() ? "*" : t.getNickname())
 		<< " :" << GREEN << message << RESET
 		<< "\r\n";
 
-	t.appendOutgoingBuffer(oss.str());// enqueue for POLLOUT
+	t.appendOutgoingBuffer(oss.str());
 	enablePollout(t);
 }
 
+//sends info message to channel
 void Server::sendInfoToChannel(Client &c, Channel &ch, const std::string &message) {
 	std::ostringstream oss;
 	oss << ":" << CYAN << c.userPrefix() << RESET
-		//<< " " << GREEN << code << RESET
 		<< " " << (c.getNickname().empty() ? "*" : c.getNickname())
-		<< " " << c.getCommand() //optional add arguments after this?
+		<< " " << c.getCommand()
 		<< " " << (ch.getName().empty() ? "*" : ch.getName())
 		<< " :" << GREEN << message << RESET
 		<< "\r\n";
 	
 	for (std::set<int>::iterator it = ch.getMembers().begin(); it != ch.getMembers().end(); it++) {
-		//if (*it != c.getSocketFd()) {
-		_clients[*it].appendOutgoingBuffer(oss.str());// enqueue for POLLOUT
+		_clients[*it].appendOutgoingBuffer(oss.str());
 		enablePollout(_clients[*it]);
-		//}
-			//sendInfoToTarget(c, _clients[*it], message);
 	}
 }
 
 //send code -1 for custom errors with no error code
-void Server::sendError(Client &c, int code,
-					   const std::string &message) {
+void Server::sendError(Client &c, int code, const std::string &message) {
 	std::ostringstream oss;
 	oss << ":" << CYAN << SERVER_NAME << RESET;
-	if (code != -1) {                      // only print code number when present
-        oss << " " << RED << code << RESET;
-    }
+	if (code != -1)
+		oss << " " << RED << code << RESET;
 	oss << " " << (c.getNickname().empty() ? "*" : c.getNickname())
 		<< " " << c.getCommand()
 		<< " :" << RED << message << RESET
 		<< "\r\n";
 
-	c.appendOutgoingBuffer(oss.str());// enqueue for POLLOUT
+	c.appendOutgoingBuffer(oss.str());
 	enablePollout(c);
 }
 
+//for sending custom errors
 void Server::sendCustomError(Client &c, const std::string &message) {
 	std::ostringstream oss;
 	oss << ":" << CYAN << SERVER_NAME << RESET
@@ -93,11 +88,11 @@ void Server::sendCustomError(Client &c, const std::string &message) {
 		<< " :" << RED << message << RESET
 		<< "\r\n";
 
-	c.appendOutgoingBuffer(oss.str());// enqueue for POLLOUT
+	c.appendOutgoingBuffer(oss.str());
 	enablePollout(c);
 }
 
-Client* Server::getClientByNick(std::string& nick)//non existend -> NULL
+Client* Server::getClientByNick(std::string& nick)
 {
 	for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); ++it) {
 		if (it->second.getNickname() == nick) {
@@ -116,7 +111,7 @@ Channel* Server::getChannelByName(const std::string& name) {
 }
 
 std::map<std::string, Channel>::iterator Server::getChannelItByName(const std::string &name) {
-    return _channels.find(name);
+	return _channels.find(name);
 }
 
 Channel* Server::createNewChannel(std::string& name) {

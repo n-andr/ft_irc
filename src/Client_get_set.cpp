@@ -4,7 +4,6 @@
 int Client::getSocketFd() const { return _socket_fd; }
 const std::string& Client::getIpAddress() const { return _ip_address; }
 int Client::getPort() const { return _port; }
-//bool Client::isConnected() const { return _isConnected; }
 
 bool Client::hasPassedPassword() const { return _has_passed_password; }
 const std::string& Client::getNickname() const { return _nickname; }
@@ -21,13 +20,11 @@ std::set<std::string>& Client::getChannels() { return _channels; }
 bool Client::getdisconnect() { return _disconnect; }
 bool Client::getBufOverflow() { return _InBufOverflow; }
 
-void Client::setdisconnect(bool status) { _disconnect = status; }
-
 // Setters
+void Client::setdisconnect(bool status) { _disconnect = status; }
 void Client::setSocketFd(int fd) { _socket_fd = fd; }
 void Client::setIpAddress(const std::string& ip) { _ip_address = ip; }
 void Client::setPort(int port) { _port = port; }
-//void Client::setConnected(bool status) { _isConnected = status; }
 void Client::setBufferOverflow(bool status) { _InBufOverflow = status; }
 
 void Client::setHasPassedPassword(bool value) { _has_passed_password = value; }
@@ -37,11 +34,12 @@ void Client::setRegistered(bool value) { _is_registered = value; }
 void Client::setOperator(bool value) { _is_operator = value; }
 
 void Client::setReadBuffer(const std::string& buffer) { _read_buffer = buffer; }
-void Client::appendReadBuffer(const std::string& data) { _read_buffer += data; }
 void Client::setOutgoingBuffer(const std::string& buffer) { _outgoing_buffer = buffer; }
-void Client::appendOutgoingBuffer(const std::string& data) { _outgoing_buffer += data; }
 void Client::setCommand(const std::string& cmd) { _command_capitalized = cmd; }
 
+//other
+void Client::appendOutgoingBuffer(const std::string& data) { _outgoing_buffer += data; }
+void Client::appendReadBuffer(const std::string& data) { _read_buffer += data; }
 
 std::string Client::prefix(std::string& target) const {
 	// Build the standard IRC prefix string

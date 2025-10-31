@@ -1,22 +1,14 @@
 #include "../inc/Server.hpp"
 
-/*
-Listening setup: 
-	setupListeningSocket(), setNonBlocking(int)
-Poll integration: 
-	addSocketToPoll(int)
-Connection lifecycle: 
-	handleNewConnection(), disconnectClient(int client_fd), errorDisconnect(int idx)
-*/
-
 void Server::setupListeningSocket() {
 	_serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 	if (_serverSocket < 0) 
 		throw(std::runtime_error("Can't create a socket"));
 
 	int opt = 1;
-	if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) //setsockopt(SO_REUSEADDR) :  to restart server quickly SO_REUSEADDR allows to bind to the adress even if it’s in TIME_WAIT
-   		throw(std::runtime_error("setsockopt(SO_REUSEADDR) failed"));
+	//setsockopt(SO_REUSEADDR) :  to restart server quickly SO_REUSEADDR allows to bind to the adress even if it’s in TIME_WAIT
+	if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
+		throw(std::runtime_error("setsockopt(SO_REUSEADDR) failed"));
 
 	sockaddr_in addr; 								// socket address struct.
 	std::memset(&addr, 0, sizeof(addr));			// zero out all fields to avoid garbage in addr
@@ -64,39 +56,28 @@ void Server::handleNewConnection() {
 	}
 	setNonBlocking(clientFd);
 
-	std::cout << "[info] New client fd=" << clientFd
-		  << " from " << inet_ntoa(clientAddr.sin_addr)
-		  << ":" << ntohs(clientAddr.sin_port) << std::endl;
-
 	addSocketToPoll(clientFd);
-	// create a Client record here and store it in a map keyed by clientFd
-	// create_client_object(new_client_socket); // to be done
 	Client c;
 	c.setSocketFd(clientFd);
-	c.setIpAddress(inet_ntoa(clientAddr.sin_addr));// do we need this?
+	c.setIpAddress(inet_ntoa(clientAddr.sin_addr));
 	c.setPort(ntohs(clientAddr.sin_port));
 	_clients.insert(std::make_pair(clientFd, c));
-	printClients();
 }
 
 void Server::eraseClientFootprint(int client_fd) {
 	std::map<int, Client>::iterator itClient = _clients.find(client_fd);
-    if (itClient == _clients.end())
-        return;//can't disconnect non existend client
+	if (itClient == _clients.end())
+		return;
 
-    Client &c = itClient->second;
-
-    // Clean up channels before erasing
-    for (std::set<std::string>::iterator it = c.getChannels().begin(); it != c.getChannels().end(); ++it) {
+	Client &c = itClient->second;
+	for (std::set<std::string>::iterator it = c.getChannels().begin(); it != c.getChannels().end(); ++it) {
 		std::map<std::string, Channel>::iterator itChannel = getChannelItByName(*it);
 		if (itChannel == _channels.end()) continue;
 		Channel &ch = itChannel->second;
 		if (ch.isMember(client_fd)) ch.removeMember(client_fd);
-		if (ch.getMembers().empty()) {
-			std::cout << "Empty Channel\n";
+		if (ch.getMembers().empty())
 			_channels.erase(itChannel);
-		}
-    }
+	}
 	c.setdisconnect(true);
 }
 
@@ -121,8 +102,6 @@ void Server::disconnectClient(int client_fd){
 	_nFds = _pollFds.size();
 	_clients.erase(client_fd);
 
-	std::cout << "[info] Client fd=" << client_fd << " disconnected" << std::endl; // log
-	printClients();
 	if (_clients.empty())
 		_running = false;
 }
