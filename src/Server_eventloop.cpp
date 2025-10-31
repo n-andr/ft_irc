@@ -2,7 +2,8 @@
 
 void Server::delegateCommand(Client &c) {
 	const std::string &cmd = c.getCommand();
-
+	std::cout << "RAW: " << c.getRaw() << std::endl;
+	
 	if (cmd == "PASS")
 		pass(c);
 	else if (cmd == "USER")
@@ -21,6 +22,16 @@ void Server::delegateCommand(Client &c) {
 		mode(c);
 	else if (cmd == "PRIVMSG")
 		privmsg(c);
+	else if (cmd == "CAP") {
+		std::ostringstream oss;
+		oss << ":" << SERVER_NAME << " CAP ";
+		oss << (c.getNickname().empty() ? "*" : c.getNickname());
+		oss << " LS :" << " \r\n";
+
+		c.appendOutgoingBuffer(oss.str());
+		enablePollout(c);
+		sendPendingData(c);
+	}
 	else
 		sendError(c, ERR_UNKNOWNCOMMAND, MSG_UNKNOWNCOMMAND(cmd));
 }
@@ -50,18 +61,19 @@ void Server::eventLoop()
 				else {
 					buf[bytes_read] = '\0';
 					c.appendReadBuffer(buf);
-					if (c.extractCommand() == true)
+					std::cout << "READ: " << c.getReadBuffer() << "END";
+					while (c.extractCommand() == true)
 					{
 						c.parseRawCommand();
 						delegateCommand(c);
 						c.clearCommand();
 					}
-					else if (c.getBufOverflow() == true) {
+					/*if (c.getBufOverflow() == true) {
 						size_t pos = c.getReadBuffer().find("\r\n");
 						sendCustomError(c, CUSTOM_BUFFER_OVERFLOW);
 						c.consumeBytesReadBuffer(pos + 2);
 						c.setBufferOverflow(false);
-					}
+					}*/
 				}
 			}
 			if (_pollFds[i].revents & POLLOUT) {

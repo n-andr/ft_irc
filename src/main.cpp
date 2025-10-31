@@ -32,23 +32,23 @@ static bool isValidPort(char *port){
 
 static bool checkArgs(int argc, char *argv[]){
 	if (argc != 3){
-		std::cerr << RED << "Usage: " << argv[0] << " <port> <password>\n" << RESET;
+		std::cerr << "Usage: " << argv[0] << " <port> <password>\n" ;
 		return false;
 	}
 	if (!isValidPort(argv[1])){
-		std::cerr << RED << "Error: <port> must be in range 1024 - 65535\n" << RESET;
+		std::cerr << "Error: <port> must be in range 1024 - 65535\n" << RESET;
 		return false;
 	}
 	if (std::string(argv[2]).empty()) {
-		std::cerr << RED << "Error: <password> must be non-empty\n" << RESET;
+		std::cerr << "Error: <password> must be non-empty\n";
 		return false;
 	}
 	if (std::string(argv[2]).size() > MAX_PASS_SIZE) {
-		std::cerr << RED << "Error: <password> too long. Max size: 10." << RESET << std::endl;
+		std::cerr << "Error: <password> too long. Max size: 10." << std::endl;
 		return false;
 	}
 	if (isValidPassword(argv[2]) == false) {
-		std::cerr << RED << "Error: <password> invalid." << RESET << std::endl;
+		std::cerr << "Error: <password> invalid." << std::endl;
 		return (false);
 	}
 	return true;

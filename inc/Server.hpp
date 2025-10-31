@@ -18,7 +18,7 @@
 
 #define MAX_CLIENTS 100
 #include "Client.hpp"
-#include "Color.hpp"
+//#include "Color.hpp"
 #include "Channel.hpp"
 #include "Macros.hpp"
 

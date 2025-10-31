@@ -68,6 +68,7 @@ public:
 	std::string& getTrailing();
 	std::set<std::string>& getChannels();
 	bool getBufOverflow();
+	std::string& getRaw();
 	
 	// Setters
 	void setBufferOverflow(bool status);

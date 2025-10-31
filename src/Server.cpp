@@ -19,29 +19,30 @@ void Server::enablePollout(Client &client) {
 }
 
 //when a server sends a non error message, like the response to topic
-void Server::sendServerReply(Client &c, int code,
-					   const std::string &message) {
+void Server::sendServerReply(Client &c, int code, const std::string &message) {
 	std::ostringstream oss;
-	oss << ":" << CYAN << SERVER_NAME << RESET;
+	oss << ":" << SERVER_NAME;
 	if (code != -1)
-		oss << " " << GREEN << code << RESET;
+		oss << " " << code;
+	else
+		oss << " NOTICE ";
 	oss << " " << (c.getNickname().empty() ? "*" : c.getNickname())
-		<< " " << c.getCommand()
-		<< " :" << GREEN << message << RESET
+		<< " :" << message 
 		<< "\r\n";
 
 	c.appendOutgoingBuffer(oss.str());
 	enablePollout(c);
+	sendPendingData(c);
 }
 
 //when someone elses command affects a user. For example when someone invited you to a channel
 void Server::sendInfoToTarget(Client &c, Client &t, const std::string &message) {
 	std::ostringstream oss;
-	oss << ":" << CYAN << c.userPrefix() << RESET
+	oss << ":" << c.userPrefix()
 		<< " " << (c.getNickname().empty() ? "*" : c.getNickname())
 		<< " " << c.getCommand()
 		<< " " << (t.getNickname().empty() ? "*" : t.getNickname())
-		<< " :" << GREEN << message << RESET
+		<< " :" << message 
 		<< "\r\n";
 
 	t.appendOutgoingBuffer(oss.str());
@@ -51,11 +52,11 @@ void Server::sendInfoToTarget(Client &c, Client &t, const std::string &message) 
 //sends info message to channel
 void Server::sendInfoToChannel(Client &c, Channel &ch, const std::string &message) {
 	std::ostringstream oss;
-	oss << ":" << CYAN << c.userPrefix() << RESET
+	oss << ":" << c.userPrefix()
 		<< " " << (c.getNickname().empty() ? "*" : c.getNickname())
 		<< " " << c.getCommand()
 		<< " " << (ch.getName().empty() ? "*" : ch.getName())
-		<< " :" << GREEN << message << RESET
+		<< " :" << message 
 		<< "\r\n";
 	
 	for (std::set<int>::iterator it = ch.getMembers().begin(); it != ch.getMembers().end(); it++) {
@@ -67,12 +68,12 @@ void Server::sendInfoToChannel(Client &c, Channel &ch, const std::string &messag
 //send code -1 for custom errors with no error code
 void Server::sendError(Client &c, int code, const std::string &message) {
 	std::ostringstream oss;
-	oss << ":" << CYAN << SERVER_NAME << RESET;
+	oss << ":" SERVER_NAME;
 	if (code != -1)
-		oss << " " << RED << code << RESET;
+		oss << " " << code;
 	oss << " " << (c.getNickname().empty() ? "*" : c.getNickname())
 		<< " " << c.getCommand()
-		<< " :" << RED << message << RESET
+		<< " :" << message
 		<< "\r\n";
 
 	c.appendOutgoingBuffer(oss.str());
@@ -82,10 +83,10 @@ void Server::sendError(Client &c, int code, const std::string &message) {
 //for sending custom errors
 void Server::sendCustomError(Client &c, const std::string &message) {
 	std::ostringstream oss;
-	oss << ":" << CYAN << SERVER_NAME << RESET
+	oss << ":" << SERVER_NAME
 		<< " " << (c.getNickname().empty() ? "*" : c.getNickname())
 		<< " " << (c.getCommand().empty() ? "no Cmd parsed" : c.getCommand())
-		<< " :" << RED << message << RESET
+		<< " :" << message
 		<< "\r\n";
 
 	c.appendOutgoingBuffer(oss.str());

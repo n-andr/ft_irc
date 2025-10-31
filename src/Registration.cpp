@@ -1,6 +1,7 @@
 #include "../inc/Server.hpp"
 
 void Server::sendWelcomes(Client &c) {
+	std::cout << "WELCOMES\n";
 	sendServerReply(c, RPL_WELCOME, MSG_WELCOME(c.userPrefix()));
 	sendServerReply(c, RPL_YOURHOST, MSG_YOURHOST(SERVER_NAME, SERVER_VER));
 	sendServerReply(c, RPL_CREATED, MSG_CREATED(SERVER_CREATION_DATE));
@@ -14,7 +15,6 @@ void Server::pass(Client &c) {
 	}
 	if (c.getParams().size() < 1) {
 		sendError(c, ERR_NEEDMOREPARAMS, MSG_NEEDMOREPARAMS("PASS"));
-		std::cout << RED << "Too few Parameters for Pass. Research how to handle this" << RESET << std::endl;
 		return ;
 	}
 	if (c.getParams().size() > 1 || !c.getTrailing().empty()) {
@@ -23,7 +23,7 @@ void Server::pass(Client &c) {
 	}
 	if (c.getParams()[0] == _password) {
 		c.setHasPassedPassword(true);
-		sendServerReply(c, -1, CUSTOM_PASS_CORRECT);
+		//sendServerReply(c, -1, CUSTOM_PASS_CORRECT);
 		if (c.getNickname().size() != 0 && c.getUsername().size()) {
 			c.setRegistered(true);
 			sendWelcomes(c);
@@ -59,7 +59,6 @@ bool Server::isValidNickname(std::string &s) {
 void Server::nick(Client &c) {
 	if (c.getParams().size() < 1) {
 		sendError(c, ERR_NONICKNAMEGIVEN, MSG_NONICKNAMEGIVEN);
-		std::cout << RED << "Too few Parameters for NICK. Research how to handle this" << RESET << std::endl;
 		return ;
 	}
 	if (c.getParams().size() > 1 || !c.getTrailing().empty()) {
@@ -78,7 +77,7 @@ void Server::nick(Client &c) {
 		}
 	}
 	c.setNickname(requested_name);
-	sendServerReply(c, -1, CUSTOM_NICK_SET(requested_name));
+	//sendServerReply(c, -1, CUSTOM_NICK_SET(requested_name));
 	if (c.hasPassedPassword() && !c.getUsername().empty() && c.isRegistered() == false) {
 		c.setRegistered(true);
 		sendWelcomes(c);
@@ -115,7 +114,7 @@ void Server::user(Client &c) {
 		return ;
 	}
 	c.setUsername(requested_name);
-	sendServerReply(c, -1, CUSTOM_USER_SET(requested_name));
+	//sendServerReply(c, -1, CUSTOM_USER_SET(requested_name));
 	if (c.hasPassedPassword() && !c.getNickname().empty()) {
 		c.setRegistered(true);
 		sendWelcomes(c);

@@ -19,6 +19,7 @@ std::string& Client::getTrailing() { return _trailing; }
 std::set<std::string>& Client::getChannels() { return _channels; }
 bool Client::getdisconnect() { return _disconnect; }
 bool Client::getBufOverflow() { return _InBufOverflow; }
+std::string& Client::getRaw() { return _raw_command_input; }
 
 // Setters
 void Client::setdisconnect(bool status) { _disconnect = status; }
@@ -30,7 +31,7 @@ void Client::setBufferOverflow(bool status) { _InBufOverflow = status; }
 void Client::setHasPassedPassword(bool value) { _has_passed_password = value; }
 void Client::setNickname(const std::string& nick) { _nickname = nick; }
 void Client::setUsername(const std::string& user) { _username = user; }
-void Client::setRegistered(bool value) { _is_registered = value; }
+void Client::setRegistered(bool value) { _is_registered = value; std::cout << "REGISTERED\n"; }
 void Client::setOperator(bool value) { _is_operator = value; }
 
 void Client::setReadBuffer(const std::string& buffer) { _read_buffer = buffer; }
@@ -41,8 +42,9 @@ void Client::setCommand(const std::string& cmd) { _command_capitalized = cmd; }
 void Client::appendOutgoingBuffer(const std::string& data) { _outgoing_buffer += data; }
 void Client::appendReadBuffer(const std::string& data) { _read_buffer += data; }
 
+// Build the standard IRC prefix string
 std::string Client::prefix(std::string& target) const {
-	// Build the standard IRC prefix string
+	
 	std::string result = ":";
 	result += _nickname;
 
@@ -52,7 +54,7 @@ std::string Client::prefix(std::string& target) const {
 	if (!_ip_address.empty()) {
 		result += "@" + _ip_address;//== hostname
 	}
-	result += " "; // trailing space before the actual command/message
+	result += " ";
 	result += _command_capitalized + " ";
 	result += target + " " + ":";
 	return result;

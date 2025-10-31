@@ -19,7 +19,7 @@ OBJS = $(SRCS:./src/%.cpp=$(OBJ_DIR)/%.o)
 
 INC_DIR = ./inc
 INC = $(addprefix $(INC_DIR)/,\
-	Client.hpp Server.hpp Color.hpp Channel.hpp Macros.hpp)
+	Client.hpp Server.hpp  Channel.hpp Macros.hpp)#Color.hpp
 #INC_DIR (in case we want to use this later)
 
 
