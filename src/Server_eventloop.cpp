@@ -113,6 +113,32 @@ void Server::delegateCommand(Client &c) {
 		mode(c);
 	else if (cmd == "PRIVMSG")
 		privmsg(c);
+	else if (cmd == "CAP"){
+    // params: LS [version] | REQ :... | END
+    if (!c.getParams().empty()) {
+        if (c.getParams()[0] == "LS") {
+            // Reply with an empty capability list and immediately END
+            // nick may not be set yet; '*' is fine during registration
+			//sendServerReply(c, -1, ": serverName CAP * LS :\n : serverName CAP * END");
+			sendServerReply(c, -1, ": serverName CAP * LS :");
+
+            // sendLine(c, ":" + serverName + " CAP * LS :");   // no capabilities
+            // sendLine(c, ":" + serverName + " CAP * END");     // finish negotiation
+            return;
+        } else if (c.getParams()[0] == "END") {
+            // nothing to do
+            return;
+        } else if (c.getParams()[0] == "REQ") {
+            // we don't support any; politely NAK
+			sendServerReply(c, -1, ": serverName CAP * NAK :");
+
+            // sendLine(c, ":" + serverName + " CAP * NAK :" + (trailing.empty()? "" : trailing));
+            return;
+        }
+    }
+    // Default: ignore silently (do NOT send 421 for CAP)
+    return;
+}
 	else
 		sendError(c, ERR_UNKNOWNCOMMAND, MSG_UNKNOWNCOMMAND(cmd));
 }
@@ -144,16 +170,16 @@ void Server::eventLoop()
 				}
 				else {
 					buf[bytes_read] = '\0';
-					//std::cout << "Buf = \"" << buf << "\"" << std::endl;
+					std::cout << "Buf = \"" << buf << "\"" << std::endl;
 					c.appendReadBuffer(buf);
-					if (c.extractCommand() == true)//successfully found a command and extracted it into raw command
+					while (c.extractCommand() == true)//successfully found a command and extracted it into raw command
 					{
 						c.parseRawCommand();
 						c.printCommand();
 						delegateCommand(c);
 						c.clearCommand();
 					}
-					else if (c.getBufOverflow() == true) {
+					if (c.getBufOverflow() == true) {
 						size_t pos = c.getReadBuffer().find("\r\n");
 						sendCustomError(c, CUSTOM_BUFFER_OVERFLOW);
 						c.consumeBytesReadBuffer(pos + 2);

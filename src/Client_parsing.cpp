@@ -45,6 +45,8 @@ bool Client::extractCommand() {
 	consumeBytesReadBuffer(pos + 2);
 	//std::cout << "after extraction: REad buffer: \"" << getReadBuffer() << "\"" << std::endl;
 
+	// skip empty lines
+    if (_raw_command_input.empty()) return false; 
 	return (true);
 }
 
