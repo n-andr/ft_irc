@@ -14,6 +14,26 @@ bool Server::validChannelName(std::string &s) {
 	return (true);
 }
 
+void Server::joinMSGs(Client& c, Channel& ch) {
+	c.appendOutgoingBuffer(":" + c.userPrefix() + " JOIN :" + ch.getName() + "\r\n");
+	enablePollout(c);
+	sendPendingData(c);
+	sendServerReply(c, RPL_TOPIC, MSG_TOPIC(ch.getName(), ch.getTopic()));
+	std::string nicks = "";
+	for (std::set<int>::const_iterator it = ch.getMembers().begin(); it != ch.getMembers().end(); ++it) {
+		if (it != ch.getMembers().begin())
+			nicks += " ";
+		nicks += (ch.isOperator(*it) ? "@" : "") + _clients[*it].getNickname();
+		std::cout << "nick added\n";
+	}
+	std::cout << "nicks:" << nicks << std::endl;
+	c.appendOutgoingBuffer(":" + std::string(SERVER_NAME) + " 353 " + c.getNickname() + " = " + ch.getName() + " :" + nicks + "\r\n");
+	enablePollout(c);
+	sendPendingData(c);
+	//sendServerReply(c, RPL_NAMREPLY, MSG_NAMREPLY(ch.getName(), nicks));
+	sendServerReply(c, RPL_ENDOFNAMES, MSG_ENDOFNAMES(ch.getName()));
+}
+
 void Server::join(Client& c) {
 	if (!c.isRegistered()) {
 		sendError(c, ERR_NOTREGISTERED, MSG_NOTREGISTERED);
@@ -43,7 +63,9 @@ void Server::join(Client& c) {
 			ch->addOperator(c.getSocketFd());
 			ch->addMember(c.getSocketFd());
 			c.joinChannel(*it);
-			sendInfoToChannel(c, *ch, CUSTOM_JOIN(c.getNickname(), ch->getName()));
+			joinMSGs(c, *ch);
+			std::cout << "hello there\n";
+			//sendInfoToChannel(c, *ch, CUSTOM_JOIN(c.getNickname(), ch->getName()));
 			continue ;
 		}
 		if (ch->getInviteOnly()) {
@@ -70,7 +92,8 @@ void Server::join(Client& c) {
 		}
 		ch->addMember(c.getSocketFd());
 		c.joinChannel(*it);
-		sendInfoToChannel(c, *ch, CUSTOM_JOIN(c.getNickname(), ch->getName()));
+		joinMSGs(c, *ch);
+		//sendInfoToChannel(c, *ch, CUSTOM_JOIN(c.getNickname(), ch->getName()));
 	}
 }
 

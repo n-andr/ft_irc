@@ -156,9 +156,9 @@ We can delete all unsued == still comented out ERR codes at the end
 //      std::string(server) + " " + std::string(nick) + " " + std::string(flags) + /*\*/
 //      " :" + std::string(hopcount) + " " + std::string(real))
 
-// #define RPL_NAMREPLY            353
-// #define MSG_NAMREPLY(channel, nicks) /*\*/
-//     (std::string(channel) + " :" + std::string(nicks))
+#define RPL_NAMREPLY            353
+#define MSG_NAMREPLY(channel, nicks) \
+	(std::string(channel) + " :" + std::string(nicks))
 
 // #define RPL_LINKS               364
 // #define MSG_LINKS(mask, server, hopcount, info) /*\*/
@@ -167,8 +167,8 @@ We can delete all unsued == still comented out ERR codes at the end
 // #define RPL_ENDOFLINKS          365
 // #define MSG_ENDOFLINKS(mask)    (std::string(mask) + " :End of /LINKS list")
 
-// #define RPL_ENDOFNAMES          366
-// #define MSG_ENDOFNAMES(channel) (std::string(channel) + " :End of /NAMES list")
+#define RPL_ENDOFNAMES          366
+#define MSG_ENDOFNAMES(channel) (std::string(channel) + " :End of /NAMES list")
 
 // #define RPL_BANLIST             367
 // #define MSG_BANLIST(channel, banid) /*\*/

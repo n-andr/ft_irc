@@ -107,7 +107,7 @@ public:
 	bool isValidNickname(std::string &s);
 	bool isSpecial(char c);
 	bool validChannelName(std::string &s);
-	
+	void joinMSGs(Client& c, Channel& ch);
 	
 	//For debugging only
 	void printClients();
