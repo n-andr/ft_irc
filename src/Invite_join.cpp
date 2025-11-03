@@ -15,10 +15,14 @@ bool Server::validChannelName(std::string &s) {
 }
 
 void Server::joinMSGs(Client& c, Channel& ch) {
-	c.appendOutgoingBuffer(":" + c.userPrefix() + " JOIN :" + ch.getName() + "\r\n");
+	c.appendOutgoingBuffer(c.userPrefix() + " JOIN :" + ch.getName() + "\r\n");
 	enablePollout(c);
 	sendPendingData(c);
-	sendServerReply(c, RPL_TOPIC, MSG_TOPIC(ch.getName(), ch.getTopic()));
+	if (ch.getTopic().empty()) {
+		sendServerReply(c, RPL_NOTOPIC, MSG_NOTOPIC(ch.getName()));
+	} else {
+		sendServerReply(c, RPL_TOPIC, MSG_TOPIC(ch.getName(), ch.getTopic()));
+	}
 	std::string nicks = "";
 	for (std::set<int>::const_iterator it = ch.getMembers().begin(); it != ch.getMembers().end(); ++it) {
 		if (it != ch.getMembers().begin())
