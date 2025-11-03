@@ -98,7 +98,11 @@ public:
 	void sendServerReply(Client &c, int code, const std::string &message);
 	void sendInfoToTarget(Client &c, Client &t, const std::string &message);
 	void sendInfoToChannel(Client &c, Channel &ch, const std::string &message);
-
+	void sendInfoToChannel__HexChat_frienly( Client& from, Channel& ch,
+                                const std::string& command,
+                                const std::string& params,
+                                const std::string& trailing,
+                                bool includeSelf /*=true*/);
 	void sendCustomError(Client &c, const std::string &message);
 	void sendError(Client &c, int code, const std::string &message);
 	Client* getClientByNick(std::string& nick);

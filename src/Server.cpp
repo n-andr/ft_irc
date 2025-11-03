@@ -65,6 +65,34 @@ void Server::sendInfoToChannel(Client &c, Channel &ch, const std::string &messag
 	}
 }
 
+//new HexChat friendly  broadcast to channel function
+
+// Builds: :nick!user@host COMMAND <params...> [:trailing]\r\n
+static std::string ircLine(const std::string& prefix,
+                           const std::string& command,
+                           const std::string& params,      // space-separated, may be empty
+                           const std::string& trailing) {  // without leading ':'
+    std::ostringstream oss;
+    oss << ":" << prefix << " " << command;
+    if (!params.empty())   oss << " " << params;
+    if (!trailing.empty()) oss << " :" << trailing;
+    oss << "\r\n";
+    return oss.str();
+}
+
+void Server::sendInfoToChannel__HexChat_frienly(Client& from, Channel& ch,
+                                const std::string& command,
+                                const std::string& params,
+                                const std::string& trailing,
+                                bool includeSelf /*=true*/) {
+    const std::string line = ircLine(from.userPrefix(), command, params, trailing);
+    for (std::set<int>::iterator it = ch.getMembers().begin(); it != ch.getMembers().end(); ++it) {
+        if (!includeSelf && *it == from.getSocketFd()) continue;
+        _clients[*it].appendOutgoingBuffer(line);
+        enablePollout(_clients[*it]);
+    }
+}
+
 //send code -1 for custom errors with no error code
 void Server::sendError(Client &c, int code, const std::string &message) {
 	std::ostringstream oss;
