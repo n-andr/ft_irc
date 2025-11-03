@@ -16,7 +16,10 @@ void Server::privmsgToChannel(Client& c, std::string& name) {
 		Client *t = &_clients[*it];
 		t->appendOutgoingBuffer(c.prefix(name));
 		t->appendOutgoingBuffer(c.getTrailing());
+		//t->appendOutgoingBuffer("\r\n");
 		enablePollout(*t);
+		sendPendingData(*t);
+		std::cout << "send data to client in channel\n";
 	}
 }
 
@@ -46,6 +49,8 @@ void Server::privmsg(Client& c) {
 		}
 		(*t).appendOutgoingBuffer(c.prefix(*it));
 		(*t).appendOutgoingBuffer(c.getTrailing());
+		t->appendOutgoingBuffer("\r\n");
 		enablePollout(*t);
+		sendPendingData(*t);
 	}
 }
