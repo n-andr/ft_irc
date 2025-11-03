@@ -37,6 +37,7 @@ bool Client::extractCommand() {
 	}
 	_raw_command_input = removeCRLF(_read_buffer.substr(0, pos));
 	consumeBytesReadBuffer(pos + 2);
+	if (_raw_command_input.empty()) return false;
 	return (true);
 }
 

@@ -60,9 +60,9 @@ We can delete all unsued == still comented out ERR codes at the end
 
 #define RPL_MYINFO              004
 #define MSG_MYINFO(servername, version, userModes, channelModes) \
-	("Server: " + std::string(servername) + "\nVersion: " + \
-	std::string(version) + "\nUser modes: " + std::string(userModes) \
-	+ "\nChannel modes: " + std::string(channelModes))
+	(std::string(servername) + " " + \
+	std::string(version) + " " + std::string(userModes) \
+	+ " " + std::string(channelModes))
 
 
 #define CUSTOM_MODE_TOO_MANY_ARGS "MODE: Too many arguments"
@@ -187,14 +187,14 @@ We can delete all unsued == still comented out ERR codes at the end
 // #define RPL_ENDOFINFO           374
 // #define MSG_ENDOFINFO()        ":End of /INFO list"
 
-// #define RPL_MOTDSTART           375
-// #define MSG_MOTDSTART(server)   (":- " + std::string(server) + " Message of the day - ")
+#define RPL_MOTDSTART           375
+#define MSG_MOTDSTART(server)   (":- " + std::string(server) + " Message of the day - ")
 
-// #define RPL_MOTD                372
-// #define MSG_MOTD(text)          (":- " + std::string(text))
+#define RPL_MOTD                372
+#define MSG_MOTD(text)          (":- " + std::string(text))
 
-// #define RPL_ENDOFMOTD           376
-// #define MSG_ENDOFMOTD()         ":End of /MOTD command"
+#define RPL_ENDOFMOTD           376
+#define MSG_ENDOFMOTD         ":End of /MOTD command"
 
 // #define RPL_YOUREOPER           381
 // #define MSG_YOUREOPER()         ":You are now an IRC operator"

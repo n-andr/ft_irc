@@ -6,6 +6,12 @@ void Server::sendWelcomes(Client &c) {
 	sendServerReply(c, RPL_YOURHOST, MSG_YOURHOST(SERVER_NAME, SERVER_VER));
 	sendServerReply(c, RPL_CREATED, MSG_CREATED(SERVER_CREATION_DATE));
 	sendServerReply(c, RPL_MYINFO, MSG_MYINFO(SERVER_NAME, SERVER_VER, USER_MODES, CHANNEL_MODES));
+	c.appendOutgoingBuffer(":ircserv.by.Nandreev.Sgramsch 005 Stef CHANTYPES=# :are supported by this server");
+	enablePollout(c);
+	sendPendingData(c);
+	sendServerReply(c, RPL_MOTDSTART, MSG_MOTDSTART(SERVER_NAME));
+	sendServerReply(c, RPL_MOTD, MSG_MOTD("This is a new day!"));
+	sendServerReply(c, RPL_ENDOFMOTD, MSG_ENDOFMOTD);
 }
 
 void Server::pass(Client &c) {

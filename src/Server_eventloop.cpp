@@ -22,7 +22,18 @@ void Server::delegateCommand(Client &c) {
 		mode(c);
 	else if (cmd == "PRIVMSG")
 		privmsg(c);
+	else if (cmd == "PING") {
+		std::string out = ":" + std::string(SERVER_NAME) + " PONG :" + c.getTrailing() + "\r\n";
+		c.appendOutgoingBuffer(out);
+    	enablePollout(c);
+		sendPendingData(c);
+	}
 	else if (cmd == "CAP") {
+		if (c.getRaw() == "CAP END") {
+			c.clearCommand();
+			sendWelcomes(c);
+			return ;
+		}
 		std::ostringstream oss;
 		oss << ":" << SERVER_NAME << " CAP ";
 		oss << (c.getNickname().empty() ? "*" : c.getNickname());
@@ -41,6 +52,7 @@ void Server::eventLoop()
 {
 	while (_running)
 	{
+		//std::cout << "\npoll\n";
 		poll(&_pollFds[0], _nFds, 100);
 		if (_pollFds[L_SOCKET].revents & POLLIN)
 			this->handleNewConnection();
@@ -61,7 +73,7 @@ void Server::eventLoop()
 				else {
 					buf[bytes_read] = '\0';
 					c.appendReadBuffer(buf);
-					std::cout << "READ: " << c.getReadBuffer() << "END";
+					std::cout << "READ: " << c.getReadBuffer() << "END\n\n";
 					while (c.extractCommand() == true)
 					{
 						c.parseRawCommand();
