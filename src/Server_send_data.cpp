@@ -14,7 +14,10 @@ void Server::broadcastMessage(const std::string &msg, int senderFd) {
 
 void Server::sendPendingData(Client &c)
 {
-	std::string data = c.getNextChunk(10);
+	std::string data = c.getNextChunk(512);
+	if (data.empty())
+		return ;
+	std::cout << "sending:" << data << std::endl;
 	int bytes_sent = send(c.getSocketFd(), data.c_str(), data.length(), 0);
 	if (bytes_sent < 0)
 	{

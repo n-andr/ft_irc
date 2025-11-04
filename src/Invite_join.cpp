@@ -28,8 +28,10 @@ void Server::joinMSGs(Client& c, Channel& ch) {
 		nicks += (ch.isOperator(*it) ? "@" : "") + _clients[*it].getNickname();
 		//std::cout << "nick added\n";
 	}
-	std::cout << "nicks:" << nicks << std::endl;
-	c.appendOutgoingBuffer(":" + std::string(SERVER_NAME) + " 353 " + c.getNickname() + " = " + ch.getName() + " :" + nicks + "\r\n");
+	//std::cout << "nicks:" << nicks << std::endl;
+	std::string line = ":" + std::string(SERVER_NAME) + " 353 " + c.getNickname() + " = :" + ch.getName() + " :" + nicks + "\r\n";
+	//std::cout << "line:" << line << std::endl;
+	c.appendOutgoingBuffer(line);
 	enablePollout(c);
 	sendPendingData(c);
 	//sendServerReply(c, RPL_NAMREPLY, MSG_NAMREPLY(ch.getName(), nicks));
@@ -66,7 +68,7 @@ void Server::join(Client& c) {
 			ch->addMember(c.getSocketFd());
 			c.joinChannel(*it);
 			joinMSGs(c, *ch);
-			std::cout << "hello there\n";
+			//std::cout << "hello there\n";
 			//sendInfoToChannel(c, *ch, CUSTOM_JOIN(c.getNickname(), ch->getName()));
 			continue ;
 		}

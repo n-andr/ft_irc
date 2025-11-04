@@ -41,9 +41,13 @@ std::string Client::getNextChunk(size_t max) const
 {
 	if (_outgoing_buffer.empty()) 
 		return "";
-	if (_outgoing_buffer.size() <= max) 
+	size_t pos = _outgoing_buffer.find("\r\n");
+	if (pos == std::string::npos || pos > max)
+		return (_outgoing_buffer);
+	return _outgoing_buffer.substr(0, pos+2);
+	/*if (_outgoing_buffer.size() <= max) 
 		return _outgoing_buffer;
-	return _outgoing_buffer.substr(0, max);
+	return _outgoing_buffer.substr(0, max);*/
 }
 
 bool Client::outgoingBufferIsEmpty() { return _outgoing_buffer.empty(); }

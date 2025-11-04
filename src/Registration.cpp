@@ -1,12 +1,12 @@
 #include "../inc/Server.hpp"
 
 void Server::sendWelcomes(Client &c) {
-	std::cout << "WELCOMES\n";
+	//std::cout << "WELCOMES\n";
 	sendServerReply(c, RPL_WELCOME, MSG_WELCOME(c.userPrefix()));
 	sendServerReply(c, RPL_YOURHOST, MSG_YOURHOST(SERVER_NAME, SERVER_VER));
 	sendServerReply(c, RPL_CREATED, MSG_CREATED(SERVER_CREATION_DATE));
 	sendServerReply(c, RPL_MYINFO, MSG_MYINFO(SERVER_NAME, SERVER_VER, USER_MODES, CHANNEL_MODES));
-	c.appendOutgoingBuffer(":ircserv.by.Nandreev.Sgramsch 005 Stef CHANTYPES=# :are supported by this server");
+	c.appendOutgoingBuffer(":ircserv.by.Nandreev.Sgramsch 005 Stef CHANTYPES=# :are supported by this server\r\n");
 	enablePollout(c);
 	sendPendingData(c);
 	sendServerReply(c, RPL_MOTDSTART, MSG_MOTDSTART(SERVER_NAME));
@@ -32,7 +32,7 @@ void Server::pass(Client &c) {
 		//sendServerReply(c, -1, CUSTOM_PASS_CORRECT);
 		if (c.getNickname().size() != 0 && c.getUsername().size()) {
 			c.setRegistered(true);
-			sendWelcomes(c);
+			//sendWelcomes(c);
 		}
 	}
 	else
@@ -86,7 +86,7 @@ void Server::nick(Client &c) {
 	//sendServerReply(c, -1, CUSTOM_NICK_SET(requested_name));
 	if (c.hasPassedPassword() && !c.getUsername().empty() && c.isRegistered() == false) {
 		c.setRegistered(true);
-		sendWelcomes(c);
+		//sendWelcomes(c);
 	}
 }
 
@@ -123,6 +123,6 @@ void Server::user(Client &c) {
 	//sendServerReply(c, -1, CUSTOM_USER_SET(requested_name));
 	if (c.hasPassedPassword() && !c.getNickname().empty()) {
 		c.setRegistered(true);
-		sendWelcomes(c);
+		//sendWelcomes(c);
 	}
 }

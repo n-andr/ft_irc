@@ -134,11 +134,11 @@ We can delete all unsued == still comented out ERR codes at the end
     (std::string(channel) + " " + std::string(mode) + " " + std::string(params))
 
 #define RPL_NOTOPIC             331
-#define MSG_NOTOPIC(channel)    (std::string(channel) + " :No topic is set")
+#define MSG_NOTOPIC(channel)    (std::string(channel) + " No topic is set")
 
 #define RPL_TOPIC               332
 #define MSG_TOPIC(channel, topic) \
-	(std::string(channel) + " :" + std::string(topic))
+	(std::string(channel) + " " + std::string(topic))
 
 #define RPL_INVITING            341
 #define MSG_INVITING(channel, nick)	(std::string(channel) + " " + std::string(nick))
@@ -188,13 +188,13 @@ We can delete all unsued == still comented out ERR codes at the end
 // #define MSG_ENDOFINFO()        ":End of /INFO list"
 
 #define RPL_MOTDSTART           375
-#define MSG_MOTDSTART(server)   (":- " + std::string(server) + " Message of the day - ")
+#define MSG_MOTDSTART(server)   ("- " + std::string(server) + " Message of the day - ")
 
 #define RPL_MOTD                372
-#define MSG_MOTD(text)          (":- " + std::string(text))
+#define MSG_MOTD(text)          ("- " + std::string(text))
 
 #define RPL_ENDOFMOTD           376
-#define MSG_ENDOFMOTD         ":End of /MOTD command"
+#define MSG_ENDOFMOTD         "End of /MOTD command"
 
 // #define RPL_YOUREOPER           381
 // #define MSG_YOUREOPER()         ":You are now an IRC operator"
