@@ -93,5 +93,12 @@ void Server::topic(Client &c) {
 		return ;
 	}
 	ch->setTopic(t);
-	sendInfoToChannel(c, *ch, CUSTOM_TOPIC_CHANGED(c.getNickname(), ch->getName(), t));
+
+	//hexchat
+	sendServerReply(c, RPL_TOPIC, MSG_TOPIC(ch->getName(), ch->getTopic()));
+	// sendServerReply(c, RPL_TOPICWHOTIME, MSG_TOPICWHOTIME(
+    //     ch->getName(), c.getNickname(), now()));
+		//sendInfoToChannel(c, *ch, CUSTOM_TOPIC_CHANGED(c.getNickname(), ch->getName(), t));
+		sendInfoToChannel__HexChat_frienly(c, *ch, "TOPIC", ch->getName(), ch->getTopic(), true);
+
 }
