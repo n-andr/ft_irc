@@ -15,9 +15,7 @@ bool Server::validChannelName(std::string &s) {
 }
 
 void Server::joinMSGs(Client& c, Channel& ch) {
-	c.appendOutgoingBuffer(c.userPrefix() + " JOIN :" + ch.getName() + "\r\n");
-	enablePollout(c);
-	sendPendingData(c);
+	sendInfoToChannel__HexChat_frienly(c, ch, "JOIN", "", ch.getName(), true);
 	if (ch.getTopic().empty()) {
 		sendServerReply(c, RPL_NOTOPIC, MSG_NOTOPIC(ch.getName()));
 	} else {
@@ -28,7 +26,7 @@ void Server::joinMSGs(Client& c, Channel& ch) {
 		if (it != ch.getMembers().begin())
 			nicks += " ";
 		nicks += (ch.isOperator(*it) ? "@" : "") + _clients[*it].getNickname();
-		std::cout << "nick added\n";
+		//std::cout << "nick added\n";
 	}
 	std::cout << "nicks:" << nicks << std::endl;
 	c.appendOutgoingBuffer(":" + std::string(SERVER_NAME) + " 353 " + c.getNickname() + " = " + ch.getName() + " :" + nicks + "\r\n");

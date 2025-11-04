@@ -89,7 +89,7 @@ void Client::leaveChannel(const std::string &name) { _channels.erase(name); }
 
 //returns the User prefix WITHOUT a cmd.
 std::string Client::userPrefix() {
-	std::string result = ":";
+	std::string result = "";
 	result += _nickname;
 
 	if (!_username.empty()) {
