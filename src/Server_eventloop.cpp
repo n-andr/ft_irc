@@ -22,6 +22,10 @@ void Server::delegateCommand(Client &c) {
 		mode(c);
 	else if (cmd == "PRIVMSG")
 		privmsg(c);
+	else if (cmd == "WHO") {
+		c.clearCommand();
+		return ;
+	}
 	else if (cmd == "PING") {
 		std::string out = ":" + std::string(SERVER_NAME) + " PONG :" + c.getTrailing() + "\r\n";
 		c.appendOutgoingBuffer(out);
