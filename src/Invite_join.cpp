@@ -102,6 +102,7 @@ void Server::join(Client& c) {
 	}
 }
 
+//invite nick channel
 void Server::invite(Client& c) {
 	if (!c.isRegistered()) {
 		sendError(c, ERR_NOTREGISTERED, MSG_NOTREGISTERED);
@@ -126,21 +127,23 @@ void Server::invite(Client& c) {
 		return ;
 	}
 	Channel *ch = getChannelByName(p[1]);
-	if (ch != NULL) {
-		if (ch->isMember(target->getSocketFd())) {
-			sendError(c, ERR_USERONCHANNEL, MSG_USERONCHANNEL(p[0], p[1]));
-			return ;
-		}
-		if (ch != NULL && !ch->isMember(c.getSocketFd())) {
-			sendError(c, ERR_NOTONCHANNEL, MSG_NOTONCHANNEL(p[1]));
-			return ;
-		}
-		if (ch->getInviteOnly() && !ch->isOperator(c.getSocketFd())) {
-			sendError(c, ERR_CHANOPRIVSNEEDED, MSG_CHANOPRIVSNEEDED(p[1]));
-			return ;
-		}
+	if (ch == NULL) {
+		sendError(c, ERR_NOSUCHCHANNEL, MSG_NOSUCHCHANNEL(p[1]));
+		return ;
+	}
+	if (ch->isMember(target->getSocketFd())) {
+		sendError(c, ERR_USERONCHANNEL, MSG_USERONCHANNEL(p[0], p[1]));
+		return ;
+	}
+	if (ch != NULL && !ch->isMember(c.getSocketFd())) {
+		sendError(c, ERR_NOTONCHANNEL, MSG_NOTONCHANNEL(p[1]));
+		return ;
+	}
+	if (ch->getInviteOnly() && !ch->isOperator(c.getSocketFd())) {
+		sendError(c, ERR_CHANOPRIVSNEEDED, MSG_CHANOPRIVSNEEDED(p[1]));
+		return ;
 	}
 	target->addInvite(p[1]);
-	sendInfoToTarget(c, *target, CUSTOM_INVITED(p[1]));
+	sendInfoToTarget__HexChat_frienly(c, *target, "INVITE", target->getNickname(), p[1]);
 	sendServerReply(c, RPL_INVITING, MSG_INVITING(p[1], p[0]));
 }

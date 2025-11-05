@@ -95,6 +95,18 @@ void Server::sendInfoToChannel__HexChat_frienly(Client& from, Channel& ch,
     }
 }
 
+void Server::sendInfoToTarget__HexChat_frienly(Client& from, Client& t,
+                                const std::string& command,
+                                const std::string& params,
+                                const std::string& trailing) {
+    const std::string line = ircLine(from.userPrefix(), command, params, trailing);
+    t.appendOutgoingBuffer(line);
+		//std::cout << "Line:" << line << std::endl;
+        enablePollout(t);
+		sendPendingData(t);
+    }
+
+
 //send code -1 for custom errors with no error code
 void Server::sendError(Client &c, int code, const std::string &message) {
 	std::ostringstream oss;

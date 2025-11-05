@@ -103,6 +103,10 @@ public:
                                 const std::string& params,
                                 const std::string& trailing,
                                 bool includeSelf /*=true*/);
+	void sendInfoToTarget__HexChat_frienly( Client& from, Client& t,
+                                const std::string& command,
+                                const std::string& params,
+                                const std::string& trailing);
 	void sendCustomError(Client &c, const std::string &message);
 	void sendError(Client &c, int code, const std::string &message);
 	Client* getClientByNick(std::string& nick);

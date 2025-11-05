@@ -11,7 +11,7 @@ void Server::kick(Client &c) {
 		sendError(c, ERR_NEEDMOREPARAMS, MSG_NEEDMOREPARAMS("KICK"));
 		return ;
 	}
-	if (p.size() > 2 || !c.getTrailing().empty()) {
+	if (p.size() > 2) {
 		sendCustomError(c, CUSTOM_TOO_MANY_ARGS("KICK"));
 		return ;
 	}
@@ -46,8 +46,13 @@ void Server::kick(Client &c) {
 		ch->removeOperator(target->getSocketFd());
 	}
 	target->leaveChannel(p[0]);
-	sendInfoToTarget(c, *target, CUSTOM_YOU_GOT_KICKED(c.getNickname(), p[0]));
-	sendInfoToChannel(c, *ch, CUSTOM_SOMEONE_WAS_KICKED(c.getNickname(), target->getNickname(), p[0]));
+	std::string comment = c.getTrailing();
+	if (comment.empty()) comment = CUSTOM_YOU_GOT_KICKED(c.getNickname(), ch->getName());
+	sendInfoToTarget__HexChat_frienly(c, *target, "KICK", ch->getName() + " " + target->getNickname(), comment);
+	//sendInfoToChannel(c, *ch, CUSTOM_SOMEONE_WAS_KICKED(c.getNickname(), target->getNickname(), p[0]));
+	comment = c.getTrailing();
+	if (comment.empty()) comment = CUSTOM_SOMEONE_WAS_KICKED(c.getNickname(), target->getNickname(), ch->getName());
+	sendInfoToChannel__HexChat_frienly(c, *ch, "KICK", ch->getName() + " " + target->getNickname(), comment, true);
 	if (ch->getMembers().size() == 0) {
 		_channels.erase(ch->getName());
 	}

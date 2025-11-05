@@ -36,9 +36,9 @@ We can delete all unsued == still comented out ERR codes at the end
 #define CUSTOM_USER_SET(user) ("Your Username was set to " + std::string(user))
 #define CUSTOM_TOPIC_CHANGED(nick, channel, topic) (std::string(nick) \
 	+ " has changed " + std::string(channel) + "'s topic to: " + std::string(topic))
-#define CUSTOM_YOU_GOT_KICKED(nick, channel) (std::string(nick) \
+#define CUSTOM_YOU_GOT_KICKED(nick, channel) ("default msg to inform you that " + std::string(nick) \
 	+ " has kicked you from " + std::string(channel))
-#define CUSTOM_SOMEONE_WAS_KICKED(kicker, kicked, channel) (std::string(kicker) \
+#define CUSTOM_SOMEONE_WAS_KICKED(kicker, kicked, channel) ("default msg to inform you that " + std::string(kicker) \
 	+ " kicked " + std::string(kicked) + " from " + std::string(channel))
 #define CUSTOM_CHANNELISFULL(channel) ("Server imposed Limit of Clients per Channel reached. " + std::string(channel) + " is already full. You did not join.")
 #define CUSTOM_BUFFER_OVERFLOW (RED "Max Buffer length: 512 Bytes. Your message is too long.\n" RESET)
@@ -141,7 +141,7 @@ We can delete all unsued == still comented out ERR codes at the end
 	(std::string(channel) + " " + std::string(topic))
 
 #define RPL_INVITING            341
-#define MSG_INVITING(channel, nick)	(std::string(channel) + " " + std::string(nick))
+#define MSG_INVITING(channel, nick)	(std::string(nick) + " " + std::string(channel))
 
 // #define RPL_SUMMONING           342
 // #define MSG_SUMMONING(user)     (std::string(user) + " :Summoning user to IRC")
