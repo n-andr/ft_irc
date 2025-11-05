@@ -34,7 +34,7 @@ void Server::privmsg(Client& c) {
 		return;
 	}
 	if (c.getTrailing().empty()) {
-		sendError(c, ERR_NOTEXTTOSEND, "");
+		sendError(c, ERR_NOTEXTTOSEND, MSG_NOTEXTTOSEND);
 		return;
 	}
 	for (std::vector<std::string>::iterator it = p.begin(); it != p.end(); it++) {
