@@ -29,13 +29,14 @@ void Server::joinMSGs(Client& c, Channel& ch) {
 		//std::cout << "nick added\n";
 	}
 	//std::cout << "nicks:" << nicks << std::endl;
-	std::string line = ":" + std::string(SERVER_NAME) + " 353 " + c.getNickname() + " = :" + ch.getName() + " :" + nicks + "\r\n";
+	std::string line = ":" + std::string(SERVER_NAME) + " 353 " + c.getNickname() + " = " + ch.getName() + " :" + nicks + "\r\n";
 	//std::cout << "line:" << line << std::endl;
 	c.appendOutgoingBuffer(line);
 	enablePollout(c);
 	sendPendingData(c);
 	//sendServerReply(c, RPL_NAMREPLY, MSG_NAMREPLY(ch.getName(), nicks));
 	sendServerReply(c, RPL_ENDOFNAMES, MSG_ENDOFNAMES(ch.getName()));
+	printChannelModes(c, ch.getName());
 }
 
 void Server::join(Client& c) {

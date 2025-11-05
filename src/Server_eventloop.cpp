@@ -35,7 +35,8 @@ void Server::delegateCommand(Client &c) {
 	else if (cmd == "CAP") {
 		if (c.getRaw() == "CAP END") {
 			c.clearCommand();
-			sendWelcomes(c);
+			//if (c.isRegistered())
+			//	sendWelcomes(c);
 			return ;
 		}
 		std::ostringstream oss;
@@ -77,7 +78,9 @@ void Server::eventLoop()
 				else {
 					buf[bytes_read] = '\0';
 					c.appendReadBuffer(buf);
-					std::cout << "READ: " << c.getReadBuffer() << "END\n\n";
+					/*size_t pos = c.getReadBuffer().find("PING");
+					if (pos == std::string::npos)
+						std::cout << "READ: " << c.getReadBuffer() << "END\n\n";*/
 					while (c.extractCommand() == true)
 					{
 						c.parseRawCommand();

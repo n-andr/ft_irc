@@ -30,9 +30,9 @@ void Server::pass(Client &c) {
 	if (c.getParams()[0] == _password) {
 		c.setHasPassedPassword(true);
 		//sendServerReply(c, -1, CUSTOM_PASS_CORRECT);
-		if (c.getNickname().size() != 0 && c.getUsername().size()) {
+		if (!c.getNickname().empty() && !c.getUsername().empty()) {
 			c.setRegistered(true);
-			//sendWelcomes(c);
+			sendWelcomes(c);
 		}
 	}
 	else
@@ -72,21 +72,22 @@ void Server::nick(Client &c) {
 		return ;
 	}
 	std::string requested_name = c.getParams()[0];
-	if (isValidNickname(requested_name) == false) {
-		sendError(c, ERR_NOSUCHNICK, MSG_NOSUCHNICK(requested_name));
-		return ;
-	}
 	for (std::map<int, Client>::iterator it = _clients.begin(); it != _clients.end(); it++) {
 		if (it->second.getNickname() == requested_name) {
 			sendError(c, ERR_NICKNAMEINUSE, MSG_NICKNAMEINUSE(requested_name));
 			return ;
 		}
 	}
+	if (isValidNickname(requested_name) == false) {
+		sendError(c, ERR_NOSUCHNICK, MSG_NOSUCHNICK(requested_name));
+		return ;
+	}
+	
 	c.setNickname(requested_name);
 	//sendServerReply(c, -1, CUSTOM_NICK_SET(requested_name));
-	if (c.hasPassedPassword() && !c.getUsername().empty() && c.isRegistered() == false) {
+	if (c.hasPassedPassword() && !c.getUsername().empty()) {
 		c.setRegistered(true);
-		//sendWelcomes(c);
+		sendWelcomes(c);
 	}
 }
 
@@ -123,6 +124,6 @@ void Server::user(Client &c) {
 	//sendServerReply(c, -1, CUSTOM_USER_SET(requested_name));
 	if (c.hasPassedPassword() && !c.getNickname().empty()) {
 		c.setRegistered(true);
-		//sendWelcomes(c);
+		sendWelcomes(c);
 	}
 }

@@ -102,7 +102,7 @@ std::string Client::userPrefix() {
 	if (!_ip_address.empty()) {
 		result += "@" + _ip_address;//== hostname
 	}
-	result += " "; // trailing space before the actual command/message
+	//result += " "; // trailing space before the actual command/message
 	return (result);
 }
 
