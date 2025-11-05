@@ -6,11 +6,14 @@ bool handle_i(Server& serv, Channel& ch, Client& c, const ModeChange& mode){
 		return false;
 	}
 	ch.setInviteOnly(mode.set); //if was invite-only - stayes invite-only - no error
-	serv.sendInfoToChannel(c, ch, CUSTOM_MODE_CHANGE(
-		ch.getInviteOnly(),
-		"This channel is now invite-only.",
-		"This channel is open to anyone (no invite required)."
-	));
+	// serv.sendInfoToChannel(c, ch, CUSTOM_MODE_CHANGE(
+	// 	ch.getInviteOnly(),
+	// 	"This channel is now invite-only.",
+	// 	"This channel is open to anyone (no invite required)."
+	// ));
+	std::string params = "";
+	params += mode.set ? "+i" : "-i";
+	serv.sendInfoToChannel__HexChat_frienly(c, ch, "MODE", params, "", /*includeSelf=*/true);
 	return true;
 }
 
@@ -21,11 +24,14 @@ bool handle_t(Server& serv, Channel& ch, Client& c, const ModeChange& mode){
 	return false;
 	}
 	ch.setTopicLocked(mode.set); //if was locked - stayes locked - no error
-	serv.sendInfoToChannel(c, ch, CUSTOM_MODE_CHANGE(
-		ch.getTopicLocked(),
-		"Only channel operators can set the topic now.",
-		"Anyone in the channel can set the topic now."
-	));
+	// serv.sendInfoToChannel(c, ch, CUSTOM_MODE_CHANGE(
+	// 	ch.getTopicLocked(),
+	// 	"Only channel operators can set the topic now.",
+	// 	"Anyone in the channel can set the topic now."
+	// ));
+	std::string params = "";
+	params += mode.set ? "+t" : "-t";
+	serv.sendInfoToChannel__HexChat_frienly(c, ch, "MODE", params, "", /*includeSelf=*/true);
 	return true;
 }
 
@@ -63,11 +69,14 @@ bool handle_k(Server& serv, Channel& ch, Client& c, const ModeChange& mode){
 		std::string empty = "";
 		ch.setKey(empty);
 	}
-	serv.sendInfoToChannel(c, ch, CUSTOM_MODE_CHANGE(
-		(ch.getKey() != "" ? true : false),
-		"A password is now required to join this channel.",
-		"The password requirement has been removed."
-	));
+	// serv.sendInfoToChannel(c, ch, CUSTOM_MODE_CHANGE(
+	// 	(ch.getKey() != "" ? true : false),
+	// 	"A password is now required to join this channel.",
+	// 	"The password requirement has been removed."
+	// ));
+	std::string params = "";
+	params += mode.set ? "+k" : "-k";
+	serv.sendInfoToChannel__HexChat_frienly(c, ch, "MODE", params, "", /*includeSelf=*/true);
 	return true;
 }
 
@@ -95,11 +104,15 @@ bool handle_o(Server& serv, Channel& ch, Client& c, const ModeChange& mode){
 		if (ch.isOperator(target->getSocketFd()))
 			ch.removeOperator(target->getSocketFd());
 	}
-	serv.sendInfoToChannel(c, ch, CUSTOM_MODE_CHANGE(
-		mode.set,
-		mode.arg + " is a channel operator.",
-		mode.arg + " is not a channel operator."
-	));
+	// serv.sendInfoToChannel(c, ch, CUSTOM_MODE_CHANGE(
+	// 	mode.set,
+	// 	mode.arg + " is a channel operator.",
+	// 	mode.arg + " is not a channel operator."
+	// ));
+	std::string params = "";
+	params += mode.set ? "+o" : "-o";
+	params += " " + targetNick;
+	serv.sendInfoToChannel__HexChat_frienly(c, ch, "MODE", params, "", /*includeSelf=*/true);
 	return true;
 }
 
@@ -144,11 +157,14 @@ bool handle_l(Server& serv, Channel& ch, Client& c, const ModeChange& mode){
 		
 	}
 
-	serv.sendInfoToChannel(c, ch, CUSTOM_MODE_CHANGE(
-		(ch.getUserLimit() != 0 ? true : false),
-		(std::string("User limit set to ") + toStr(ch.getUserLimit()) + "."),
-		"The user limit has been removed."
-	));
+	// serv.sendInfoToChannel(c, ch, CUSTOM_MODE_CHANGE(
+	// 	(ch.getUserLimit() != 0 ? true : false),
+	// 	(std::string("User limit set to ") + toStr(ch.getUserLimit()) + "."),
+	// 	"The user limit has been removed."
+	// ));
+	std::string params = "";
+	params += mode.set ? "+l" : "-l";
+	serv.sendInfoToChannel__HexChat_frienly(c, ch, "MODE", params, "", /*includeSelf=*/true);
 	return true;
 }
 
