@@ -9,8 +9,8 @@
 #define SERVER_CREATION_DATE "1.10.2025"
 #define USER_MODES ""
 #define CHANNEL_MODES "itkol"
-#define MAX_CHANNELS_PER_CLIENT 2
-#define MAX_CLIENTS_PER_CHANNEL 2
+#define MAX_CHANNELS_PER_CLIENT 5
+#define MAX_CLIENTS_PER_CHANNEL 5
 #define MAX_PASS_SIZE 10
 
 //this shoudl enable including Macro ints (and only macros, because it runs at compile time) into macro strings

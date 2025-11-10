@@ -92,7 +92,7 @@ void Server::join(Client& c) {
 			return ;
 		}
 		if (ch->getMembers().size() >= MAX_CLIENTS_PER_CHANNEL) {
-			sendServerReply(c, -1, CUSTOM_CHANNELISFULL(ch->getName()));
+			sendError(c, ERR_CHANNELISFULL, MSG_CHANNELISFULL(ch->getName()));
 			return ;
 		}
 		ch->addMember(c.getSocketFd());

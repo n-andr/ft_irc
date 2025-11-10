@@ -31,11 +31,6 @@ ModeParseResult Server::splitModeParams(Client &cl)
 	out.order.clear();
 	out.leftoverArgs.clear();
 
-	// if (params.size() < 2) {
-	//	 out.error = "MODE: need <channel> and <modestring>";
-	//	 return out;
-	// }
-
 	const std::vector<std::string>& params = cl.getParams();
 	const std::string &trailing = cl.getTrailing();
 	const std::string& modeStr = params[1];
@@ -90,7 +85,7 @@ ModeParseResult Server::splitModeParams(Client &cl)
 
 	// Whatever remains are leftovers (we can through an error or just ignore them)
 	out.leftoverArgs = args;
-	if (!out.leftoverArgs.empty())	sendError(cl, -1, CUSTOM_MODE_TOO_MANY_ARGS);
+	if (!out.leftoverArgs.empty())	sendError(cl, 696, CUSTOM_MODE_TOO_MANY_ARGS);
 	return out;
 }
 
@@ -124,8 +119,6 @@ void Server::mode(Client &c) {
 	std::string  channelName = p[0];
 	ModeParseResult modeOrganized = splitModeParams(c);
 
-	//printModeParseResult(channelName, modeOrganized); //debug, delete later
-
 	//if there was an error don't execute
 	if(!modeOrganized.error.empty() || !modeOrganized.leftoverArgs.empty()){
 		return;
@@ -133,8 +126,6 @@ void Server::mode(Client &c) {
 
 	//execution:
 	execute_mode(c, channelName, modeOrganized);
-
-	// check that modeOrganized doesn't leak
 }
 
 
