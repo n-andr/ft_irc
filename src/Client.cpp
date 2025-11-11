@@ -5,7 +5,8 @@ Client::Client()
 	: _socket_fd(-1), _ip_address(""), _port(0), //_isConnected(false),
 	  _has_passed_password(false), _nickname(""), _username(""),
 	  _is_registered(false), _is_operator(false),
-	  _read_buffer(""), _outgoing_buffer(""), _command_capitalized("") {}
+	  _read_buffer(""), _outgoing_buffer(""), _command_capitalized(""), 
+	  _disconnect(false), _InBufOverflow(false) {}
 
 Client::Client(const Client& other) {
 	if (this != &other)
@@ -28,6 +29,8 @@ Client& Client::operator=(const Client& other) {
 		_read_buffer = other._read_buffer;
 		_outgoing_buffer = other._outgoing_buffer;
 		_command_capitalized = other._command_capitalized;
+		_disconnect = other._disconnect;
+		_InBufOverflow = other._InBufOverflow;
 	}
 	return (*this);
 }

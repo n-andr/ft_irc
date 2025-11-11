@@ -78,24 +78,21 @@ void Server::eventLoop()
 				else {
 					buf[bytes_read] = '\0';
 					c.appendReadBuffer(buf);
-					/*size_t pos = c.getReadBuffer().find("PING");
-					if (pos == std::string::npos)
-						std::cout << "READ: " << c.getReadBuffer() << "END\n\n";*/
 					while (c.extractCommand() == true)
 					{
 						c.parseRawCommand();
 						delegateCommand(c);
 						c.clearCommand();
 					}
-					/*if (c.getBufOverflow() == true) {
+					if (c.getBufOverflow() == true) {
 						size_t pos = c.getReadBuffer().find("\r\n");
 						sendCustomError(c, CUSTOM_BUFFER_OVERFLOW);
 						c.consumeBytesReadBuffer(pos + 2);
 						c.setBufferOverflow(false);
-					}*/
+					}
 				}
 			}
-			if (_pollFds[i].revents & POLLOUT) {
+			if (!c.getdisconnect() && (_pollFds[i].revents & POLLOUT)) {
 				sendPendingData(_clients[_pollFds[i].fd]);
 			}
 		}
