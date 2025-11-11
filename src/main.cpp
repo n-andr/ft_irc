@@ -3,7 +3,6 @@
 #include <cctype> // for isdigit
 #include <cstdlib>  // std::atol
 #include <cstring>  // std::strlen
-//#include <exception> //for exception 
 #include "../inc/Server.hpp"
 
 //must be printable ASCII, no whitespace, no : (trailing confusion)

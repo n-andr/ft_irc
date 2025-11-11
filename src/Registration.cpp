@@ -1,7 +1,6 @@
 #include "../inc/Server.hpp"
 
 void Server::sendWelcomes(Client &c) {
-	//std::cout << "WELCOMES\n";
 	sendServerReply(c, RPL_WELCOME, MSG_WELCOME(c.userPrefix()));
 	sendServerReply(c, RPL_YOURHOST, MSG_YOURHOST(SERVER_NAME, SERVER_VER));
 	sendServerReply(c, RPL_CREATED, MSG_CREATED(SERVER_CREATION_DATE));
@@ -29,7 +28,6 @@ void Server::pass(Client &c) {
 	}
 	if (c.getParams()[0] == _password) {
 		c.setHasPassedPassword(true);
-		//sendServerReply(c, -1, CUSTOM_PASS_CORRECT);
 		if (!c.getNickname().empty() && !c.getUsername().empty()) {
 			c.setRegistered(true);
 			sendWelcomes(c);
@@ -84,7 +82,6 @@ void Server::nick(Client &c) {
 	}
 	
 	c.setNickname(requested_name);
-	//sendServerReply(c, -1, CUSTOM_NICK_SET(requested_name));
 	if (c.hasPassedPassword() && !c.getUsername().empty()) {
 		c.setRegistered(true);
 		sendWelcomes(c);
@@ -121,7 +118,6 @@ void Server::user(Client &c) {
 		return ;
 	}
 	c.setUsername(requested_name);
-	//sendServerReply(c, -1, CUSTOM_USER_SET(requested_name));
 	if (c.hasPassedPassword() && !c.getNickname().empty()) {
 		c.setRegistered(true);
 		sendWelcomes(c);

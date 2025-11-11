@@ -35,8 +35,6 @@ void Server::delegateCommand(Client &c) {
 	else if (cmd == "CAP") {
 		if (c.getRaw() == "CAP END") {
 			c.clearCommand();
-			//if (c.isRegistered())
-			//	sendWelcomes(c);
 			return ;
 		}
 		std::ostringstream oss;
@@ -57,7 +55,6 @@ void Server::eventLoop()
 {
 	while (_running)
 	{
-		//std::cout << "\npoll\n";
 		poll(&_pollFds[0], _nFds, 100);
 		if (_pollFds[L_SOCKET].revents & POLLIN)
 			this->handleNewConnection();

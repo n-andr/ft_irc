@@ -49,7 +49,6 @@ void Server::kick(Client &c) {
 	std::string comment = c.getTrailing();
 	if (comment.empty()) comment = CUSTOM_YOU_GOT_KICKED(c.getNickname(), ch->getName());
 	sendInfoToTarget__HexChat_frienly(c, *target, "KICK", ch->getName() + " " + target->getNickname(), comment);
-	//sendInfoToChannel(c, *ch, CUSTOM_SOMEONE_WAS_KICKED(c.getNickname(), target->getNickname(), p[0]));
 	comment = c.getTrailing();
 	if (comment.empty()) comment = CUSTOM_SOMEONE_WAS_KICKED(c.getNickname(), target->getNickname(), ch->getName());
 	sendInfoToChannel__HexChat_frienly(c, *ch, "KICK", ch->getName() + " " + target->getNickname(), comment, true);
@@ -99,11 +98,6 @@ void Server::topic(Client &c) {
 	}
 	ch->setTopic(t);
 
-	//hexchat
 	sendServerReply(c, RPL_TOPIC, MSG_TOPIC(ch->getName(), ch->getTopic()));
-	// sendServerReply(c, RPL_TOPICWHOTIME, MSG_TOPICWHOTIME(
-    //     ch->getName(), c.getNickname(), now()));
-		//sendInfoToChannel(c, *ch, CUSTOM_TOPIC_CHANGED(c.getNickname(), ch->getName(), t));
-		sendInfoToChannel__HexChat_frienly(c, *ch, "TOPIC", ch->getName(), ch->getTopic(), true);
-
+	sendInfoToChannel__HexChat_frienly(c, *ch, "TOPIC", ch->getName(), ch->getTopic(), true);
 }

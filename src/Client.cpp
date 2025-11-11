@@ -2,7 +2,7 @@
 
 // Orthodox Canonical Form (OCF)
 Client::Client()
-	: _socket_fd(-1), _ip_address(""), _port(0), //_isConnected(false),
+	: _socket_fd(-1), _ip_address(""), _port(0),
 	  _has_passed_password(false), _nickname(""), _username(""),
 	  _is_registered(false), _is_operator(false),
 	  _read_buffer(""), _outgoing_buffer(""), _command_capitalized(""), 
@@ -18,7 +18,6 @@ Client& Client::operator=(const Client& other) {
 		_socket_fd = other._socket_fd;
 		_ip_address = other._ip_address;
 		_port = other._port;
-		//_isConnected = other._isConnected;
 
 		_has_passed_password = other._has_passed_password;
 		_nickname = other._nickname;
@@ -48,9 +47,6 @@ std::string Client::getNextChunk(size_t max) const
 	if (pos == std::string::npos || pos > max)
 		return (_outgoing_buffer);
 	return _outgoing_buffer.substr(0, pos+2);
-	/*if (_outgoing_buffer.size() <= max) 
-		return _outgoing_buffer;
-	return _outgoing_buffer.substr(0, max);*/
 }
 
 bool Client::outgoingBufferIsEmpty() { return _outgoing_buffer.empty(); }
@@ -103,9 +99,8 @@ std::string Client::userPrefix() {
 		result += "!" + _username;
 	}
 	if (!_ip_address.empty()) {
-		result += "@" + _ip_address;//== hostname
+		result += "@" + _ip_address;
 	}
-	//result += " "; // trailing space before the actual command/message
 	return (result);
 }
 

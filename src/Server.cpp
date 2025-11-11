@@ -89,7 +89,6 @@ void Server::sendInfoToChannel__HexChat_frienly(Client& from, Channel& ch,
     for (std::set<int>::iterator it = ch.getMembers().begin(); it != ch.getMembers().end(); ++it) {
         if (!includeSelf && *it == from.getSocketFd()) continue;
         _clients[*it].appendOutgoingBuffer(line);
-		//std::cout << "Line:" << line << std::endl;
         enablePollout(_clients[*it]);
 		sendPendingData(_clients[*it]);
     }
@@ -101,7 +100,6 @@ void Server::sendInfoToTarget__HexChat_frienly(Client& from, Client& t,
                                 const std::string& trailing) {
     const std::string line = ircLine(from.userPrefix(), command, params, trailing);
     t.appendOutgoingBuffer(line);
-		//std::cout << "Line:" << line << std::endl;
         enablePollout(t);
 		sendPendingData(t);
     }
